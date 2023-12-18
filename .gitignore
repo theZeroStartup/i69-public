@@ -1,0 +1,7 @@
+# Project exclude paths
+/.gradle/
+/app/build/
+/app/build/intermediates/javac/stagingRelease/classes/
+/build/
+/buildSrc/.gradle/
+/buildSrc/build/

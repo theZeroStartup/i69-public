@@ -1,0 +1,55 @@
+subscription OnUpdateMoment($moderatorId: String!,$token: String!){
+
+    onUpdateMoment(moderatorId: $moderatorId,token: $token){
+		id
+		likedByUsersList{
+			username
+			id
+			email
+            fullName
+			giftCoins
+			purchaseCoins
+            gender
+            
+                
+			avatar {
+					id
+					url
+                    user
+
+				}
+		}		
+        moment {
+			pk
+            comment
+            createdDate
+            file
+            id
+            like
+            momentDescription
+            momentDescriptionPaginated
+            user {
+                id
+                email
+                fullName
+                username
+                gender
+                email
+                avatar
+                {
+                    url
+                    id
+                    user
+                }
+                onesignalPlayerId
+                avatarPhotos {
+                    url
+                    id
+                    user
+                }
+            }
+        }
+
+    }
+
+}

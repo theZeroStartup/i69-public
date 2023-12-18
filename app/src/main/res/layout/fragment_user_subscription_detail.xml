@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <ScrollView
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/container_color">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/settingsAppBar"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/toolbar_color">
+
+                    <ImageView
+                        android:id="@+id/toolbarHamburger"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="@string/app_name"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_cross_close"
+                        app:tint="@null" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/toolBarTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.2"
+                        android:text="@string/subscription"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <!-- BUY COINS -->
+
+<!--            <View-->
+<!--                android:id="@+id/shadow"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:alpha="0.48"-->
+<!--                android:background="@drawable/shadow" />-->
+
+
+            <LinearLayout
+                android:id="@+id/subScriptionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_element_height"
+                android:layout_marginBottom="14dp"
+                android:clickable="true"
+                android:layoutDirection='ltr'
+                android:focusable="true"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settingsAppBar">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart= "@dimen/settings_element_margin_start"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_coins" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvSubScription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/settings_element_text_margin_start"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif"
+                    android:gravity="start"
+                    android:text="@string/no_active_subscription"
+
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/subscription_divider"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="@dimen/settings_divider_element_margin_start"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subScriptionLayout"/>
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/buyCoinsContainer"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="@dimen/settings_buy_element_height"-->
+<!--                android:background="@drawable/background_main_theme_gradient"-->
+<!--                android:clickable="true"-->
+<!--                android:focusable="true"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/settingsAppBar">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginStart="@dimen/settings_buy_element_margin_start"-->
+<!--                    android:contentDescription="@string/app_name"-->
+<!--                    android:src="@drawable/icon_buy_chat_coins" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginStart="@dimen/settings_buy_element_text_margin_start"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:fontFamily="sans-serif"-->
+<!--                    android:gravity="start"-->
+<!--                    android:text="@string/settings_buy"-->
+<!--                    android:textAllCaps="true"-->
+<!--                    android:id="@+id/tv_buyCoinsContainer"-->
+<!--                    android:textColor="@color/settings_buy_text_color"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="24dp"-->
+<!--                    android:layout_height="24dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginEnd="@dimen/settings_element_margin_end"-->
+<!--                    android:contentDescription="@string/app_name"-->
+<!--                    android:src="@drawable/ic_keyboard_arrow_right"-->
+<!--                    app:tint="@color/settings_buy_next_tint_color" />-->
+
+<!--            </LinearLayout>-->
+
+
+
+
+
+            <!-- Logout container-->
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

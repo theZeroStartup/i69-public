@@ -1,0 +1,9 @@
+schema: schema.graphql
+extensions:
+  endpoints:
+    Default GraphQL Endpoint:
+      url: https://api.chatadmin-mod.click/
+      headers:
+        user-agent: JS GraphQL
+        Authorization: Token 3bd87fb0db0f83e0745f5e7ba402416f8ed500c8
+      introspect: false

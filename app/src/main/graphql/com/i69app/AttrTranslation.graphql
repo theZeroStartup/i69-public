@@ -1,0 +1,10 @@
+query AttrTranslation($attrNames: [String]!){
+
+      attrTranslation(attrNames: $attrNames){
+        name
+        nameTranslated
+
+
+    }
+
+}
