@@ -7,7 +7,6 @@
 
     <string name="search">Søg</string>
     <string name="search_drawer">SØG</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">Sprog</string>
     <string name="select_language">Vælg sprog</string>
 

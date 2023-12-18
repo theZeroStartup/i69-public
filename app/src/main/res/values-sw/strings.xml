@@ -7,7 +7,6 @@
 
     <string name="search">Tafuta</string>
     <string name="search_drawer">TAFUTA</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">Lugha</string>
     <string name="select_language">Chagua Lugha</string>
 

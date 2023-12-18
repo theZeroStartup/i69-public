@@ -7,7 +7,6 @@
 
     <string name="search">Vyhľadávanie</string>
     <string name="search_drawer">VYHĽADÁVANIE</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">Jazyk</string>
     <string name="select_language">Zvoľ jazyk</string>
 

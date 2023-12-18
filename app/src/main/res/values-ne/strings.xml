@@ -7,7 +7,6 @@
 
     <string name="search">खोज्नुहोस्</string>
     <string name="search_drawer">खोज्नुहोस्</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">भाषा</string>
     <string name="select_language">भाषा छनोट गर्नुस</string>
 

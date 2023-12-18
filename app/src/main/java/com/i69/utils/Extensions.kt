@@ -18,3 +18,11 @@ fun AppCompatActivity.toast(message:String){
 fun hasPermissions(context: Context, permissions: Array<String>): Boolean = permissions.all {
     ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
 }
+
+fun hasLocationPermission(context: Context, permissions: Array<String>): Boolean {
+    for (permission in permissions) {
+        if (ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
+            return true
+    }
+    return false
+}

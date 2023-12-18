@@ -7,7 +7,6 @@
 
     <string name="search">Ҷустуҷӯ</string>
     <string name="search_drawer">Ҷустуҷӯ</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">Забон</string>
     <string name="select_language">Забонро интихоб кунед</string>
 

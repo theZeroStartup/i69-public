@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.i69.BR
+import com.i69.BuildConfig
 import com.i69.R
 import com.i69.utils.getDecodedApiKey
 import javax.inject.Inject
@@ -91,10 +92,10 @@ class AppStringConstant @Inject constructor(context: Context) : BaseObservable()
         }
 
 //    @get:Bindable
-//    var google_maps_key: String = context.resources.getString(R.string.google_maps_key)
+//    var google_maps_key: String = context.resources.getString(BuildConfig.MAPS_API_KEY)
 //        set(firstName) {
 //            field = firstName
-//            notifyPropertyChanged(BR.google_maps_key)
+//            notifyPropertyChanged(BuildConfig.MAPS_API_KEY)
 //        }
 
     @get:Bindable

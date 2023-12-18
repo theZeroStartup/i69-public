@@ -128,12 +128,12 @@ abstract class BaseActivity<dataBinding : ViewDataBinding> : AppCompatActivity()
 
     protected fun showProgressView() {
         Log.e("TAG", "showProgressView: " )
-        loadingDialog.show()
+        runOnUiThread { loadingDialog.show() }
     }
 
     protected fun hideProgressView() {
         Log.e("TAG", "hideProgressView: " )
-        loadingDialog.dismiss()
+        runOnUiThread { loadingDialog.dismiss() }
     }
 
     suspend fun getCurrentUserName() = userPreferences.userName.first()

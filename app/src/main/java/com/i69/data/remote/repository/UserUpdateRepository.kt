@@ -407,7 +407,7 @@ class UserUpdateRepository @Inject constructor(
     }
 
     /// Update Location
-                                                            suspend fun updateLocation(
+    suspend fun updateLocation(
         userId: String,
         token: String,
         location: Array<Double>

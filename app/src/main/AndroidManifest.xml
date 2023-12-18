@@ -4,6 +4,9 @@
     package="com.i69">
 
     <uses-sdk tools:overrideLibrary="com.github.androitandroid" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
@@ -66,9 +69,10 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup"
+        tools:targetApi="m">
 
         <!-- android:extractNativeLibs="true" -->
         <!-- android:name=".ui.screens.SplashActivity" -->
@@ -212,7 +216,7 @@
             android:value="@string/facebook_client_token" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk"/>
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

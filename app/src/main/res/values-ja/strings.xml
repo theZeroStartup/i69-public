@@ -7,7 +7,6 @@
 
     <string name="search">検索</string>
     <string name="search_drawer">検索</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">言語</string>
     <string name="select_language">言語を選択する</string>
 

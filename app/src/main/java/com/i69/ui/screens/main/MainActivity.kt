@@ -138,35 +138,31 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     var width = 0
     var size = 0
 
-    private val permissionReqLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
-            run {
-                val granted = permission.entries.all {
-                    it.value == true
-                }
-                if (granted) {
-                    val locationService =
-                        LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                    locationService.lastLocation.addOnSuccessListener { location: Location? ->
-                        val lat: Double? = location?.latitude
-
-                        val lon: Double? = location?.longitude
+    public val permissionReqLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
+        showLoader()
+            if (hasLocationPermission(this, locPermissions)) {
+                val locationService =
+                    LocationServices.getFusedLocationProviderClient(this@MainActivity)
+                locationService.lastLocation.addOnSuccessListener { location: Location? ->
+                    val lat: Double? = location?.latitude
+                    val lon: Double? = location?.longitude
+                    hideProgressView()
 //                toast("lat = $lat lng = $lon")
-                        if (lat != null && lon != null) {
-                            // Update Location
-                            lifecycleScope.launch(Dispatchers.Main) {
-                                var res = mViewModel.updateLocation(
-                                    userId = userId!!,
-                                    location = arrayOf(lat, lon),
-                                    token = userToken!!
-                                )
-                                //Log.e("aaaaaaaaz",""+res.data!!.errorMessage)
-                                Log.e("aaaaaaaaz", "" + res.message)
-                            }
+                    if (lat != null && lon != null) {
+                        // Update Location
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            var res = mViewModel.updateLocation(
+                                userId = userId!!,
+                                location = arrayOf(lat, lon),
+                                token = userToken!!
+                            )
+                            //Log.e("aaaaaaaaz",""+res.data!!.errorMessage)
+                            Log.e("aaaaaaaaz", "" + res.message)
                         }
                     }
-                }
+                }.addOnFailureListener { hideProgressView() }
             }
+            else hideProgressView()
         }
 
     override fun getActivityBinding(inflater: LayoutInflater) =
@@ -1562,7 +1558,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             }
         })*/
-        if (hasPermissions(applicationContext, locPermissions)) {
+        if (hasLocationPermission(applicationContext, locPermissions)) {
             val locationService = LocationServices.getFusedLocationProviderClient(this@MainActivity)
             locationService.lastLocation.addOnSuccessListener { location: Location? ->
                 val lat: Double? = location?.latitude

@@ -7,7 +7,6 @@
 
     <string name="search">تلاش کریں۔</string>
     <string name="search_drawer">تلاش کریں۔</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBcRX4ReMFKaydkJ5V1gxkpOuROdKSVHLw</string>
     <string name="language_label">زبان</string>
     <string name="select_language">زبان منتخب کریں۔</string>
 

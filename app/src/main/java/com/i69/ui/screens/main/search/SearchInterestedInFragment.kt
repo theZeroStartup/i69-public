@@ -28,6 +28,7 @@ import com.i69.ui.adapters.SearchInterestedServerAdapter
 import com.i69.ui.base.search.BaseSearchFragment
 import com.i69.ui.interfaces.CallInterestedIn
 import com.i69.ui.screens.SplashActivity
+import com.i69.ui.screens.main.MainActivity
 import com.i69.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,23 +54,6 @@ class SearchInterestedInFragment : BaseSearchFragment(), CallInterestedIn {
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    private val permissionReqLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permission ->
-            run {
-                val granted = permission.entries.all {
-                    it.value == true
-                }
-                if (granted) {
-                    if (isLocationEnabled()){
-                        showProgressView()
-                        shareLocation()
-                    }else{
-                        enableLocation()
-                    }
-                }
-            }
-        }
-
     override fun setupChiledTheme() {
         Log.e("callInterestedInAPi", "callInterestedInAPi")
         showProgressView()
@@ -80,6 +64,7 @@ class SearchInterestedInFragment : BaseSearchFragment(), CallInterestedIn {
 
         adapter.setItems(viewModel.listItemsFromViewModel)
         adapter.notifyDataSetChanged()
+        hideProgressView()
         callInterestedInAPi()
         updateLocation()
         subscribeForUserUpdate()
@@ -266,37 +251,20 @@ class SearchInterestedInFragment : BaseSearchFragment(), CallInterestedIn {
 
 
     private fun updateLocation() {
-        /*Permissions.check(this, Manifest.permission.ACCESS_FINE_LOCATION, null, object : PermissionHandler() {
-            override fun onGranted() {
-                val locationService = LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                locationService.lastLocation.addOnSuccessListener { location: Location? ->
-                    val lat: Double? = location?.latitude
-                    val lon: Double? = location?.longitude
-                    toast("lat = $lat lng = $lon")
-                    if (lat != null && lon != null) {
-                        // Update Location
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            mViewModel.updateLocation(userId = userId!!, location = arrayOf(lat, lon), token = userToken!!)
-                        }
-                    }
-                }
-            }
-        })*/
-        if (hasPermissions(requireContext(), locPermissions)) {
-
+        if (hasLocationPermission(requireContext(), locPermissions)) {
+            showProgressView()
             if (isLocationEnabled()){
                 shareLocation()
             }else{
                 enableLocation()
             }
-
-
         } else {
-            permissionReqLauncher.launch(locPermissions)
+            (requireActivity() as MainActivity).permissionReqLauncher.launch(locPermissions)
+//            locationPermissionResponse.launch(locPermissions)
         }
     }
 
-    fun shareLocation(){
+    private fun shareLocation(){
         val locationService = LocationServices.getFusedLocationProviderClient(requireContext())
         locationService.lastLocation.addOnSuccessListener { location: Location? ->
             hideProgressView()
@@ -332,8 +300,10 @@ class SearchInterestedInFragment : BaseSearchFragment(), CallInterestedIn {
             }else{
                 shareLocation()
             }
-        } .addOnFailureListener {
+        }.addOnFailureListener {
             shareLocation()
+            //hideProgressView()
+            Log.d("ProgressError", "Location fetch failed")
         }
     }
 

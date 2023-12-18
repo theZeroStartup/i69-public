@@ -3,6 +3,7 @@ package com.i69.applocalization
 import android.content.Context
 import android.util.Log
 import com.i69.AttrTranslationQuery
+import com.i69.BuildConfig
 import com.i69.R
 import com.i69.billing.Security
 import com.i69.utils.Utils
@@ -516,9 +517,9 @@ fun getLoalizations(
                         appStringConst.search_drawer = nameTranslated
                     }
                 }
-//                if (name.equals(getDecodedApiKey(LocalStringConstants.google_maps_key))) {
+//                if (name.equals(getDecodedApiKey(BuildConfig.MAPS_API_KEY))) {
 //                    if (nameTranslated.isNullOrEmpty()) {
-//                        appStringConst.google_maps_key = context.getString(R.string.google_maps_key)
+//                        BuildConfig.MAPS_API_KEY = context.getString(R.string.google_maps_key)
 //                    } else {
 //                        appStringConst.google_maps_key = nameTranslated
 //                    }
@@ -7230,7 +7231,7 @@ fun getLoalizationsStringList(): ArrayList<String> {
     list.add(LocalStringConstants.sign_in_app_description)
     list.add(LocalStringConstants.search)
     list.add(LocalStringConstants.search_drawer)
-//    list.add(getDecodedApiKey(LocalStringConstants.google_maps_key))
+    list.add(getDecodedApiKey(BuildConfig.MAPS_API_KEY))
     list.add(LocalStringConstants.language_label)
     list.add(LocalStringConstants.select_language)
     list.add(LocalStringConstants.profile_complete_title)

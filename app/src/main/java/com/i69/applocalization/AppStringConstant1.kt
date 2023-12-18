@@ -9,8 +9,6 @@ class AppStringConstant1 {
 
         var search = "Search"
         var search_drawer = "SEARCH"
-//        var google_maps_key = "AIzaSyBcRX4ReMFKaydkJ5V1gxkpOuROdKSVHLw"
-//        var google_maps_key = "UVVsNllWTjVRbU5TV0RSU1pVMUdTMkY1Wkd0S05WWXhaM2hyY0U5MVVrOWtTMU5XU0V4Mwo="
         var language_label = "Language"
         var select_language = "Select Language"
 

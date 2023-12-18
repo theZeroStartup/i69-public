@@ -6,8 +6,6 @@ object LocalStringConstants {
 
     const val search = "Search"
     const val search_drawer = "SEARCH"
-//    const val google_maps_key = "AIzaSyBcRX4ReMFKaydkJ5V1gxkpOuROdKSVHLw"
-//    const val google_maps_key = "UVVsNllWTjVRbU5TV0RSU1pVMUdTMkY1Wkd0S05WWXhaM2hyY0U5MVVrOWtTMU5XU0V4Mwo="
     const val language_label = "Language"
     const val select_language = "Select Language"
 

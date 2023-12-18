@@ -7,7 +7,6 @@
 
     <string name="search">অনুসন্ধান করুন</string>
     <string name="search_drawer">অনুসন্ধান করুন</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk</string>
     <string name="language_label">ভাষা</string>
     <string name="select_language">ভাষা নির্বাচন কর</string>
 
