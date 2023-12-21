@@ -83,7 +83,7 @@ abstract class BaseEditProfileFragment : BaseFragment<FragmentEditProfileBinding
                 if (result != null) {
                     //   photosAdapter.addItem(result)
                     photosnewAdapter.addItem(PhotosData(result, imageType))
-                    avtarindex = avtarindex + 1
+                    avtarindex += 1
                 }
             }
         }

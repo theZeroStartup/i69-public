@@ -31,9 +31,8 @@ class UsersSearchListAdapter(
     private var userhashPermission: MyPermission = MyPermission(false)
 
     private fun getViewHolderByType(type: Int, viewBinding: ViewDataBinding) =
-        if (type == TYPE_DEFAULT) SearchedUserHolder(viewBinding as ListItemSearchedUserBinding) else UnlockHolder(
-            viewBinding as ListItemUnlockFeatureBinding
-        )
+        if (type == TYPE_DEFAULT) SearchedUserHolder(viewBinding as ListItemSearchedUserBinding)
+        else UnlockHolder(viewBinding as ListItemUnlockFeatureBinding)
 
     private fun getViewDataBinding(viewType: Int, parent: ViewGroup) = if (viewType == TYPE_DEFAULT)
         ListItemSearchedUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -59,6 +58,24 @@ class UsersSearchListAdapter(
             val item = items[position]
             holder.bind(item)
 
+            if (item.avatarPhotos != null) {
+                if (item.avatarPhotos!!.size != 0) {
+
+                    if (item.avatarIndex!! <= item.avatarPhotos!!.size - 1) {
+                        val imageUrl = item.avatarPhotos!!.get(item.avatarIndex!!).url?.replace(
+                            "http://95.216.208.1:8000/media/",
+                            "${BuildConfig.BASE_URL}media/"
+                        )
+                        Log.e("userprofile","${item.fullName} --> $imageUrl")
+                        if (imageUrl != null) {
+                            holder.viewBinding.photoCover.loadCircleImage(
+                                imageUrl
+                            )
+                        }
+                    }
+                }
+            }
+
             holder.viewBinding.root.setOnClickListener {
                 holder.viewBinding.photoCover.transitionName = "profilePhoto"
                 listener.onItemClick(holder.bindingAdapterPosition, item)
@@ -78,6 +95,10 @@ class UsersSearchListAdapter(
         this@UsersSearchListAdapter.items.addAll(updated)
         Log.e("updatadataList1", "${items.size}")
         this@UsersSearchListAdapter.notifyDataSetChanged()
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
     inner class UnlockHolder(val viewBinding: ListItemUnlockFeatureBinding) :
@@ -111,24 +132,6 @@ class UsersSearchListAdapter(
             } else {
                 viewBinding.userSubTitle.text = subTitle
                 viewBinding.userSubTitle.visibility = View.VISIBLE
-            }
-            if (user.avatarPhotos != null) {
-                if (user.avatarPhotos!!.size != 0) {
-
-                    if (user.avatarIndex!! <= user.avatarPhotos!!.size - 1) {
-                        val imageUrl = user.avatarPhotos!!.get(user.avatarIndex!!).url?.replace(
-                            "http://95.216.208.1:8000/media/",
-                            "${BuildConfig.BASE_URL}media/"
-                        )
-                        Log.e("userprofile","${user.fullName} --> $imageUrl")
-                        if (imageUrl != null) {
-                            viewBinding.photoCover.loadCircleImage(
-                                imageUrl
-                            )
-                        }
-                    }
-                }
-
             }
         }
     }

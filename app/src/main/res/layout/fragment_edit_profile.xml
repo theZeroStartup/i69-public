@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="user"
             type="com.i69.data.models.User" />
@@ -18,8 +17,6 @@
         <variable
             name="stringConstant"
             type="com.i69.applocalization.AppStringConstant" />
-
-
     </data>
 
 

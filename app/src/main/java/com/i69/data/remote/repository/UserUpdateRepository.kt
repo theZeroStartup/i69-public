@@ -241,6 +241,7 @@ class UserUpdateRepository @Inject constructor(
                 .addHeader("Authorization", "Token $token")
                 .url(serverURL).post(requestBody3).build()
 
+            Log.e("ecdvv",request.toString() +" "+ requestBody)
 
             val response: Response = client.newCall(request).execute()
 

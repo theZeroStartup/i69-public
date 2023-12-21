@@ -1648,7 +1648,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
                             //TODO: navigate to package/subscription screen
-                             findNavController().navigate(R.id.action_global_plan)
                         })
                 }else{
                     binding.root.snackbarOnTop(
@@ -2488,7 +2487,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
                             //TODO: navigate to package/subscription screen
-                            findNavController().navigate(R.id.action_global_plan)
                         })
                 } else {
                     binding.root.snackbar("New Moment Shared")

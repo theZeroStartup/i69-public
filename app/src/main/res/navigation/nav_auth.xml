@@ -16,6 +16,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_login_fragment_to_contactFragment"
+            app:destination="@id/contactFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -109,5 +116,11 @@
         android:id="@+id/welcome_fragment"
         android:name="com.i69.ui.screens.auth.profile.WelcomeFragment"
         tools:layout="@layout/fragment_welcome" />
+
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="com.i69.ui.screens.main.contact.ContactUsWithoutAuthFragment"
+        android:label="ContactUsFragment"
+        tools:layout="@layout/fragment_privacy"/>
 
 </navigation>

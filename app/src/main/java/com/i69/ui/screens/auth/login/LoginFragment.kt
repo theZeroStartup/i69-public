@@ -76,7 +76,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     "LoginFragment", "Message : : ${e.localizedMessage}"
                 )
                 if (e.statusCode != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                    binding.root.snackbar("${getString(R.string.sign_in_failed)} ${e.message}")
+                    binding.root.snackbar("${getString(R.string.sign_in_failed)} ${e.message}") {
+                        if (e.message.toString().contains("contact us", true)){
+                            moveTo(LoginFragmentDirections.actionLoginFragmentToContactFragment())
+                        }
+                    }
                 }
             }
         }
@@ -349,7 +353,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         "${getString(R.string.sign_in_failed)} ${response.message}"
                     )
                     Timber.e("${getString(R.string.sign_in_failed)} ${response.message}")
-                    binding.root.snackbar("${getString(R.string.sign_in_failed)} ${response.message}")
+                    binding.root.snackbar("${getString(R.string.sign_in_failed)} ${response.message}") {
+                        if (response.message.toString().contains("contact us", true)){
+                            moveTo(LoginFragmentDirections.actionLoginFragmentToContactFragment())
+                        }
+                    }
                 }
                 else -> {
 
