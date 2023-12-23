@@ -418,15 +418,18 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                     if (data.user != null) {
                         if (data.user!!.avatarPhotos != null) {
 
-                            if (data.user?.avatarPhotos!!.size != 0) {
-                                binding.userProfileImg.loadCircleImage(
-                                    data.user!!.avatarPhotos?.get(
-                                        data.user?.avatarIndex!!
-                                    )?.url?.replace(
-                                        "${BuildConfig.BASE_URL_REP}media/",
-                                        "${BuildConfig.BASE_URL}media/"
-                                    ).toString()
-                                )
+                            if (data.user?.avatarPhotos!!.size != null && data.user?.avatarPhotos!!.size != 0
+                                && data.user?.avatarIndex != null) {
+                                if (data.user!!.avatarPhotos?.size!! > data.user?.avatarIndex!!) {
+                                    binding.userProfileImg.loadCircleImage(
+                                        data.user!!.avatarPhotos?.get(
+                                            data.user?.avatarIndex!!
+                                        )?.url?.replace(
+                                            "${BuildConfig.BASE_URL_REP}media/",
+                                            "${BuildConfig.BASE_URL}media/"
+                                        ).toString()
+                                    )
+                                }
                             }
                         }
                         try {

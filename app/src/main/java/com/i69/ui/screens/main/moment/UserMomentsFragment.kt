@@ -2063,8 +2063,8 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
 
     private fun getParticularMoments(pos: Int, ids: String) {
-
         Log.e("callPerticulareMoments", "callPerticulareMoments")
+
         lifecycleScope.launchWhenResumed {
             val res = try {
                 apolloClient(requireContext(), userToken!!).query(
@@ -2075,8 +2075,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         "",
                         ids
                     )
-                )
-                    .execute()
+                ).execute()
             } catch (e: ApolloException) {
                 Timber.d("apolloResponseException all moments ${e.message}")
                 binding.root.snackbar(" ${e.message}")

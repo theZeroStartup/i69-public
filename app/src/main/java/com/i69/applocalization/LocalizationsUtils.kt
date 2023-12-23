@@ -7223,15 +7223,13 @@ fun updateLoalizationsConstString(
 
 
 fun getLoalizationsStringList(): ArrayList<String> {
-
-
     val list = ArrayList<String>()
     list.add(LocalStringConstants.about)
     list.add(LocalStringConstants.sign_in_app_name)
     list.add(LocalStringConstants.sign_in_app_description)
     list.add(LocalStringConstants.search)
     list.add(LocalStringConstants.search_drawer)
-    list.add(getDecodedApiKey(BuildConfig.MAPS_API_KEY))
+//    list.add(getDecodedApiKey(BuildConfig.MAPS_API_KEY))
     list.add(LocalStringConstants.language_label)
     list.add(LocalStringConstants.select_language)
     list.add(LocalStringConstants.profile_complete_title)

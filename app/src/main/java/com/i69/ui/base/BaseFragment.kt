@@ -2,6 +2,7 @@ package com.i69.ui.base
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.*
@@ -78,12 +79,16 @@ abstract class BaseFragment<dataBinding : ViewDataBinding> : Fragment() {
     //this method is used to get the fragment layout file
 //    abstract fun getFragmentView(): Int
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        userPreferences = App.userPreferences
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        userPreferences = App.userPreferences
         setStatusBarColor(getStatusBarColor())
         binding = getFragmentBinding(inflater, container)
         val contentView = binding.root

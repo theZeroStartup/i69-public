@@ -64,6 +64,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             binding.stringConstant = it.value
     //            Log.e("MydataBasesss", it.value!!.messages)
         }
+
         lifecycleScope.launch {
             userToken = getCurrentUserToken()!!
             userId = getCurrentUserId()!!
@@ -74,38 +75,26 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             Log.e("hasSkipgetted", "$hasSkip")
             Timber.i("usertokenn $userToken")
         }
-        Timber.i("usertokenn 2 $userToken")
-//        if(requireArguments().containsKey("hasSkip")) {
-//            hasSkip = requireArguments().getBoolean("hasSkip", false)
-//        }
 
         initSearch()
-//        mViewModel.setSearchUserQuery(binding.keyInput.text.toString())
+
         setupViewPagerData()
-//        if (mViewModel.getRandomUsers().size > 0) {
 
-//            setupViewPagerData()
-
-//        } else {
-
-        callSearchResultQuery()
-//        }
-
-//        if (mViewModel.getPopularUsers().size == 0) {
+        callSearchRandomPeopleQuery()
         callSearchPopularUserQuery()
-//        }
-
-//        if (mViewModel.getMostActiveUsers().size == 0) {
         callSearchMostActiveUserQuery()
-//        }
 
-
-        mViewModel.getupdateSearchResultWithCoin()?.observe(viewLifecycleOwner, {
+        mViewModel.getupdateSearchResultWithCoin()?.observe(viewLifecycleOwner) {
             Log.e("getUpdateListQuery", "getUpdateListQuery")
             callSearchPopularUserQuery()
             callSearchMostActiveUserQuery()
+        }
+    }
 
-        })
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        Log.d("onAttach", "onAttach: ")
     }
 
     fun setupViewPagerData() {
@@ -165,7 +154,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
     }
 
 
-    fun callSearchResultQuery() {
+    fun callSearchRandomPeopleQuery() {
 
         val interestedIn = requireArguments().getInt("interestedIn")
         val searchKey = requireArguments().getString("searchKey")
@@ -414,16 +403,20 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             binding.title.visibility = View.VISIBLE
             binding.keyInput.text.clear()
             binding.keyInput.hideKeyboard()
-//            mViewModel.setSearchUserQuery(binding.keyInput.text.toString())
-            callSearchResultQuery()
+            mViewModel.setSearchUserQuery("")
+            callSearchRandomPeopleQuery()
             callSearchPopularUserQuery()
             callSearchMostActiveUserQuery()
-
-
         }
-
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+        Log.d("PSRF", "onDetach: ")
+        binding.keyInput.text.clear()
+        mViewModel.setSearchUserQuery("")
+    }
 
     private fun getNotificationIndex() {
 

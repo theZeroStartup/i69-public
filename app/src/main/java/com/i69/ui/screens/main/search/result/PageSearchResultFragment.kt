@@ -4,6 +4,7 @@ package com.i69.ui.screens.main.search.result
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -60,6 +61,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
     private lateinit var usersAdapter: UsersSearchListAdapter
     private lateinit var usersLockAdapter: LockUsersSearchListAdapter
 
+    private var mHandler: Handler? = null
 
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPageSearchResultBinding.inflate(inflater, container, false).apply {
@@ -68,6 +70,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
 
 
     override fun setupTheme() {
+        mHandler = Handler(Looper.getMainLooper())
 
         viewStringConstModel.data.observe(this@PageSearchResultFragment) { data ->
 
@@ -100,10 +103,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
         }
 
 
-        setupUserSearchAdapter()
         initSearch()
-
-
     }
 
     override fun onResume() {
@@ -205,85 +205,84 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
     }
 
     private fun setupUserSearchAdapter() {
-
         lifecycleScope.launch {
-            val userToken = getCurrentUserToken()!!
+            if (mViewModel.getSearchUserQuery() == null ||
+                mViewModel.getSearchUserQuery()?.value == null ||
+                mViewModel.getSearchUserQuery()?.value.toString().isEmpty()) {
 
-            mViewModel.getDefaultPickers(userToken).observe(viewLifecycleOwner, { pickers ->
-                pickers?.let { picker ->
+                val userToken = getCurrentUserToken()!!
 
+                mViewModel.getDefaultPickers(userToken).observe(viewLifecycleOwner) { pickers ->
+                    pickers?.let { picker ->
 
-                    initAdapterData(pickers)
-
-
-                    val users: ArrayList<User> = when (mPage) {
-                        0 -> mViewModel.getRandomUsers()
-
-                        1 -> mViewModel.getPopularUsers()
-
-                        else -> mViewModel.getMostActiveUsers()
-
-                    }
+//                    Log.d("BackBtnBug", "setupUserSearchAdapter: $picker")
+                        initAdapterData(pickers)
 
 
-                    val myPermission: MyPermission = when (mPage) {
-                        0 -> mViewModel.getMyPermission()
+                        val users: ArrayList<User> = when (mPage) {
+                            0 -> mViewModel.getRandomUsers()
 
-                        1 -> mViewModel.getPopularUserMyPermission()
+                            1 -> mViewModel.getPopularUsers()
 
-                        else -> mViewModel.getMostActiveUserMyPermission()
+                            else -> mViewModel.getMostActiveUsers()
 
-                    }
-
-
-                    val unLockUsers: ArrayList<User> = ArrayList()
-                    val lockUsers: ArrayList<User> = ArrayList()
-                    if (myPermission.hasPermission) {
-                        unLockUsers.addAll(users)
-                        binding.usersLockRecyclerView.setViewGone()
-                        binding.unlockLayout.setViewGone()
-                    } else {
-                        users.indices.forEach { i ->
-                            if (i < myPermission.freeUserLimit) {
-                                unLockUsers.add(users.get(i))
-                            } else {
-                                lockUsers.add(users.get(i))
-                            }
                         }
 
-                        binding.usersLockRecyclerView.setViewVisible()
-                        binding.unlockLayout.setViewVisible()
-                        binding.usersRecyclerView.setViewVisible()
-                    }
-                    Log.e("UpdateUserList", "${lockUsers.size}")
-                    Log.e("UpdateUserList1", "${unLockUsers.size}")
-                    Log.e("UpdateUserList2", "${users.size}")
-                    if (users.isNullOrEmpty()) {
-                        binding.noUsersLabel.setViewVisible()
-                        binding.usersLockRecyclerView.setViewGone()
-                        binding.unlockLayout.setViewGone()
-                        binding.usersRecyclerView.setViewGone()
 
-                    } else {
-                        binding.noUsersLabel.setViewGone()
+                        val myPermission: MyPermission = when (mPage) {
+                            0 -> mViewModel.getMyPermission()
 
-                        /* usersLockAdapter.updateItems(lockUsers, myPermission)
-                         usersAdapter.updateItems(unLockUsers, myPermission)*/
-                        activity!!.runOnUiThread {
-                            usersLockAdapter.updateItems(lockUsers, myPermission)
-                            userItems.clear()
-                            userItems.addAll(unLockUsers)
-                            usersAdapter.notifyDataSetChanged()
-                            binding.usersRecyclerView.setViewVisible()
+                            1 -> mViewModel.getPopularUserMyPermission()
+
+                            else -> mViewModel.getMostActiveUserMyPermission()
+
+                        }
+
+
+                        val unLockUsers: ArrayList<User> = ArrayList()
+                        val lockUsers: ArrayList<User> = ArrayList()
+                        if (myPermission.hasPermission) {
+                            unLockUsers.addAll(users)
+                            binding.usersLockRecyclerView.setViewGone()
+                            binding.unlockLayout.setViewGone()
+                        } else {
+                            users.indices.forEach { i ->
+                                if (i < myPermission.freeUserLimit) {
+                                    unLockUsers.add(users.get(i))
+                                } else {
+                                    lockUsers.add(users.get(i))
+                                }
+                            }
+
                             binding.usersLockRecyclerView.setViewVisible()
                             binding.unlockLayout.setViewVisible()
-
+                            binding.usersRecyclerView.setViewVisible()
                         }
+                        Log.e("UpdateUserList", "${lockUsers.size}")
+                        Log.e("UpdateUserList1", "${unLockUsers.size}")
+                        Log.e("UpdateUserList2", "${users.size}")
+                        if (users.isNullOrEmpty()) {
+                            binding.noUsersLabel.setViewVisible()
+                            binding.usersLockRecyclerView.setViewGone()
+                            binding.unlockLayout.setViewGone()
+                            binding.usersRecyclerView.setViewGone()
 
-//                        usersAdapter.updateItems(users, mViewModel.getMyPermission())
+                        } else {
+                            mHandler?.post {
+                                binding.noUsersLabel.setViewGone()
+                                Log.d("PSRF", "setupUserSearchAdapter: ")
+                                usersLockAdapter.updateItems(lockUsers, myPermission)
+                                userItems.clear()
+                                userItems.addAll(unLockUsers)
+                                usersAdapter.notifyDataSetChanged()
+                                binding.usersRecyclerView.setViewVisible()
+                                binding.usersLockRecyclerView.setViewVisible()
+                                binding.unlockLayout.setViewVisible()
+                            }
+                        }
                     }
                 }
-            })
+            }
         }
     }
 
@@ -333,7 +332,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
     }
 
     private fun initSearch() {
-        mViewModel.getUpdateUserListQuery()?.observe(viewLifecycleOwner, {
+        mViewModel.getUpdateUserListQuery()?.observe(viewLifecycleOwner) {
             Log.e("getUpdateListQuery", "getUpdateListQuery")
             Log.e(
                 "getUpdateListQuery", "" +
@@ -343,7 +342,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
 //            if (mViewModel.getRandomUsers().size != 0) {
             setupUserSearchAdapter()
 //            }
-        })
+        }
 
 
         lifecycleScope.launch {
@@ -353,317 +352,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
             Timber.i("usertokenn $userToken")
         }
 
-        mViewModel.getFilteredSearchUserQuery()?.observe(viewLifecycleOwner, {
-            Log.e("myTextgotOtherScreen", it.toString())
-            val filteredUsers = when (mPage) {
-                0 -> {
-                    val searchKey: String = it.toString()
-                    if (searchKey.length == 0) {
-                        binding.keyInput.hideKeyboard()
-                        Log.e("iff", "iff")
-
-//                            if(usersAdapter.isInitialized)
-                        if (checkIsInitalize()) {
-
-                            val unLockUsers: ArrayList<User> = ArrayList()
-                            val lockUsers: ArrayList<User> = ArrayList()
-                            if (mViewModel.getMyPermission().hasPermission) {
-                                unLockUsers.addAll(mViewModel.getRandomUsers())
-                                binding.usersLockRecyclerView.setViewGone()
-                                binding.unlockLayout.setViewGone()
-                            } else {
-                                mViewModel.getRandomUsers().indices.forEach { i ->
-//                                    if (i <= 2) {
-                                    if (i < mViewModel.getMyPermission().freeUserLimit) {
-                                        unLockUsers.add(mViewModel.getRandomUsers().get(i))
-                                    } else {
-                                        lockUsers.add(mViewModel.getRandomUsers().get(i))
-                                    }
-                                }
-
-                                binding.usersLockRecyclerView.setViewVisible()
-                                binding.unlockLayout.setViewVisible()
-                            }
-
-                            /*usersLockAdapter.updateItems(lockUsers, mViewModel.getMyPermission())
-                            usersAdapter.updateItems(unLockUsers, mViewModel.getMyPermission())*/
-
-                            activity!!.runOnUiThread {
-                                usersLockAdapter.updateItems(
-                                    lockUsers,
-                                    mViewModel.getMyPermission()
-                                )
-                                userItems.clear()
-                                userItems.addAll(unLockUsers)
-                                usersAdapter.notifyDataSetChanged()
-                                binding.usersRecyclerView.setViewVisible()
-                                binding.usersLockRecyclerView.setViewVisible()
-                                binding.unlockLayout.setViewVisible()
-
-                            }
-
-
-//                                usersAdapter.updateItems(
-//                                    mViewModel.getRandomUsers(),
-//                                    mViewModel.getMyPermission()
-//                                )
-                        } else {
-                            Log.e("PageSearch_keyInput", "not Initialized")
-                        }
-
-                        if (mViewModel.getRandomUsers().isNullOrEmpty()) {
-                            binding.noUsersLabel.setViewVisible()
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                            binding.usersRecyclerView.setViewGone()
-
-
-                        } else {
-                            binding.noUsersLabel.setViewGone()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                            binding.usersRecyclerView.setViewVisible()
-
-                        }
-
-
-                    } else {
-
-                        /*      lifecycleScope.launch {
-                                  userToken = getCurrentUserToken()!!
-                                  userId = getCurrentUserId()!!
-
-                                  Timber.i("usertokenn $userToken")
-                              }
-
-                              val searchRequest = SearchRequestNew(
-
-                                  name = searchKey
-
-                              )
-
-                              Log.e("search params", Gson().toJson(searchRequest))
-                              mViewModel.getSearchUsersTemp(
-                                  _searchRequest = searchRequest,
-                                  token = userToken!!
-                              ) { error ->
-                                  if (error == null) {
-                                      hideProgressView()
-                                      usersAdapter.updateItems(mViewModel.getRandomUsersSearched())
-                                    //  navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
-                                  } else {
-                                      hideProgressView()
-                                      //binding.root.snackbar(error)
-                                  }
-                              }*/
-                    }
-
-                }
-
-                1 -> {
-                    // filterUsers(s.toString(), mViewModel.getPopularUsers())
-                    val searchKey: String = it.toString()
-                    if (searchKey.length == 0) {
-
-
-                        val unLockUsers: ArrayList<User> = ArrayList()
-                        val lockUsers: ArrayList<User> = ArrayList()
-                        if (mViewModel.getPopularUserMyPermission().hasPermission) {
-                            unLockUsers.addAll(mViewModel.getPopularUsers())
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                        } else {
-                            mViewModel.getPopularUsers().indices.forEach { i ->
-//                                if (i <= 2) {
-                                if (i < mViewModel.getPopularUserMyPermission().freeUserLimit) {
-                                    unLockUsers.add(mViewModel.getPopularUsers().get(i))
-                                } else {
-                                    lockUsers.add(mViewModel.getPopularUsers().get(i))
-                                }
-                            }
-
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                        }
-
-                        /*usersLockAdapter.updateItems(
-                            lockUsers,
-                            mViewModel.getPopularUserMyPermission()
-                        )
-                        usersAdapter.updateItems(
-                            unLockUsers,
-                            mViewModel.getPopularUserMyPermission()
-                        )*/
-                        activity!!.runOnUiThread {
-                            usersLockAdapter.updateItems(
-                                lockUsers,
-                                mViewModel.getPopularUserMyPermission()
-                            )
-                            userItems.clear()
-                            userItems.addAll(unLockUsers)
-                            usersAdapter.notifyDataSetChanged()
-                            binding.usersRecyclerView.setViewVisible()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-
-                        }
-
-
-                        if (mViewModel.getPopularUsers().isNullOrEmpty()) {
-                            binding.noUsersLabel.setViewVisible()
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                            binding.usersRecyclerView.setViewVisible()
-
-                        } else {
-                            binding.noUsersLabel.setViewGone()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                            binding.usersRecyclerView.setViewVisible()
-
-                        }
-//                            usersAdapter.updateItems(
-//                                mViewModel.getPopularUsers(),
-//                                mViewModel.getMyPermission()
-//                            )
-                    } else {
-
-                        /*     lifecycleScope.launch {
-                                 userToken = getCurrentUserToken()!!
-                                 userId = getCurrentUserId()!!
-
-                                 Timber.i("usertokenn $userToken")
-                             }
-
-                             val searchRequest = SearchRequestNew(
-
-                                 name = searchKey
-
-                             )
-
-                             Log.e("search params", Gson().toJson(searchRequest))
-                             mViewModel.getSearchUsersTemp(
-                                 _searchRequest = searchRequest,
-                                 token = userToken!!
-                             ) { error ->
-                                 if (error == null) {
-                                     hideProgressView()
-                                     usersAdapter.updateItems(mViewModel.getRandomUsersSearched())
-                                     //  navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
-                                 } else {
-                                     hideProgressView()
-                                   //  binding.root.snackbar(error)
-                                 }
-                             }*/
-                    }
-                }
-
-                2 -> {
-
-                    //  filterUsers(s.toString(), mViewModel.getMostActiveUsers())
-                    val searchKey: String = it.toString()
-                    if (searchKey.length == 0) {
-
-
-                        val unLockUsers: ArrayList<User> = ArrayList()
-                        val lockUsers: ArrayList<User> = ArrayList()
-                        if (mViewModel.getMostActiveUserMyPermission().hasPermission) {
-                            unLockUsers.addAll(mViewModel.getMostActiveUsers())
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                        } else {
-                            mViewModel.getMostActiveUsers().indices.forEach { i ->
-//                                if (i <= 2) {
-                                if (i < mViewModel.getMostActiveUserMyPermission().freeUserLimit) {
-                                    unLockUsers.add(mViewModel.getMostActiveUsers().get(i))
-                                } else {
-                                    lockUsers.add(mViewModel.getMostActiveUsers().get(i))
-                                }
-                            }
-
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                        }
-
-                        /*usersLockAdapter.updateItems(
-                            lockUsers,
-                            mViewModel.getMostActiveUserMyPermission()
-                        )
-                        usersAdapter.updateItems(
-                            unLockUsers,
-                            mViewModel.getMostActiveUserMyPermission()
-                        )*/
-
-                        activity!!.runOnUiThread {
-                            usersLockAdapter.updateItems(lockUsers, mViewModel.getMyPermission())
-                            userItems.clear()
-                            userItems.addAll(unLockUsers)
-                            usersAdapter.notifyDataSetChanged()
-                            binding.usersRecyclerView.setViewVisible()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-
-                        }
-
-//                            usersAdapter.updateItems(
-//                                mViewModel.getMostActiveUsers(),
-//                                mViewModel.getMyPermission()
-//                            )
-
-                        if (mViewModel.getMostActiveUsers().isNullOrEmpty()) {
-                            binding.noUsersLabel.setViewVisible()
-
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                            binding.usersRecyclerView.setViewGone()
-                        } else {
-                            binding.noUsersLabel.setViewGone()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                            binding.usersRecyclerView.setViewVisible()
-
-
-                        }
-
-                    } else {
-
-                        /*       lifecycleScope.launch {
-                                   userToken = getCurrentUserToken()!!
-                                   userId = getCurrentUserId()!!
-
-                                   Timber.i("usertokenn $userToken")
-                               }
-
-                               val searchRequest = SearchRequestNew(
-
-                                   name = searchKey
-
-                               )
-
-                               Log.e("search params", Gson().toJson(searchRequest))
-                               mViewModel.getSearchUsersTemp(
-                                   _searchRequest = searchRequest,
-                                   token = userToken!!
-                               ) { error ->
-                                   if (error == null) {
-                                       hideProgressView()
-                                       usersAdapter.updateItems(mViewModel.getRandomUsersSearched())
-                                       //  navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
-                                   } else {
-                                       hideProgressView()
-                                      // binding.root.snackbar(error)
-                                   }
-                               }*/
-                    }
-                }
-
-                else -> mViewModel.getRandomUsers()
-            }
-
-
-        })
-
-        mViewModel.getSearchUserQuery()?.observe(viewLifecycleOwner, Observer {
+        mViewModel.getSearchUserQuery()?.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 userToken = getCurrentUserToken()!!
                 userId = getCurrentUserId()!!
@@ -685,7 +374,6 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
                 ) { error ->
                     if (error == null) {
                         hideProgressView()
-
 
                         val unLockUsers: ArrayList<User> = ArrayList()
                         val lockUsers: ArrayList<User> = ArrayList()
@@ -710,7 +398,8 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
                         /* usersLockAdapter.updateItems(lockUsers, mViewModel.getMyPermission())
                          usersAdapter.updateItems(unLockUsers, mViewModel.getMyPermission())*/
 
-                        activity!!.runOnUiThread {
+                        mHandler?.post {
+                            Log.d("PSRF", "manual search results: ")
                             usersLockAdapter.updateItems(lockUsers, mViewModel.getMyPermission())
                             userItems.clear()
                             userItems.addAll(unLockUsers)
@@ -719,36 +408,27 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
                             binding.usersLockRecyclerView.setViewVisible()
                             binding.unlockLayout.setViewVisible()
 
+
+                            if (mViewModel.getRandomUsersSearched().isNullOrEmpty()) {
+                                binding.noUsersLabel.setViewVisible()
+                                binding.usersLockRecyclerView.setViewGone()
+                                binding.unlockLayout.setViewGone()
+                                binding.usersRecyclerView.setViewGone()
+
+                            } else {
+                                binding.noUsersLabel.setViewGone()
+                                binding.usersLockRecyclerView.setViewVisible()
+                                binding.unlockLayout.setViewVisible()
+                                binding.usersRecyclerView.setViewVisible()
+
+                            }
                         }
-
-//                        usersAdapter.updateItems(
-//                            mViewModel.getRandomUsersSearched(),
-//                            mViewModel.getMyPermission()
-//                        )
-                        //  navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
-
-                        if (mViewModel.getRandomUsersSearched().isNullOrEmpty()) {
-                            binding.noUsersLabel.setViewVisible()
-                            binding.usersLockRecyclerView.setViewGone()
-                            binding.unlockLayout.setViewGone()
-                            binding.usersRecyclerView.setViewGone()
-
-                        } else {
-                            binding.noUsersLabel.setViewGone()
-                            binding.usersLockRecyclerView.setViewVisible()
-                            binding.unlockLayout.setViewVisible()
-                            binding.usersRecyclerView.setViewVisible()
-
-                        }
-
-
                     } else {
                         hideProgressView()
-                        //binding.root.snackbar(error)
                     }
                 }
             }
-        })
+        }
 
     }
 
@@ -851,74 +531,4 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
             .setTextColor(resources.getColor(R.color.black));
 
     }
-
-    fun updateSearchResultWithCoin() {
-        var searchResutModel = mViewModel.getSearchRequest()
-
-        if (searchResutModel != null) {
-//            searchResutModel.autoDeductCoin = 1
-            lifecycleScope.launch {
-                userToken = getCurrentUserToken()!!
-                userId = getCurrentUserId()!!
-
-                Timber.i("usertokenn $userToken")
-            }
-            mViewModel.getSearchUsers(
-                _searchRequest = searchResutModel,
-                token = userToken!!,
-                autoDeductCoin = 1,
-                context = requireContext()
-            ) { error ->
-                if (error == null) {
-                    hideProgressView()
-
-
-                    setupUserSearchAdapter()
-
-                } else {
-                    hideProgressView()
-
-                    if (error!!.contains(getString(R.string.no_enough_coins))) {
-//                        val text: String =
-//                            java.lang.String.format(
-//                                resources.getString(R.string.unlock_this_funtion),
-//                                "${this.mViewModel.getMyPermission().coinsToUnlock}"
-//                            )
-//                        val dialog = SubscriptionDialogFragment(
-//                            userToken,
-//                            userId,
-//                            text
-//
-//                        )
-//                        dialog.show(
-//                            childFragmentManager,
-//                            "${requireActivity().resources.getString(R.string.subscription)}"
-//                        )
-
-//                        binding.root.snackbar(
-//                            getString(R.string.dont_have_enough_coin_upgrade_plan),
-//                            Snackbar.LENGTH_INDEFINITE,
-//                            callback = {
-
-
-//                                findNavController().navigate(
-//                                    destinationId = R.id.actionGoToPurchaseFragment,
-//                                    popUpFragId = null,
-//                                    animType = AnimationTypes.SLIDE_ANIM,
-//                                    inclusive = true,
-//
-//                                    )
-//                            })
-
-                    } else {
-
-                        binding.root.snackbar(error)
-                    }
-
-                }
-            }
-        }
-    }
-
-
 }

@@ -72,16 +72,18 @@ class UserMultiStoriesAdapter(
             holder as NewUserStoryHolder
             mUser?.let {
                 it.avatarPhotos?.let { avtarPhoto->
-                    val imageUrl = avtarPhoto[it.avatarIndex!!].url?.replace(
-                        "${BuildConfig.BASE_URL}media/",
-                        "${BuildConfig.BASE_URL}media/"
-                    ).toString()
-                    Glide.with(ctx)
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .optionalCircleCrop()
-                        //.placeholder(R.drawable.ic_default_user)
-                        .into(holder.viewBinding.ivProfile)
+                    if (it.avatarIndex != null && avtarPhoto.size > it.avatarIndex!!) {
+                        val imageUrl = avtarPhoto[it.avatarIndex!!].url?.replace(
+                            "${BuildConfig.BASE_URL}media/",
+                            "${BuildConfig.BASE_URL}media/"
+                        ).toString()
+                        Glide.with(ctx)
+                            .load(imageUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .optionalCircleCrop()
+                            //.placeholder(R.drawable.ic_default_user)
+                            .into(holder.viewBinding.ivProfile)
+                    }
                 }
             }
 

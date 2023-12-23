@@ -23,6 +23,8 @@ import com.i69.ui.views.TagsCloudView
 import com.i69.ui.views.chipcloud.FlowLayout
 import com.i69.utils.EXTRA_USER_MODEL
 import com.i69.utils.isCurrentLanguageFrench
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 import com.i69.utils.setVisibility
 import timber.log.Timber
 
@@ -77,7 +79,7 @@ class UserProfileAboutFragment : BaseFragment<FragmentUserProfileAboutBinding>()
         binding.userworkChipsCloud.addChip(IdWithValue(user.work!!.length!!, str, str), false, false)
         binding.userworkChipsCloud.setSelectedChip(user.work!!.length)
 
-        if(user.work != null  && user.work!!.length>0){
+        if(user.work != null  && user.work!!.isNotEmpty()){
             binding.relUserWork.visibility = View.VISIBLE
         }else{
             binding.relUserWork.visibility = View.GONE
@@ -86,12 +88,18 @@ class UserProfileAboutFragment : BaseFragment<FragmentUserProfileAboutBinding>()
 //        val strFamily = "   "+ defaultPickers!!.familyPicker.get(user.familyPlans!!).value.uppercase()+"   "//String.format(it.i_am_gender, it.male.uppercase())
 
         defaultPickers?.familyPicker?.forEachIndexed { _, idWithValue ->
+            Log.d("UPAF", "setupUserData: ${idWithValue.id}")
             if (idWithValue.id == user.familyPlans) {
 //                value = if (isCurrentLanguageFrench()) idWithValue.valueFr else idWithValue.value
                 binding.userfamilyChipsCloud.addChip(IdWithValue(idWithValue.id, idWithValue.value, idWithValue.valueFr), false, false)
                 binding.userfamilyChipsCloud.setSelectedChip(idWithValue.id)
                 return@forEachIndexed
             }
+        }
+        if(user.familyPlans != null  && user.familyPlans!! > 0){
+            binding.relUserFamilyPlan.setViewVisible()
+        }else{
+            binding.relUserFamilyPlan.setViewGone()
         }
 //        binding.userfamilyChipsCloud.addChip(IdWithValue(strFamily!!.length!!, strFamily, strFamily), false)
 //        binding.userfamilyChipsCloud.setSelectedChip(strFamily!!.length)

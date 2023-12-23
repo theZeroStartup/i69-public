@@ -50,7 +50,7 @@ class UserDetailsRepository @Inject constructor(
         val query = StringBuilder()
             .append("mutation {")
             .append("$queryName (")
-            .append("visiting: \"$userId\", ")
+            .append("visiting: \"$visitorId\" ")
 //            .append(if (visitorId.isEmpty()) "" else "visitor_uuid: \"$visitorId\"")
             .append(") {")
             .append("isVisited,")
