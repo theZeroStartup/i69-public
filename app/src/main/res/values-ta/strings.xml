@@ -10,6 +10,8 @@
     <string name="language_label">மொழி</string>
     <string name="select_language">மொழியை தேர்ந்தெடுங்கள்</string>
 
+    <string name="account_deleted_error">தோல்வியுற்றது! உங்கள் சுயவிவரத்தை நீக்கியுள்ளீர்கள். மீண்டும் சேர எங்களை தொடர்பு கொள்ளவும்.</string>
+
     <string name="do_you_want_to_leave_this_page">இந்தப் பக்கத்தை விட்டு வெளியேற விரும்புகிறீர்களா?</string>
 
     <string name="profile_complete_title">முழுமையான சுயவிவரம்</string>

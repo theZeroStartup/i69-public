@@ -9,7 +9,7 @@
     <string name="search_drawer">ძიება</string>
     <string name="language_label">Ენა</string>
     <string name="select_language">Აირჩიეთ ენა</string>
-
+    <string name="account_deleted_error">შესვლა წარუმატებლად! თქვენ წაშალეთ თქვენი პროფილი. გთხოვთ, დაგვიკავშირდეთ, რომ ხელახლა ჯოინთან ერთად.</string>
     <string name="do_you_want_to_leave_this_page">გსურთ ამ გვერდის დატოვება?</string>
 
     <string name="profile_complete_title">სრული პროფილი</string>

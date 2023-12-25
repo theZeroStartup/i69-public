@@ -9,7 +9,7 @@
     <string name="search_drawer">VYHĽADÁVANIE</string>
     <string name="language_label">Jazyk</string>
     <string name="select_language">Zvoľ jazyk</string>
-
+    <string name="account_deleted_error">Prihláste sa zlyhané! Vymazali ste svoj profil. Kontaktujte nás, aby ste sa znovu spojili.</string>
     <string name="do_you_want_to_leave_this_page">Chcete opustiť túto stránku?</string>
 
     <string name="profile_complete_title">KOMPLETNÝ PROFIL</string>

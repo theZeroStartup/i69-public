@@ -5,6 +5,7 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Свързване на сърца</string>
 
+    <string name="account_deleted_error">Влезте в неуспех! Изтрили сте профила си. Моля, свържете се с нас, за да се присъединим отново.</string>
     <string name="search">Търсене</string>
     <string name="search_drawer">ТЪРСЕНЕ</string>
     <string name="language_label">език</string>

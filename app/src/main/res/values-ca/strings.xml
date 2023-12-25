@@ -10,6 +10,7 @@
     <string name="language_label">Llenguatge</string>
     <string name="select_language">Seleccionar idioma</string>
 
+    <string name="account_deleted_error">Inicieu la sessió fallada! Heu suprimit el vostre perfil. Poseu-vos en contacte amb nosaltres per tornar-vos a unir.</string>
     
     <string name="profile_complete_title">PERFIL COMPLET</string>
     <string name="profile_edit_title">EDITA EL PERFIL</string>

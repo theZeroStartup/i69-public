@@ -9,7 +9,7 @@
     <string name="search_drawer">MEKLĒT</string>
     <string name="language_label">Valoda</string>
     <string name="select_language">Izvēlēties valodu</string>
-
+    <string name="account_deleted_error">Pierakstieties neizdevās! Jūs esat izdzēsis savu profilu. Lūdzu, sazinieties ar mums, lai atkārtoti pievienotu.</string>
     <string name="do_you_want_to_leave_this_page">Vai vēlaties pamest šo lapu?</string>
 
     <string name="profile_complete_title">PILNĪGS PROFILS</string>

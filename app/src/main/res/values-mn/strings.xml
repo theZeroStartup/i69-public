@@ -9,7 +9,7 @@
     <string name="search_drawer">ХАЙХ</string>
     <string name="language_label">Хэл</string>
     <string name="select_language">Хэл сонгох</string>
-
+    <string name="account_deleted_error">Нэвтрэх ажиллагаа амжилтгүй боллоо! Та өөрийн профайлыг устгасан байна. Дахин нэгдэхийн тулд бидэнтэй холбоо барина уу.</string>
     <string name="do_you_want_to_leave_this_page">Та энэ хуудсыг орхихыг хүсэж байна уу?</string>
 
     <string name="profile_complete_title">ПРОФИЛЬ БҮРЭН БАЙНА</string>

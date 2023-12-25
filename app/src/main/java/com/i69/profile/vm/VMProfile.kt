@@ -264,14 +264,17 @@ class VMProfile @Inject constructor(
         childFragmentManager: FragmentManager,
         user: User?,
         defaultPicker: DefaultPicker?,
-        mContext: Context
+        mContext: Context,
+        isUserHasMoments: Boolean
     ): UserItemsAdapter {
 
         val adapter = UserItemsAdapter(childFragmentManager)
         val about = UserProfileAboutFragment()
         //val interests = UserProfileInterestsFragment()
         val feed = FeedsFragment()
-        val moment = MomentsFragment()
+        val moment = MomentsFragment {
+            if (it) updateViewPagerTabs()
+        }
         val useriddata = Bundle()
         if (user != null) useriddata.putString(EXTRA_USER_MODEL, Gson().toJson(user))
         moment.arguments = useriddata
@@ -312,16 +315,17 @@ class VMProfile @Inject constructor(
             viewStringConstModel!!.feed!!
         )
 
-        adapter.addFragItem(
-            moment,
-            viewStringConstModel!!.moment.toString()
-        )
-//        }
-//        adapter.addFragItem(
-//            moment,
-//            mContext.getString(R.string.moment).toString()
-//        )
+        if (isUserHasMoments) {
+            adapter.addFragItem(
+                moment,
+                viewStringConstModel.moment)
+        }
         return adapter
+    }
+
+    val removeMomentFromUserFeed = MutableLiveData(false)
+    private fun updateViewPagerTabs() {
+        removeMomentFromUserFeed.postValue(true)
     }
 
     data class DataCombined(var user: User?, var defaultPicker: DefaultPicker?)

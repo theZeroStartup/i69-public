@@ -424,7 +424,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
                                 if (mUser!!.avatarPhotos != null && mUser!!.avatarPhotos!!.size != 0) {
 
-                                    if (mUser!!.avatarPhotos!!.size != 0) {
+                                    if (mUser!!.avatarPhotos!!.size != 0 && mUser?.avatarPhotos?.size!! > mUser?.avatarIndex!!) {
                                         binding.imgCurrentUser.loadCircleImage(
                                             mUser!!.avatarPhotos!!.get(
                                                 mUser!!.avatarIndex!!

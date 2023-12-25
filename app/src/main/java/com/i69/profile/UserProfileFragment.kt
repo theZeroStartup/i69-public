@@ -9,9 +9,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,12 +33,6 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
@@ -46,6 +40,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import com.i69.BuildConfig
 import com.i69.GetNotificationCountQuery
+import com.i69.GetUserMomentsQuery
 import com.i69.UpdateCoinMutation
 import com.i69.UserSubscriptionQuery
 import com.i69.applocalization.AppStringConstant
@@ -83,6 +78,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -109,6 +105,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
     )
     private val viewModel: VMProfile by activityViewModels()
     private val mViewModel: UserMomentsModelView by activityViewModels()
+
+    var width = 0
+    var size = 0
 
     //    private val viewModel by lazy {
 //        activity?.let { ViewModelProviders.of(it).get(VMProfile::class.java) }
@@ -142,6 +141,13 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         //else
         //toast("View is LTR")
 
+        val displayMetrics = DisplayMetrics()
+        width = displayMetrics.widthPixels
+        val densityMultiplier =getResources().getDisplayMetrics().density;
+        val scaledPx = 14 * densityMultiplier;
+        val paint = Paint()
+        paint.setTextSize(scaledPx);
+        size = paint.measureText("s").roundToInt();
     }
 
     private fun redirectVisitirPage() {
@@ -173,6 +179,53 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
             inclusive = true,
             args = bundle
         )
+    }
+
+    private fun getAllUserMoments(width: Int, size: Int, data: VMProfile.DataCombined) {
+
+        Log.d("MFR", "getAllUserMoments: $width $size")
+
+        lifecycleScope.launch {
+            val res = try {
+                apolloClient(requireContext(), userToken!!).query(
+                    GetUserMomentsQuery(width,size,10,"", userId.toString(),"")
+                ).execute()
+            } catch (e: ApolloException) {
+                Timber.d("apolloException currentUserMoments ${e.message}")
+                Log.e("getAllUserMoments", "${e.message}")
+
+                return@launch
+            }
+
+            var isUserHasMoments = false
+
+            val allmoments = res.data?.allUserMoments?.edges
+            if(!allmoments.isNullOrEmpty()) {
+                for (item in allmoments) {
+                    Log.d("MFR", "getAllUserMoments: ${item?.node?.user?.id} ${userId}")
+                    if (item?.node?.user?.id.toString() == userId){
+                        isUserHasMoments = true
+                        break
+                    }
+                }
+
+                finalizeViewPagerSetup(isUserHasMoments, data)
+            }
+            else finalizeViewPagerSetup(false, data)
+        }
+    }
+
+    private fun finalizeViewPagerSetup(userHasMoments: Boolean, data: VMProfile.DataCombined) {
+        binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
+        binding.userDataViewPager.adapter =
+            viewModel.setupViewPager(
+                childFragmentManager,
+                data.user,
+                data.defaultPicker,
+                requireContext(),
+                userHasMoments
+            )
+        binding.userDataViewPager.offscreenPageLimit = 3
     }
 
     fun updateLanguageTranslation() {
@@ -458,20 +511,16 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                 }
                 if (data != null) {
                     if (data.user != null) {
-                        binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
-                        binding.userDataViewPager.adapter =
-                            viewModel.setupViewPager(
-                                childFragmentManager,
-                                data.user,
-                                data.defaultPicker,
-                                requireContext()
-                            )
-                        binding.userDataViewPager.offscreenPageLimit = 3
+                        getAllUserMoments(width, size, data)
                     }
                 }
 
 //            binding.userImgHeader.pageCount = data?.user?.avatarPhotos?.size ?: 1
 
+            }
+
+            viewModel.removeMomentFromUserFeed.observe(this@UserProfileFragment) {
+                viewModel.data.value?.let { it1 -> finalizeViewPagerSetup(false, it1) }
             }
         }
         userSubScription()

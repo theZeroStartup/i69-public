@@ -2,6 +2,7 @@ package com.i69.ui.viewModels
 
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,7 @@ class UserMomentsModelView @Inject constructor(private val userMomentsRepo: User
                 allUserMoments,endCursor,hasNextPage, error ->
 
             //this.userMomentsList.clear()
+            Log.d("USMV", "getAllMoments: ")
             this.userMomentsList.addAll(allUserMoments)
             endCursorN=endCursor
             hasNextPageN=hasNextPage

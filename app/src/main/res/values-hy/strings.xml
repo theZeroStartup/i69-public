@@ -9,7 +9,7 @@
     <string name="search_drawer">ՈՐՈՆՈՒՄ</string>
     <string name="language_label">Լեզու</string>
     <string name="select_language">Ընտրել լեզուն</string>
-
+    <string name="account_deleted_error">Մուտք գործեք ձախողված: Դուք ջնջել եք ձեր պրոֆիլը: Խնդրում ենք կապվել մեզ հետ `կրկին միանալու համար:</string>
     <string name="do_you_want_to_leave_this_page">Ցանկանու՞մ եք լքել այս էջը:</string>
 
     <string name="profile_complete_title">ԼՐԱՑՎԱԾ ՊՐՈՖԻԼ</string>

@@ -8,8 +8,6 @@
     <string name="search">يبحث</string>
     <string name="search_drawer">بحث</string>
 
-
-    
     <string name="profile_complete_title">ملف تعريف كامل</string>
     <string name="profile_edit_title">تعديل الملف الشخصي</string>
     <string name="done">فعله</string>
@@ -489,5 +487,5 @@
 
     <string name="do_you_want_to_leave_this_page">هل تريد مغادرة هذه الصفحة؟</string>
 
-
+    <string name="account_deleted_error">فشل تسجيل الدخول! لقد حذفت ملفك الشخصي. يرجى الاتصال بنا للانضمام.</string>
 </resources>

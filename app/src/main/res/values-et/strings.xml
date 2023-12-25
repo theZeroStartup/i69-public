@@ -10,6 +10,7 @@
     <string name="language_label">Keel</string>
     <string name="select_language">Vali keel</string>
 
+    <string name="account_deleted_error">Logi sisse ebaõnnestus! Olete oma profiili kustutanud. Palun võtke meiega ühendust, et uuesti liituda.</string>
     
     <string name="profile_complete_title">TÄIELIK PROFIIL</string>
     <string name="profile_edit_title">MUUDA PROFIILI</string>

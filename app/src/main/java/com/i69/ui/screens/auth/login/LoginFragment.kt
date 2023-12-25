@@ -1,7 +1,10 @@
 package com.i69.ui.screens.auth.login
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.StrictMode
 import android.preference.PreferenceManager
 import android.util.Log
@@ -76,11 +79,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     "LoginFragment", "Message: ${e.localizedMessage}"
                 )
                 if (e.statusCode != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                    binding.root.snackbar("${e.message}") {
-                        if (e.message.toString().contains("contact us", true)){
-                            moveTo(LoginFragmentDirections.actionLoginFragmentToContactFragment())
-                        }
-                    }
+                    binding.root.snackbar("${e.message}") {}
                 }
             }
         }
@@ -353,10 +352,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         "${getString(R.string.sign_in_failed)} ${response.message}"
                     )
                     Timber.e("${getString(R.string.sign_in_failed)} ${response.message}")
-                    binding.root.snackbar("${response.message}") {
-                        if (response.message.toString().contains("contact us", true)){
+
+                    if (response.message.toString().contains(getString(R.string.contact_us), true)){
+                        binding.root.snackbar(getString(R.string.account_deleted_error)) {
+                            Log.d("LoginFragment", "Api response")
                             moveTo(LoginFragmentDirections.actionLoginFragmentToContactFragment())
                         }
+                    }
+                    else {
+                        binding.root.snackbar("${response.message}") {}
                     }
                 }
                 else -> {

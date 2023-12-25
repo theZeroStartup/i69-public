@@ -10,7 +10,7 @@
     <string name="language_label">Gjuhe</string>
     <string name="select_language">Zgjidh gjuhen</string>
 
-
+    <string name="account_deleted_error">Hyni në dështoi! Ju keni fshirë profilin tuaj. Ju lutemi na kontaktoni për t\'u bashkuar.</string>
     <string name="do_you_want_to_leave_this_page">Dëshironi të largoheni nga kjo faqe?</string>
     <string name="profile_complete_title">PROFILI I PLOTË</string>
     <string name="profile_edit_title">EDITO PROFILI</string>

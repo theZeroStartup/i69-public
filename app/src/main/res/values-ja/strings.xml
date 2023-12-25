@@ -9,7 +9,7 @@
     <string name="search_drawer">検索</string>
     <string name="language_label">言語</string>
     <string name="select_language">言語を選択する</string>
-
+    <string name="account_deleted_error">サインインが失敗しました！プロフィールを削除しました。再生するには、お問い合わせください。</string>
     <string name="do_you_want_to_leave_this_page">このページを離れますか?</string>
 
     <string name="profile_complete_title">完全なプロフィール</string>

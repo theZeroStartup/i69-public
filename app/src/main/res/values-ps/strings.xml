@@ -9,7 +9,7 @@
     <string name="search_drawer">لټون</string>
     <string name="language_label">ژبه</string>
     <string name="select_language">ژبه غوره کړئ</string>
-
+    <string name="account_deleted_error">ننوتل په ناکامۍ کې! تاسو خپل پروفایل حذف کړی دی. مهرباني وکړئ موږ سره اړیکه ونیسئ ترڅو یوځای شئ.</string>
     <string name="do_you_want_to_leave_this_page">ایا تاسو غواړئ دا پاڼه پریږدئ؟</string>
 
     <string name="profile_complete_title">بشپړ پروفایل</string>

@@ -9,7 +9,7 @@
     <string name="search_drawer">ค้นหา</string>
     <string name="language_label">ภาษา</string>
     <string name="select_language">เลือกภาษา</string>
-
+    <string name="account_deleted_error">ลงชื่อเข้าใช้ล้มเหลว! คุณได้ลบโปรไฟล์ของคุณแล้ว กรุณาติดต่อเราเพื่อเข้าร่วมอีกครั้ง</string>
     <string name="do_you_want_to_leave_this_page">คุณต้องการออกจากหน้านี้หรือไม่</string>
 
     <string name="profile_complete_title">กรอกรายละเอียด</string>

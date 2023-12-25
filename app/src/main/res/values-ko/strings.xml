@@ -9,7 +9,7 @@
     <string name="search_drawer">찾다</string>
     <string name="language_label">언어</string>
     <string name="select_language">언어 선택</string>
-
+    <string name="account_deleted_error">로그인 실패! 프로필을 삭제했습니다. 다시 합류하려면 저희에게 연락하십시오.</string>
     <string name="do_you_want_to_leave_this_page">이 페이지에서 나가시겠습니까?</string>
 
     <string name="profile_complete_title">전체 프로필</string>

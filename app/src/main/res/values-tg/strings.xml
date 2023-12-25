@@ -9,7 +9,7 @@
     <string name="search_drawer">Ҷустуҷӯ</string>
     <string name="language_label">Забон</string>
     <string name="select_language">Забонро интихоб кунед</string>
-
+    <string name="account_deleted_error">Вуруд ба ноком! Шумо профили худро нест кардед. Лутфан бо мо дар тамос шавед.</string>
     <string name="do_you_want_to_leave_this_page">Мехоҳед ин саҳифаро тарк кунед?</string>
 
     <string name="profile_complete_title">ПРОФИЛИ ПУРРА</string>

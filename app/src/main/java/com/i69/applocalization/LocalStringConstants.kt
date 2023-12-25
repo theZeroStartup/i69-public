@@ -9,6 +9,7 @@ object LocalStringConstants {
     const val language_label = "Language"
     const val select_language = "Select Language"
 
+    const val account_deleted_error = "Sign In Failed! You have deleted your profile. Please contact us to re-join."
 
     const val profile_complete_title = "COMPLETE PROFILE"
     const val profile_edit_title = "EDIT PROFILE"

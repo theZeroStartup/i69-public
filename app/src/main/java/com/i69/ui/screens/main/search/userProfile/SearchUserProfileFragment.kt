@@ -5,8 +5,10 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -62,6 +64,7 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -98,6 +101,9 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
     private var LuserId: String? = null
     private var userFullName: String = ""
 
+    var width = 0
+    var size = 0
+
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentUserProfileBinding.inflate(inflater, container, false).apply {
             viewModel.isMyUser = false
@@ -109,6 +115,19 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             Timber.d("RESULT" + result)
         }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        val displayMetrics = DisplayMetrics()
+        width = displayMetrics.widthPixels
+        val densityMultiplier =getResources().getDisplayMetrics().density;
+        val scaledPx = 14 * densityMultiplier;
+        val paint = Paint()
+        paint.setTextSize(scaledPx);
+        size = paint.measureText("s").roundToInt();
+    }
 
     private fun redirectToFolllowingPage(){
 
@@ -455,16 +474,14 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
             }
 
 //          binding.userImgHeader.pageCount = data?.user?.avatarPhotos?.size ?: 1
-            binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
-            binding.userDataViewPager.adapter = viewModel.setupViewPager(
-                childFragmentManager,
-                data?.user,
-                data?.defaultPicker,
-                requireContext()
-            )
+            if (data != null) {
+                getAllUserMoments(width, size, data)
+            }
             /* if (!checkUserIsAlreadyInChat()) {
                  binding.initChatMsgBtn.visibility = View.VISIBLE
              } else binding.initChatMsgBtn.visibility = View.GONE*/
+
+
         }
         binding.actionGifts1.visibility = View.GONE
 //      binding.actionGifts.visibility = View.VISIBLE
@@ -614,6 +631,52 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                 hideProgressView()
             }
         }, 1000)
+    }
+
+    private fun getAllUserMoments(width: Int, size: Int, data: VMProfile.DataCombined) {
+
+        Log.d("SUPF", "getAllUserMoments: $width $size")
+
+        lifecycleScope.launch {
+            val res = try {
+                apolloClient(requireContext(), userToken!!).query(
+                    GetUserMomentsQuery(width,size,10,"", otherUserId.toString(),"")
+                ).execute()
+            } catch (e: ApolloException) {
+                Timber.d("apolloException currentUserMoments ${e.message}")
+                Log.e("getAllUserMoments", "${e.message}")
+
+                return@launch
+            }
+
+            var isUserHasMoments = false
+
+            val allmoments = res.data?.allUserMoments?.edges
+            if(!allmoments.isNullOrEmpty()) {
+                for (item in allmoments) {
+                    Log.d("SUPF", "getAllUserMoments: ${item?.node?.user?.id} ${otherUserId}")
+                    if (item?.node?.user?.id.toString() == otherUserId){
+                        isUserHasMoments = true
+                        break
+                    }
+                }
+
+                finalizeViewPagerSetup(isUserHasMoments, data)
+            }
+            else finalizeViewPagerSetup(false, data)
+        }
+    }
+
+    private fun finalizeViewPagerSetup(userHasMoments: Boolean, data: VMProfile.DataCombined) {
+        binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
+        binding.userDataViewPager.adapter = viewModel.setupViewPager(
+            childFragmentManager,
+            data?.user,
+            data?.defaultPicker,
+            requireContext(),
+            userHasMoments
+        )
+        binding.userDataViewPager.offscreenPageLimit = 3
     }
 
     private fun addProfileVisit(otherUserId: String) {

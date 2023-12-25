@@ -491,4 +491,5 @@
     <string name="with">with</string>
     <string name="label_buy">Buy</string>
 
+    <string name="account_deleted_error">Sign In Failed! You have deleted your profile. Please contact us to re-join.</string>
 </resources>

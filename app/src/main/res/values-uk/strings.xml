@@ -9,7 +9,7 @@
     <string name="search_drawer">ПОШУК</string>
     <string name="language_label">Мова</string>
     <string name="select_language">Оберіть мову</string>
-
+    <string name="account_deleted_error">Увійдіть не вдалося! Ви видалили свій профіль. Будь ласка, зв\'яжіться з нами, щоб знову приєднатися.</string>
     <string name="do_you_want_to_leave_this_page">Ви хочете залишити цю сторінку?</string>
 
     <string name="profile_complete_title">ПОВНИЙ ПРОФІЛЬ</string>

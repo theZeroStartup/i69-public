@@ -9,7 +9,7 @@
     <string name="search_drawer">SZUKAJ</string>
     <string name="language_label">Język</string>
     <string name="select_language">Wybierz język</string>
-
+    <string name="account_deleted_error">Logowanie Nie powiodło się! Usunąłeś swój profil. Skontaktuj się z nami, aby ponownie dołączyć.</string>
     <string name="do_you_want_to_leave_this_page">Czy chcesz opuścić tę stronę?</string>
 
     <string name="profile_complete_title">KOMPLETNY PROFIL</string>

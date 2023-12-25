@@ -10,6 +10,8 @@
     <string name="language_label">語言</string>
     <string name="select_language">選擇語言</string>
 
+    <string name="account_deleted_error">登录失败！您已经删除了个人资料。请与我们联系以重新加入。</string>
+
     <string name="do_you_want_to_leave_this_page">您想离开此页面吗？</string>
 
     <string name="profile_complete_title">完整資料</string>

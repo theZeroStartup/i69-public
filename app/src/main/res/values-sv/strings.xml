@@ -9,7 +9,7 @@
     <string name="search_drawer">SÖK</string>
     <string name="language_label">Språk</string>
     <string name="select_language">Välj språk</string>
-
+    <string name="account_deleted_error">Inloggning misslyckades! Du har tagit bort din profil. Kontakta oss för att gå igenom.</string>
     <string name="do_you_want_to_leave_this_page">Vill du lämna den här sidan?</string>
 
     <string name="profile_complete_title">KOMPLETT PROFIL</string>

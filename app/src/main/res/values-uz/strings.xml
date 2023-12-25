@@ -10,6 +10,8 @@
     <string name="language_label">Til</string>
     <string name="select_language">Tilni tanlang</string>
 
+    <string name="account_deleted_error">Kirish amalga oshmadi! Siz profilingizni o\'chirib tashladingiz. Qayta qo\'shilish uchun biz bilan bog\'laning.</string>
+
     <string name="do_you_want_to_leave_this_page">Bu sahifani tark etmoqchimisiz?</string>
 
     <string name="profile_complete_title">TO‘LIQ PROFIL</string>

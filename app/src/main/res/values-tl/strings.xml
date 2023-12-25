@@ -9,7 +9,7 @@
     <string name="search_drawer">PAGHAHANAP</string>
     <string name="language_label">Wika</string>
     <string name="select_language">Piliin ang Wika</string>
-
+    <string name="account_deleted_error">Mag -sign in ay nabigo! Tinanggal mo ang iyong profile. Mangyaring makipag-ugnay sa amin upang muling sumali.</string>
     <string name="do_you_want_to_leave_this_page">Gusto mo bang umalis sa page na ito?</string>
 
     <string name="profile_complete_title">KUMPLETO ANG PROFILE</string>

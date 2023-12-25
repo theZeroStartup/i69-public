@@ -2085,6 +2085,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             allmoments.indices.forEach { i ->
                 if (ids.equals(allmoments[i]!!.node!!.pk.toString())) {
 //                    Log.d("UserMomentSubsc", "${allmoments[i]}")
+                    Log.d("USMV", "getParticularMoments: ${mViewModel.userMomentsList[pos] == null}")
                     if (mViewModel.userMomentsList[pos] != null) {
                         mViewModel.userMomentsList[pos] = allmoments[i]!!
                         Log.e("callPerticulareMoments", "${mViewModel.userMomentsList.size}")

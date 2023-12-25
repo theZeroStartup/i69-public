@@ -9,7 +9,7 @@
     <string name="search_drawer">ZOEKOPDRACHT</string>
     <string name="language_label">Taal</string>
     <string name="select_language">Selecteer Taal</string>
-
+    <string name="account_deleted_error">Inloggen mislukt! U hebt uw profiel verwijderd. Neem contact met ons op om opnieuw te jagen.</string>
     <string name="do_you_want_to_leave_this_page">Wil je deze pagina verlaten?</string>
 
     <string name="profile_complete_title">VOLLEDIG PROFIEL</string>

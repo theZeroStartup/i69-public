@@ -10,6 +10,7 @@
     <string name="language_label">Lingua</string>
     <string name="select_language">Seleccione Idioma</string>
 
+    <string name="account_deleted_error">Fallou a sesión de inicio de sesión. Eliminaches o teu perfil. Póñase en contacto connosco para re-Join.</string>
     
     <string name="profile_complete_title">PERFIL COMPLETO</string>
     <string name="profile_edit_title">EDITAR PERFIL</string>

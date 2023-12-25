@@ -10,6 +10,7 @@
     <string name="language_label">Jezik</string>
     <string name="select_language">Odaberite Jezik</string>
 
+    <string name="account_deleted_error">Prijavite se neuspjeli! Izbrisali ste svoj profil. Molimo kontaktirajte nas da se ponovo pridružite.</string>
     
     <string name="profile_complete_title">KOMPLETAN PROFIL</string>
     <string name="profile_edit_title">UREDI PROFIL</string>

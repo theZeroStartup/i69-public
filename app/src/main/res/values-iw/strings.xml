@@ -9,7 +9,7 @@
     <string name="search_drawer">לחפש</string>
     <string name="language_label">שפה</string>
     <string name="select_language">בחר שפה</string>
-
+    <string name="account_deleted_error">ההרשמה נכשלה! מחקת את הפרופיל שלך. אנא צור איתנו קשר כדי להצטרף מחדש.</string>
     <string name="do_you_want_to_leave_this_page">האם אתה רוצה לעזוב את הדף הזה?</string>
 
     <string name="profile_complete_title">פרופיל מלא</string>

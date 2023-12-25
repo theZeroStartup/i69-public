@@ -9,7 +9,7 @@
     <string name="search_drawer">LEIT</string>
     <string name="language_label">Tungumál</string>
     <string name="select_language">Veldu tungumál</string>
-
+    <string name="account_deleted_error">Skráðu þig inn mistókst! Þú hefur eytt prófílnum þínum. Vinsamlegast hafðu samband við okkur til að taka þátt aftur.</string>
     <string name="do_you_want_to_leave_this_page">Viltu yfirgefa þessa síðu?</string>
 
     <string name="profile_complete_title">LOKAÐ PROFÍL</string>

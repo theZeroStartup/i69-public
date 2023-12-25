@@ -10,6 +10,7 @@
     <string name="language_label">Sprog</string>
     <string name="select_language">Vælg sprog</string>
 
+    <string name="account_deleted_error">Log ind mislykket! Du har slettet din profil. Kontakt os for at få sammen igen.</string>
     
     <string name="profile_complete_title">KOMPLET PROFIL</string>
     <string name="profile_edit_title">REDIGER PROFIL</string>

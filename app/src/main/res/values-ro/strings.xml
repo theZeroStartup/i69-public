@@ -9,7 +9,7 @@
     <string name="search_drawer">CĂUTARE</string>
     <string name="language_label">Limba</string>
     <string name="select_language">Selecteaza limba</string>
-
+    <string name="account_deleted_error">Conectați -vă nu a reușit! Ți -ai șters profilul. Vă rugăm să ne contactați pentru a ne alătura.</string>
     <string name="do_you_want_to_leave_this_page">Doriți să părăsiți această pagină?</string>
 
     <string name="profile_complete_title">PROFIL COMPLET</string>

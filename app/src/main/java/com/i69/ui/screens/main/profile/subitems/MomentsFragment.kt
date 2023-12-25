@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.roundToInt
 
-class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAdapter.CurrentUserMomentListener {
+class MomentsFragment(private val onAllMomentsDeleted: (Boolean) -> Unit) : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAdapter.CurrentUserMomentListener {
 
     private var userToken: String? = null
     private lateinit var currentUserMomentAdapter: CurrentUserMomentAdapter
@@ -129,15 +130,15 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
     }
     private fun getAllUserMoments(width: Int, size: Int) {
 
+        Log.d("MFR", "getAllUserMoments: $width $size")
 
-        if(user?.id == "")
-        {
+        if(user?.id == "") {
             user!!.id = userId!!
         }
         lifecycleScope.launch() {
             val res = try {
                 apolloClient(requireContext(), userToken!!).query(
-                    GetUserMomentsQuery(width,size,10,"", user!!.id,"")
+                    GetUserMomentsQuery(width,size,10,"", user?.id.toString(),"")
                 ).execute()
             } catch (e: ApolloException) {
                 Timber.d("apolloException currentUserMoments ${e.message}")
@@ -155,10 +156,10 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
 
                 val allUserMomentsFirst: ArrayList<GetUserMomentsQuery.Edge> = ArrayList()
 
-                allmoments.indices.forEach { i ->
-
-
-                    allUserMomentsFirst.add(allmoments[i]!!)
+                for (item in allmoments) {
+                    if (item != null) {
+                        allUserMomentsFirst.add(item)
+                    }
                 }
 
                 currentUserMomentAdapter.addAll(allUserMomentsFirst)
@@ -182,9 +183,6 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
 
 
     override fun onLikeofMomentClick(position: Int, item: GetUserMomentsQuery.Edge) {
-
-
-
         showProgressView()
         lifecycleScope.launchWhenResumed {
             val res = try {
@@ -231,8 +229,7 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
 
 
             allmoments.indices.forEach { i ->
-                if(ids.equals(allmoments[i]!!.node!!.pk.toString()))
-                {
+                if(ids.equals(allmoments[i]!!.node!!.pk.toString())) {
                     allUserMoments[pos] = allmoments[i]!!
                     currentUserMomentAdapter.addAll(allUserMoments)
                     currentUserMomentAdapter.notifyItemChanged(pos)
@@ -395,6 +392,8 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
                 val positionss = allUserMoments.indexOf(item)
                 allUserMoments.remove(item)
                 currentUserMomentAdapter.notifyItemRemoved(position)
+                if (currentUserMomentAdapter.itemCount == 0)
+                    onAllMomentsDeleted.invoke(true)
             }
         }
         else if(types.equals("report"))

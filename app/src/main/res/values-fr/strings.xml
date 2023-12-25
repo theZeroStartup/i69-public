@@ -10,6 +10,7 @@
     <string name="language_label">Langue</string>
     <string name="select_language">Choisir la langue</string>
 
+    <string name="account_deleted_error">Connexion a échoué! Vous avez supprimé votre profil. Veuillez nous contacter pour vous réjouir.</string>
     
     <string name="profile_complete_title">PROFIL COMPLET</string>
     <string name="profile_edit_title">EDITER LE PROFIL</string>

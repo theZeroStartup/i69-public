@@ -7,7 +7,6 @@
 
     <string name="search">Axtar</string>
     <string name="search_drawer">AXTAR</string>
-
     <string name="profile_complete_title">PROFİLİ TAM EDİN</string>
     <string name="profile_edit_title">PROFİLƏ DÜZƏLİŞ ET</string>
     <string name="done">Bitdi</string>
@@ -486,5 +485,6 @@
 
     <string name="do_you_want_to_leave_this_page">Bu səhifəni tərk etmək istəyirsiniz?</string>
 
+    <string name="account_deleted_error">Giriş alınmadı! Profilinizi silmisiniz. Zəhmət olmasa yenidən qoşulmaq üçün bizimlə əlaqə saxlayın.</string>
     <!--    <string name="congratulations">Təbrik edirik 70% qənaət etdiniz</string>-->
 </resources>
