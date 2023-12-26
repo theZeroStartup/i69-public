@@ -7,3 +7,13 @@ mutation story ($file:Upload!){
         }
     }
 }
+
+mutation scheduleStory ($file:Upload!, $publishAt:DateTime!){
+    insertStory(file:$file, publishAt: $publishAt){
+        story {
+            file
+            createdDate
+            id
+        }
+    }
+}

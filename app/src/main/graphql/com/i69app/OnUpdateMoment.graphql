@@ -23,6 +23,7 @@ subscription OnUpdateMoment($moderatorId: String!,$token: String!){
 			pk
             comment
             createdDate
+            publishAt
             file
             id
             like

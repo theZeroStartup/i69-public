@@ -2079,6 +2079,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     var description: String? = null
     var checked: Boolean = false
     var isShare: Boolean = false
+    var isShareLater: Boolean = false
+    var publishAt: String = ""
+
+    fun isValidTime(
+        year: Int,
+        monthOfYear: Int,
+        dayOfMonth: Int,
+        hourOfDay: Int,
+        minute: Int
+    ): Boolean {
+        val now = Calendar.getInstance().time
+        val selectedTime = Calendar.getInstance()
+        selectedTime.set(year, monthOfYear, dayOfMonth)
+        selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
+        selectedTime.set(Calendar.MINUTE, minute)
+
+        return now.before(selectedTime.time)
+    }
 
     fun openUserAllMoments(file: File, description: String, checked: Boolean) {
 
@@ -2097,6 +2115,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 //            cFragment.momentSharing(mFilePath, description, checked)
 //        }
     }
+
+    fun openUserAllMoments(file: File, description: String, checked: Boolean, publishAt: String) {
+        filePath = file
+        this.description = description
+        this.checked = checked
+        isShare = false
+        isShareLater = true
+        this.publishAt = publishAt
+        binding.bottomNavigation.selectedItemId = R.id.nav_home_graph
+
+
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
+//        if (currentFragment is UserMomentsFragment) {
+//            val cFragment = currentFragment as UserMomentsFragment
+//            cFragment.momentSharing(mFilePath, description, checked)
+//        }
+    }
+
 
     var dialog: NotificationDialogFragment? = null
 

@@ -5,6 +5,7 @@ subscription OnNewMoment($moderatorId: String!,$token: String!){
             pk
             comment
             createdDate
+            publishAt
             file
             id
             like

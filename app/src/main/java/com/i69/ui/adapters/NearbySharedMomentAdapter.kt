@@ -226,11 +226,26 @@ class NearbySharedMomentAdapter(
             text = text.replace("T", " ").substring(0, text.indexOf("."))
             val momentTime = formatter.parse(text)
 
-            viewBinding.txtTimeAgo.text = DateUtils.getRelativeTimeSpanString(
+            val times = DateUtils.getRelativeTimeSpanString(
                 momentTime.time,
                 Date().time,
                 DateUtils.MINUTE_IN_MILLIS
             )
+
+            var publishAt = item_data.node.publishAt.toString()
+            Log.d("UMSDF", "setStory: $publishAt")
+            var publishTimeInMillis = ""
+            if (publishAt.isNotEmpty() && publishAt != "null") {
+                publishAt = publishAt.replace("T", " ").substring(0, publishAt.indexOf("+"))
+                val momentPublishTime = formatter.parse(publishAt)
+                publishTimeInMillis = DateUtils.getRelativeTimeSpanString(
+                    momentPublishTime.time,
+                    Date().time,
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString()
+            }
+
+            viewBinding.txtTimeAgo.text = publishTimeInMillis.ifEmpty { times }
 
             viewBinding.txtNearbyUserLikeCount.setText("" + item_data?.node!!.like)
 

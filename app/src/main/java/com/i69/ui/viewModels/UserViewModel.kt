@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo3.api.DefaultUpload
 import com.google.gson.JsonObject
 import com.i69.ChatRoomSubscription
 import com.i69.GetAllRoomsQuery
@@ -14,7 +15,6 @@ import com.i69.data.remote.requests.ReportRequest
 import com.i69.data.remote.responses.CoinsResponse
 import com.i69.data.remote.responses.DefaultPicker
 import com.i69.data.remote.responses.ResponseBody
-import com.i69.languages.LanguageModel
 import com.i69.ui.adapters.SearchInterestedServerAdapter
 import com.i69.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,6 +51,12 @@ class UserViewModel @Inject constructor(
     fun updateAdapterFlow() {
         viewModelScope.launch {
             _shouldUpdateAdapter.emit(true)
+        }
+    }
+
+    fun scheduleStory(file: DefaultUpload, publishAt: String, token: String) {
+        viewModelScope.launch {
+            userDetailsRepository.scheduleStory(file, publishAt, token)
         }
     }
 

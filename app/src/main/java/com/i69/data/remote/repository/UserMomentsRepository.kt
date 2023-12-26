@@ -160,6 +160,7 @@ class UserMomentsRepository  @Inject constructor(
                        callback: (ArrayList<GetAllUserMomentsQuery.Edge>,endCursor: String,hasNextPage: Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val res = try {
+                Log.d("UserMomentsFragment", "getUserMoments: $width $size $i $endCursors")
                 apolloClientForContore(context,token).query(GetAllUserMomentsQuery(width = width, characterSize = size,first=i,endCursors,"")).execute()
             } catch (e: ApolloException) {
                 Timber.d("apolloResponse ${e.message}")

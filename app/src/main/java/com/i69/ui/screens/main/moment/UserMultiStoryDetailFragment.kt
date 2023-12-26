@@ -1105,10 +1105,26 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 Date().time,
                 DateUtils.MINUTE_IN_MILLIS
             )
+
+            var publishAt = node.publishAt.toString()
+            Log.d("UMSDF", "setStory: $publishAt")
+            var publishTimeInMillis = ""
+            if (publishAt.isNotEmpty() && publishAt != "null") {
+                publishAt = publishAt.replace("T", " ").substring(0, publishAt.indexOf("+"))
+                val momentPublishTime = formatter.parse(publishAt)
+                publishTimeInMillis = DateUtils.getRelativeTimeSpanString(
+                    momentPublishTime.time,
+                    Date().time,
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString()
+            }
+
+            Log.d("UMSDF", "setStory: $times $publishTimeInMillis")
+
             objectID = node.pk
 //            RefreshStories()
 //            getStories()
-            txtTimeAgo.text = times
+            txtTimeAgo.text = publishTimeInMillis.ifEmpty { times }
 
         } else {
             player_view!!.visibility = View.VISIBLE
@@ -1134,11 +1150,25 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 Date().time,
                 DateUtils.MINUTE_IN_MILLIS
             )
+
+            var publishAt = node.publishAt.toString()
+            var publishTimeInMillis = ""
+            if (publishAt.isNotEmpty()) {
+                publishAt = publishAt.replace("T", " ").substring(0, text.indexOf("."))
+                val momentPublishTime = formatter.parse(publishAt)
+                publishTimeInMillis = DateUtils.getRelativeTimeSpanString(
+                    momentPublishTime.time,
+                    Date().time,
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString()
+            }
+
+
             objectID = node.pk
 //            RefreshStories()
 //            getStories()
 
-            txtTimeAgo.text = times
+            txtTimeAgo.text = if (publishTimeInMillis.isNotEmpty()) publishTimeInMillis else times
             val uri: Uri = Uri.parse(url)
             //val uri: Uri = Uri.fromFile(File(arguments?.getString("path")))
             val mediaItem = MediaItem.Builder()

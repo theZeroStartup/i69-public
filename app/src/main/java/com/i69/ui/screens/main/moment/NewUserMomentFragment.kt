@@ -2,6 +2,9 @@ package com.i69.ui.screens.main.moment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
@@ -17,14 +20,19 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.i69.BuildConfig
 import com.i69.R
 import com.i69.applocalization.AppStringConstant
 import com.i69.applocalization.AppStringConstant1
 import com.i69.applocalization.AppStringConstantViewModel
 import com.i69.data.models.User
+import com.i69.databinding.BottomsheetShareOptionsBinding
+import com.i69.databinding.DialogPreviewImageBinding
 import com.i69.databinding.FragmentNewUserMomentBinding
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
@@ -35,6 +43,10 @@ import com.i69.utils.KeyboardUtils.SoftKeyboardToggleListener
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 
 class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
@@ -72,6 +84,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
                 //binding.cropView.crop()
 
+                showImagePreview(file)
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
@@ -108,6 +121,8 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
                 //binding.cropView.crop()
 
+
+                showImagePreview(file)
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
@@ -221,6 +236,8 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             mypopupWindow.showAsDropDown(it, (-it.x).toInt(), 0)
         }
 
+        binding.imgUploadFile.setOnClickListener { if (this::file.isInitialized) showImagePreview(file) }
+
         /*binding.editWhatsGoing.setOnTouchListener(OnTouchListener { _, event ->
 
             val DRAWABLE_RIGHT = 2
@@ -284,129 +301,12 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             })
 
         binding.btnShareMoment.setOnClickListener {
-
             if (mFilePath == null || !this::file.isInitialized) {
-
                 binding.root.snackbar(AppStringConstant1.you_cant_share_moment)
-//                binding.root.snackbar(getString(R.string.you_cant_share_moment))
                 return@setOnClickListener
             }
 
-            showProgressView()
-
-            val description = binding.editWhatsGoing.text.toString()
-            /*val fileBase64 = BitmapFactory.decodeFile(mFilePath).convertBitmapToString()
-            lifecycleScope.launch(Dispatchers.Main) {
-                val userToken = getCurrentUserToken()!!
-                Timber.d("fileBase64 [${fileBase64.length}] $mFilePath")
-                when (val response = mViewModel.shareUserMoment("Moment Image", fileBase64, description, token = userToken)) {
-                    is Resource.Success -> {
-                        hideProgressView()
-                    }
-                    is Resource.Error -> onFailureListener(response.message ?: "")
-                }
-            }*/
-            Timber.d("filee $mFilePath")
-
-            Log.d("NewUserMomentFragment", "calling")
-
-            getMainActivity().openUserAllMoments(file,description,binding.rbAllowed.isChecked)
-            binding.editWhatsGoing.setText("")
-
-//            val bundle = Bundle()
-////            bundle.putString("fromUser", "1")
-//            bundle.putString("filePath", mFilePath)
-//            bundle.putString("description", description)
-//            bundle.putBoolean("commentAllowed", binding.rbAllowed.isChecked)
-//            bundle.putBoolean("isShare", true)
-//            findNavController().navigate(R.id.newActionHome, bundle)
-
-            hideProgressView()
-            /*    lifecycleScope.launchWhenCreated {
-
-                     val f = file
-                     val buildder = DefaultUpload.Builder()
-                     buildder.contentType("Content-Disposition: form-data;")
-                     buildder.fileName(f.name)
-                     val upload = buildder.content(f).build()
-                     Timber.d("filee ${f.exists()}")
-                     val userToken = getCurrentUserToken()!!
-
-                     Timber.d("useriddd ${mUser?.id}")
-                     if (mUser?.id != null) {
-                         val response = try {
-
-                             apolloClient(context = requireContext(), token = userToken).
-                             mutation(
-                                 MomentMutation(
-                                     file = upload,
-                                     detail = description,
-                                     userField = mUser?.id!!,
-                                     allowComment = binding.rbAllowed.isChecked
-                                 )
-                             ).execute()
-
-
-                         } catch (e: ApolloException) {
-                             hideProgressView()
-                             Timber.d("filee Apollo Exception ApolloException ${e.message}")
-                             binding.root.snackbar(" ${e.message}")
-                             return@launchWhenCreated
-                         } catch (e: Exception) {
-                             hideProgressView()
-                             Timber.d("filee General Exception ${e.message} $userToken")
-                             binding.root.snackbar(" ${e.message}")
-                             return@launchWhenCreated
-                         }
-                         Log.e("222","--->"+Gson().toJson(response))
-                         hideProgressView()
-
-                         if(response.hasErrors())
-                         {
-                             Log.d("NewUserMomentFragment","${response.errors}")
-                             //binding.root.snackbar("${response.errors?.get(0)?.message}")
-                             binding.root.snackbarOnTop("${response.errors?.get(0)?.message}", Snackbar.LENGTH_INDEFINITE,callback = {
-                                 //TODO: navigate to package/subscription screen
-                                 findNavController().navigate(R.id.action_global_plan)
-                             })
-                             //  Log.e("ddd1dddww","-->"+response.errors!!.get(0).nonStandardFields!!.get("code"))
-                             /*      if(response.errors!!.get(0).nonStandardFields!!.get("code").toString().equals("InvalidOrExpiredToken"))
-                                   {
-                                       // error("User doesn't exist")
-
-                                     if(activity!=null)
-                                       {
-                                           App.userPreferences.clear()
-                                           //App.userPreferences.saveUserIdToken("","","")
-                                           val intent = Intent(MainActivity.mContext, SplashActivity::class.java)
-                                           startActivity(intent)
-                                           Log.e("ddd1dddwwds","-->"+response.errors!!.get(0).nonStandardFields!!.get("code"))
-                                           activity?.finishAffinity()
-                                       }
-
-                                   }*/
-                         }
-                         else {
-                             //val bundle = Bundle()
-                             //bundle.putString("fromUser", "1")
-                             //findNavController().navigate(R.id.newActionHome,bundle)
-                             binding.editWhatsGoing.text=null
-                             getMainActivity().mViewModelUser.userMomentsList.clear()
-                             getMainActivity().openUserMoments()
-
-                         }
-
-                     } else {
-
-     //                    binding.root.snackbar("username is null")
-     //                    binding.root.snackbar("Exception ${mUser?.id}")
-                     }
-                     hideProgressView()
-                     //binding.root.snackbar("Exception (${response.hasErrors()}) ${response.data?.insertMoment?.moment?.momentDescription}")
-                     //Timber.d("filee response = (${response.hasErrors()}) ${response.data?.insertMoment?.moment?.momentDescription}")
-                     //Timber.d("filee response = (${response.hasErrors()}) [${response.errors?.get(0)?.message}] ${response.data?.insertMoment?.moment?.momentDescription}")
-                     //filee response = com.apollographql.apollo3.api.ApolloResponse@3f798dc
-                 }*/
+            showShareOptions {}
         }
 
         showProgressView()
@@ -446,13 +346,157 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         }
     }
 
+    private fun showImagePreview(file: File?) {
+        val dialogBinding = DialogPreviewImageBinding.inflate(layoutInflater, null, false)
+
+        val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        dialog.setContentView(dialogBinding.root)
+
+        Glide.with(requireContext())
+            .load(file)
+            .into(dialogBinding.ivPreview)
+
+        dialogBinding.ibClose.setViewGone()
+
+        dialogBinding.tvShare.text = getString(R.string.proceed)
+        dialogBinding.btnShareMoment.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
+    }
+
+    private fun showShareOptions(onShared: () -> Unit) {
+        val shareOptionsDialog = BottomSheetDialog(requireContext())
+        val bottomsheet = BottomsheetShareOptionsBinding.inflate(layoutInflater, null, false)
+
+        var shareAt = ""
+
+        if (isUserHasPremiumSubscription()) {
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+            bottomsheet.rbShareLater.setViewVisible()
+            bottomsheet.ivLocked.setViewGone()
+        }
+        else {
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareLater.setViewGone()
+            bottomsheet.ivLocked.setViewVisible()
+        }
+
+        bottomsheet.rbShareNow.setOnClickListener { bottomsheet.cvShareNow.performClick() }
+        bottomsheet.rbShareLater.setOnClickListener { bottomsheet.cvShareLater.performClick() }
+
+        bottomsheet.cvShareNow.setOnClickListener {
+            bottomsheet.rbShareNow.isChecked = true
+            bottomsheet.rbShareLater.isChecked = false
+        }
+
+        bottomsheet.cvShareLater.setOnClickListener {
+            if (isUserHasPremiumSubscription()) {
+                bottomsheet.rbShareLater.isChecked = true
+                bottomsheet.rbShareNow.isChecked = false
+                showDateTimePicker { displayTime, apiTime ->
+                    if (displayTime.isNotEmpty() && apiTime.isNotEmpty()) {
+                        bottomsheet.tvShareLater.text = "Scheduled for $displayTime"
+                        shareAt = apiTime
+                    }
+                    else {
+                        bottomsheet.rbShareLater.isChecked = false
+                        bottomsheet.rbShareNow.isChecked = true
+                    }
+                }
+            }
+            else {
+            binding.root.snackbar("Feature Locked. Please purchase a package to unlock")
+        }
+        }
+
+        bottomsheet.btnShareMoment.setOnClickListener {
+            if (shareOptionsDialog.isShowing) shareOptionsDialog.dismiss()
+            onShared.invoke()
+            if (bottomsheet.rbShareNow.isChecked) {
+                shareNow()
+            }
+            else if (bottomsheet.rbShareLater.isChecked) {
+                if (shareAt.isNotEmpty()) {
+                    shareLater(shareAt)
+                }
+            }
+        }
+
+        shareOptionsDialog.setContentView(bottomsheet.root)
+        shareOptionsDialog.show()
+    }
+
+    private fun isUserHasPremiumSubscription(): Boolean {
+        return mUser?.userSubscription?.isActive == true
+//        return true
+    }
+
+    private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {
+        val currentDate: Calendar = Calendar.getInstance()
+        val date = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { view, year, monthOfYear, dayOfMonth ->
+                date.set(year, monthOfYear, dayOfMonth)
+                TimePickerDialog(context,
+                    { view, hourOfDay, minute ->
+                        if (getMainActivity().isValidTime(year, monthOfYear, dayOfMonth, hourOfDay, minute)) {
+                            date.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                            date.set(Calendar.MINUTE, minute)
+
+                            val sdf1 = SimpleDateFormat("dd MMM hh:mm a", Locale.getDefault())
+                            val sdf2 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+                            sdf2.timeZone = TimeZone.getTimeZone("UTC")
+                            val now = date.time
+                            val displayTime = sdf1.format(now)
+                            val formattedTime = sdf2.format(now)
+                            onDateAndTimePicked.invoke(displayTime, formattedTime)
+
+                            Log.v("UMF", "The choosen one $formattedTime")
+                        }
+                        else {
+                            onDateAndTimePicked.invoke("", "")
+                            binding.root.snackbarOnTop(getString(R.string.please_select_a_future_time))
+                        }                    },
+                    currentDate.get(Calendar.HOUR_OF_DAY),
+                    currentDate.get(Calendar.MINUTE),
+                    false
+                ).show()
+            },
+            currentDate.get(Calendar.YEAR),
+            currentDate.get(Calendar.MONTH),
+            currentDate.get(Calendar.DATE)
+        ).show()
+    }
+
+    private fun shareNow() {
+        val description = binding.editWhatsGoing.text.toString()
+
+        Timber.d("filee $mFilePath")
+
+        Log.d("NewUserMomentFragment", "calling")
+
+        getMainActivity().openUserAllMoments(file,description,binding.rbAllowed.isChecked)
+        binding.editWhatsGoing.setText("")
+    }
+
+    private fun shareLater(shareAt: String) {
+        val description = binding.editWhatsGoing.text.toString()
+
+        Timber.d("filee $mFilePath")
+
+        Log.d("NewUserMomentFragment", "calling")
+
+        getMainActivity().openUserAllMoments(file,description,binding.rbAllowed.isChecked, shareAt)
+        binding.editWhatsGoing.setText("")
+    }
+
     override fun setupClickListeners() {
         binding.toolbarHamburger.setOnClickListener {
             hideKeyboard(binding.root)
             binding.editWhatsGoing.clearFocus()
             getMainActivity().drawerSwitchState()
         }
-
     }
 
     fun hideKeyboard(view: View) =

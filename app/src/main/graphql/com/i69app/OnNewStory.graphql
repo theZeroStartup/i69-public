@@ -24,6 +24,7 @@ subscription OnNewStory {
                 node {
 
                     createdDate
+                    publishAt
                     file
                     fileType
                     id

@@ -3,6 +3,7 @@ package com.i69.data.remote.repository
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.apollographql.apollo3.api.DefaultUpload
 import com.facebook.AccessToken
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -13,6 +14,7 @@ import com.i69.R
 import com.i69.data.models.Id
 import com.i69.data.models.ProfileVisit
 import com.i69.data.models.SelectedLanguageModel
+import com.i69.data.models.StoryScheduledPublish
 import com.i69.data.models.User
 import com.i69.data.remote.api.GraphqlApi
 import com.i69.data.remote.requests.ReportRequest
@@ -61,6 +63,28 @@ class UserDetailsRepository @Inject constructor(
 
         Log.d("VisitorMutation", query)
         val response: Resource<ResponseBody<ProfileVisit>> = api.getResponse(query, queryName, token)
+        Log.d("VisitorMutation", "addUserProfileVisit: ${response.message} ${response.data?.data}")
+
+        return response
+    }
+
+    suspend fun scheduleStory(file: DefaultUpload, publishAt: String, token: String): Resource<ResponseBody<StoryScheduledPublish>> {
+        Log.d("VisitorMutation", "addUserProfileVisit: $file $publishAt")
+
+        val queryName = "insertStory"
+        val query = StringBuilder()
+            .append("mutation {")
+            .append("$queryName (")
+            .append("file: $file")
+            .append(") story {")
+            .append("isPublished,")
+            .append("publishAt")
+            .append("}")
+            .append("}")
+            .toString()
+
+        Log.d("VisitorMutation", query)
+        val response: Resource<ResponseBody<StoryScheduledPublish>> = api.getResponse(query, queryName, token)
         Log.d("VisitorMutation", "addUserProfileVisit: ${response.message} ${response.data?.data}")
 
         return response

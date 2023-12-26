@@ -794,6 +794,8 @@ type MomentsTyps implements Node {
 
     createdDate: DateTime!
 
+    publishAt: DateTime
+
     file: String
 
     pk: Int
@@ -1540,6 +1542,8 @@ type StoryType implements Node {
 
     createdDate: DateTime!
 
+    publishAt: DateTime
+
     file: String!
 
     thumbnail: String
@@ -2066,9 +2070,9 @@ type Mutation {
 
     giftPurchase(giftId: ID, receiverId: ID, senderId: ID): Purchasegiftmutation
 
-    insertMoment(Title: String!, file: Upload!, momentDescription: String!, user: String!, allowComment: Boolean!): Momentmutation
+    insertMoment(Title: String!, file: Upload!, momentDescription: String!, user: String!, allowComment: Boolean!, publishAt:DateTime): Momentmutation
 
-    insertStory(file: Upload!): Storymutation
+    insertStory(file: Upload!, publishAt: DateTime): Storymutation
 
     deleteMoment(id: ID): Momentdeletemutation
 

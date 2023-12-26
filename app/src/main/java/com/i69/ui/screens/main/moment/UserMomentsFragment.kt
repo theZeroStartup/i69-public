@@ -2,6 +2,9 @@ package com.i69.ui.screens.main.moment
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,16 +22,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
-import android.widget.PopupWindow
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.activityViewModels
@@ -43,15 +43,17 @@ import com.apollographql.apollo3.api.content
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import com.i69.*
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.ModelGifts
 import com.i69.data.models.User
 import com.i69.data.remote.responses.MomentLikes
+import com.i69.databinding.BottomsheetShareOptionsBinding
+import com.i69.databinding.DialogPreviewImageBinding
 import com.i69.databinding.FragmentUserMomentsBinding
 import com.i69.di.modules.AppModule.provideGraphqlApi
 import com.i69.gifts.FragmentRealGifts
@@ -136,7 +138,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 file = File(mFilePath)
                 Timber.d("fileBase64 $mFilePath")
                 Log.d("UserMomentFragment", "Photo Choosed")
-                uploadStory()
+                showImagePreview(file)
             }
         }
     val galleryImageLauncher =
@@ -153,9 +155,113 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 openInputStream?.copyTo(outputFile.outputStream())
                 file = File(outputFile.toURI())
                 Timber.d("fileBase64 $mFilePath")
-                uploadStory()
+                showImagePreview(file)
             }
         }
+
+    private fun showShareOptions(onShared: () -> Unit) {
+        val shareOptionsDialog = BottomSheetDialog(requireContext())
+        val bottomsheet = BottomsheetShareOptionsBinding.inflate(layoutInflater, null, false)
+
+        var shareAt = ""
+
+        if (isUserHasPremiumSubscription()) {
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+            bottomsheet.rbShareLater.setViewVisible()
+            bottomsheet.ivLocked.setViewGone()
+        }
+        else {
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareLater.setViewGone()
+            bottomsheet.ivLocked.setViewVisible()
+        }
+
+        bottomsheet.cvShareNow.setOnClickListener {
+            bottomsheet.rbShareNow.isChecked = true
+            bottomsheet.rbShareLater.isChecked = false
+        }
+
+        bottomsheet.cvShareLater.setOnClickListener {
+            if (isUserHasPremiumSubscription()) {
+                bottomsheet.rbShareLater.isChecked = true
+                bottomsheet.rbShareNow.isChecked = false
+                showDateTimePicker { displayTime, apiTime ->
+                    if (displayTime.isNotEmpty() && apiTime.isNotEmpty()) {
+                        bottomsheet.tvShareLater.text = "Scheduled for $displayTime"
+                        shareAt = apiTime
+                    }
+                    else {
+                        bottomsheet.rbShareLater.isChecked = false
+                        bottomsheet.rbShareNow.isChecked = true
+                    }
+                }
+            }
+            else {
+                binding.root.snackbar("Feature Locked. Please purchase a package to unlock")
+            }
+        }
+
+        bottomsheet.btnShareMoment.setOnClickListener {
+            if (shareOptionsDialog.isShowing) shareOptionsDialog.dismiss()
+            onShared.invoke()
+            if (bottomsheet.rbShareNow.isChecked) {
+                uploadStory()
+            }
+            else if (bottomsheet.rbShareLater.isChecked) {
+                if (shareAt.isNotEmpty()) {
+                    uploadStoryLater(shareAt)
+                }
+            }
+        }
+
+        shareOptionsDialog.setContentView(bottomsheet.root)
+        shareOptionsDialog.show()
+    }
+
+    private fun isUserHasPremiumSubscription(): Boolean {
+        return mUser?.userSubscription?.isActive == true
+//        return true
+    }
+
+    private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {
+        val currentDate: Calendar = Calendar.getInstance()
+        val date = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { view, year, monthOfYear, dayOfMonth ->
+                date.set(year, monthOfYear, dayOfMonth)
+                TimePickerDialog(context,
+                    { view, hourOfDay, minute ->
+                        if (getMainActivity().isValidTime(year, monthOfYear, dayOfMonth, hourOfDay, minute)) {
+                            date.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                            date.set(Calendar.MINUTE, minute)
+
+                            val sdf1 = SimpleDateFormat("dd MMM hh:mm a", Locale.getDefault())
+                            val sdf2 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+                            sdf2.timeZone = TimeZone.getTimeZone("UTC")
+                            val now = date.time
+                            val displayTime = sdf1.format(now)
+                            val formattedTime = sdf2.format(now)
+                            onDateAndTimePicked.invoke(displayTime, formattedTime)
+
+                            Log.v("UMF", "The choosen one $formattedTime")
+                        }
+                        else {
+                            onDateAndTimePicked.invoke("", "")
+                            binding.root.snackbarOnTop(getString(R.string.please_select_a_future_time))
+                        }
+                    },
+                    currentDate.get(Calendar.HOUR_OF_DAY),
+                    currentDate.get(Calendar.MINUTE),
+                    false
+                ).show()
+            },
+            currentDate.get(Calendar.YEAR),
+            currentDate.get(Calendar.MONTH),
+            currentDate.get(Calendar.DATE)
+        ).show()
+    }
+
     private val videoLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             val contentURI = activityResult.data?.data
@@ -165,7 +271,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             if (f.exists()) {
                 val sizeInMb = (f.length() / 1000) / 1000
                 if (sizeInMb < 2) {
-                    uploadStory()
                 } else {
                     mFilePath = null
                     val ok = resources.getString(R.string.pix_ok)
@@ -180,6 +285,25 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 binding.root.snackbar("${requireActivity().resources.getString(R.string.wrong_path)} $mFilePath")
             }
         }
+
+    private fun showImagePreview(file: File?) {
+        val dialogBinding = DialogPreviewImageBinding.inflate(layoutInflater, null, false)
+
+        val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        dialog.setContentView(dialogBinding.root)
+
+        Glide.with(requireContext())
+            .load(file)
+            .into(dialogBinding.ivPreview)
+
+        dialogBinding.ibClose.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.btnShareMoment.setOnClickListener { showShareOptions {
+            dialog.dismiss()
+        } }
+
+        dialog.show()
+    }
 
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentUserMomentsBinding.inflate(inflater, container, false)
@@ -203,6 +327,15 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 getMainActivity().filePath,
                 getMainActivity().description,
                 getMainActivity().checked
+            )
+        } else if (getMainActivity().isShareLater) {
+            getMainActivity().isShareLater = false
+//            binding.llSharing.visibility = View.VISIBLE
+            scheduleMomentForLater(
+                getMainActivity().filePath,
+                getMainActivity().description,
+                getMainActivity().checked,
+                getMainActivity().publishAt
             )
         }
 
@@ -780,6 +913,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     newMomentToAdd.pk,
                                     newMomentToAdd.comment,
                                     newMomentToAdd.createdDate!!,
+                                    newMomentToAdd.publishAt!!,
                                     newMomentToAdd.file,
                                     newMomentToAdd.id,
                                     newMomentToAdd.like,
@@ -815,65 +949,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     binding.bubble.isVisible = scrollY1 > height
                                 }
                             }
-
-
-//                            newMoment.data?.onNewMoment.
-//                            val newMomentToAdd = newMoment.data?.onNewMoment?.moment
-//
-//                            val newMomentUser = newMoment.data?.onNewMoment?.moment?.user
-//                            val avatar = GetAllUserMomentsQuery.Avatar(
-//                                newMomentUser?.avatar?.url,
-//                                newMomentUser?.avatar?.id.toString(),
-//                                newMomentUser?.avatar?.user
-//                            )
-//                            val avatarPhotos = newMomentUser?.avatarPhotos?.map {
-//                                GetAllUserMomentsQuery.AvatarPhoto(
-//                                    it?.url,
-//                                    it.id,
-//                                    it.user
-//                                )
-//                            }
-//                            val user = GetAllUserMomentsQuery.User(
-//                                newMomentUser?.id.toString(),
-//                                newMomentUser?.email.toString(),
-//                                newMomentUser?.fullName.toString(),
-//                                newMomentUser?.username.toString(),
-//                                newMomentUser?.gender,
-//                                avatar,
-//                                newMomentUser?.onesignalPlayerId,
-//                                avatarPhotos ?: listOf()
-//                            )
-//                            val node = GetAllUserMomentsQuery.Node(
-//                                newMomentToAdd?.pk,
-//                                newMomentToAdd?.comment,
-//                                newMomentToAdd?.createdDate!!,
-//                                newMomentToAdd.file,
-//                                newMomentToAdd.id,
-//                                newMomentToAdd.like,
-//                                newMomentToAdd.momentDescription,
-//                                newMomentToAdd.momentDescriptionPaginated ?: listOf(),
-//                                user
-//                            )
-//                            val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
-//
-//                            Log.d(
-//                                "UserMomentsSub",
-//                                "Initial Size  " + allUserMomentsNew.size.toString()
-//                            )
-//                            allUserMomentsNew.add(0, newMomentEdge)
-//
-//                            Log.d(
-//                                "UserMomentsSub",
-//                                "After Size  " + allUserMomentsNew.size.toString()
-//                            )
-//                            Log.d(
-//                                "UserMomentsSub",
-//                                "Added Moment ${newMomentEdge}"
-//                            )
-//                            CoroutineScope(Dispatchers.Main).launch {
-//                                sharedMomentAdapter.submitList1(allUserMomentsNew)
-//                                //       sharedMomentAdapter.notifyItemInserted(0)
-//                            }
                         }
                     }
             } catch (e2: Exception) {
@@ -1076,6 +1151,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 newMomentToAdd?.pk,
                                 newMomentToAdd?.comment,
                                 newMomentToAdd?.createdDate!!,
+                                newMomentToAdd?.publishAt!!,
                                 newMomentToAdd.file,
                                 newMomentToAdd.id,
                                 newMomentToAdd.like,
@@ -1415,6 +1491,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                     story?.cursor.toString(),
                     GetAllUserMultiStoriesQuery.Node(
                         node?.createdDate!!,
+                        node?.publishAt!!,
                         node.file,
                         node.fileType,
                         node.id,
@@ -1594,6 +1671,81 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         }
     }
 
+    private fun uploadStoryLater(publishAt: String) {
+//        showProgressView()
+        startLoader();
+        lifecycleScope.launchWhenCreated {
+            val f = file
+            val buildder = DefaultUpload.Builder()
+            Log.e("UserStory", "story upload ")
+            buildder.contentType("Content-Disposition: form-data;")
+            buildder.fileName(f.name)
+
+            val upload = buildder.content(f).build()
+            Timber.d("filee ${f.exists()} ${f.length()}")
+            val userToken = getCurrentUserToken()!!
+            Log.d("UserMomentFragment", "userToken $userToken File ${upload.fileName} Publish at: $publishAt")
+            Log.e("UserMomentFragment", "userToken $userToken File ${upload.fileName}")
+            val response: ApolloResponse<ScheduleStoryMutation.Data> = try {
+                Log.e("UserStory", "story upload 1")
+                apolloClient(
+                    context = requireContext(),
+                    token = userToken,
+                    isMultipart = true
+                ).mutation(
+                    ScheduleStoryMutation(file = upload, publishAt)
+                ).execute()
+            } catch (e: ApolloException) {
+                Timber.d("filee Apollo Exception ${e.message}")
+                Log.e("UsermomentsStory", Gson().toJson(e))
+
+                Log.e("UsermomentsStory", "ApolloException==> ${e.message}")
+//                binding.root.snackbar("ApolloException ${e.message}")
+                binding.root.snackbar("${e.message}")
+                return@launchWhenCreated
+            } catch (e: Exception) {
+                Log.e("UsermomentsStory", "Exception==> ${e.message}")
+
+                Log.d("UserMomentFragment", "Exception $e")
+                Timber.d("filee General Exception ${e.message} $userToken")
+                binding.root.snackbar(" ${e.message}")
+                return@launchWhenCreated
+            } finally {
+                stopLoader();
+//                hideProgressView()
+            }
+            Log.d("NewUserMomentFragment", "uploadStoryLater: ${response.data}")
+            if (response.hasErrors()) {
+                Log.d("NewUserMomentFragment", "${response.errors}")
+                Log.e("UsermomentsStory", "ResponceError==> ${response.errors}")
+                Log.e("UsermomentsStory", Gson().toJson(response))
+
+                if(response.errors?.get(0)?.message!=null && response.errors?.get(0)?.message!!.contains("upgrade", true)!!) {
+                    binding.root.snackbarOnTop(
+                        "${response.errors?.get(0)?.message}",
+                        Snackbar.LENGTH_INDEFINITE,
+                        callback = {
+                            //TODO: navigate to package/subscription screen
+                        })
+                }else{
+                    binding.root.snackbarOnTop(
+                        "${response.errors?.get(0)?.message}",
+                        Snackbar.LENGTH_INDEFINITE,
+                        callback = {
+                            //TODO: navigate to package/subscription screen
+                            // findNavController().navigate(R.id.action_global_plan)
+                        })
+                }
+            }
+            Timber.d("filee hasError= $response")
+            Log.e("UsermomentsSuces", Gson().toJson(response))
+            Log.e("UserStory", "story upload 2")
+
+            //   getAllUserStories()
+            getAllUserMultiStories()
+        }
+    }
+
     private fun uploadStory() {
 //        showProgressView()
         startLoader();
@@ -1695,13 +1847,10 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).apply {
             timeZone = TimeZone.getTimeZone("UTC")
         }
-        //   Toast.makeText(requireContext(),"${userStory.stories.edges.size}",Toast.LENGTH_SHORT).show()
-        //findNavController().navigate(R.id.action_user_story_detail_fragment)
-        //requireActivity().openUserStoryDialog(userStory)
-        //    Timber.d("filee ${userStory?.node!!.fileType} ${userStory?.node.file}")
+
         val node = userStory.stories.edges.get(0)?.node
         val url = "${BuildConfig.BASE_URL}media/${node?.file}"
-//        var userurl = ""
+
         var userurl = if (node!!.user!!.avatar != null && node.user!!.avatar!!.url != null) {
             node.user.avatar!!.url!!
         } else {
@@ -1718,52 +1867,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             Date().time,
             DateUtils.MINUTE_IN_MILLIS
         )
-        /*        if (node.fileType.equals("video")) {
-                    val dialog = PlayUserMultiStoryDialogFragment(
-                        object : UserStoryDetailFragment.DeleteCallback {
-                            override fun deleteCallback(objectId: Int) {
-                                // call api for delete
-                                showProgressView()
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    lifecycleScope.launch {
-                                        try {
-                                            apolloClient(requireContext(), userToken!!)
-                                                .mutation(
-                                                    DeleteStoryMutation("$objectId")
-                                                ).execute()
-                                        } catch (e: ApolloException) {
-                                            Timber.d("apolloResponse ${e.message}")
-                                            binding.root.snackbar("Exception ${e.message}")
-                                            hideProgressView()
-                                            return@launch
-                                        }
-                                    }
-                                    hideProgressView()
-                                    getAllUserMultiStories()
-                                }, 1000)
-                            }
-                        }
-                    )
-                    val b = Bundle()
 
-                    b.putString("Uid", UserID)
-                    b.putString("url", url)
-                    b.putString("userurl", userurl)
-                    b.putString("username", username)
-                    b.putString("times", times.toString())
-                    b.putString("token", userToken)
-                    b.putInt("objectID", objectId!!)
-                    b.putBoolean("showDelete", userId == node.user.id)
-
-                    val gson =  Gson()
-                    val json = gson.toJson(userStory.stories)
-                    b.putString("stories",json)
-
-                    dialog.arguments = b
-                    dialog.show(childFragmentManager, "story")
-
-                } else {*/
-        //  val dialog = UserStoryDetailFragment()
         val dialog = UserMultiStoryDetailFragment(
             object : UserMultiStoryDetailFragment.DeleteCallback {
                 override fun deleteCallback(objectId: Int) {
@@ -2067,6 +2171,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
         lifecycleScope.launchWhenResumed {
             val res = try {
+                Log.d("UMF", "getParticularMoments: $width $size $ids")
                 apolloClient(requireContext(), userToken!!).query(
                     GetAllUserMomentsQuery(
                         width,
@@ -2502,6 +2607,70 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         }
     }
 
+
+    private fun scheduleMomentForLater(filePath: File?, description: String?, commentAllowed: Boolean, publishAt: String) {
+        binding.imageviewSharing.loadImage(filePath!!)
+        binding.momentSharing.text = "Uploading..."
+        lifecycleScope.launchWhenCreated {
+
+            val f = filePath!!
+            val buildder = DefaultUpload.Builder()
+            buildder.contentType("Content-Disposition: form-data;")
+            buildder.fileName(f.name)
+            val upload = buildder.content(f).build()
+            Timber.d("filee ${f.exists()}")
+            val userToken = getCurrentUserToken()!!
+
+            Timber.d("useriddd ${mUser?.id}")
+            if (mUser?.id != null) {
+                val response = try {
+
+                    apolloClient(context = requireContext(), token = userToken).mutation(
+                        ScheduleMomentMutation(
+                            file = upload,
+                            detail = description!!,
+                            userField = mUser?.id!!,
+                            allowComment = commentAllowed,
+                            publishAt = publishAt
+                        )
+                    ).execute()
+
+                } catch (e: ApolloException) {
+                    hideProgressView()
+                    Timber.d("filee Apollo Exception ApolloException ${e.message}")
+                    binding.root.snackbar(" ${e.message}")
+                    return@launchWhenCreated
+                } catch (e: Exception) {
+                    hideProgressView()
+                    Timber.d("filee General Exception ${e.message} $userToken")
+                    binding.root.snackbar(" ${e.message}")
+                    return@launchWhenCreated
+                }
+                Log.e("222", "--->" + Gson().toJson(response))
+                hideProgressView()
+
+                if (response.hasErrors()) {
+                    Log.d("NewUserMomentFragment", "${response.errors}")
+                    //binding.root.snackbar("${response.errors?.get(0)?.message}")
+                    binding.root.snackbarOnTop(
+                        "${response.errors?.get(0)?.message}",
+                        Snackbar.LENGTH_INDEFINITE,
+                        callback = {
+                            //TODO: navigate to package/subscription screen
+                        })
+                } else {
+                    binding.root.snackbar("New Moment scheduled for later")
+                    binding.llSharing.visibility = View.GONE
+//                    endCursor = ""
+//                    getMainActivity().mViewModelUser.userMomentsList.clear()
+//                    getUserMomentNextPage(width, size, 10, endCursor)
+                }
+            } else {
+
+            }
+            binding.llSharing.visibility = View.GONE
+        }
+    }
 
 }
 

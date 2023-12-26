@@ -5,5 +5,5 @@ extensions:
       url: https://api.chatadmin-mod.click/
       headers:
         user-agent: JS GraphQL
-        Authorization: Token 3bd87fb0db0f83e0745f5e7ba402416f8ed500c8
+        Authorization: Token 06bcdcddee18f8cb88f28600c102764a5d587214
       introspect: false

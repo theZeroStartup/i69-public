@@ -492,4 +492,11 @@
     <string name="label_buy">Buy</string>
 
     <string name="account_deleted_error">Sign In Failed! You have deleted your profile. Please contact us to re-join.</string>
+    <string name="share_now">Share now</string>
+    <string name="schedule_for_later">Schedule for later</string>
+    <string name="set">Set</string>
+    <string name="share_options">Share Options</string>
+    <string name="please_select_a_future_date">Please select a future date</string>
+    <string name="please_select_a_future_time">Selected time has to be greater than current time</string>
+    <string name="proceed">Proceed</string>
 </resources>
