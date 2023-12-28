@@ -217,6 +217,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
     private fun finalizeViewPagerSetup(userHasMoments: Boolean, data: VMProfile.DataCombined) {
         binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
+        binding.userDataViewPager.isSaveEnabled = false;
         binding.userDataViewPager.adapter =
             viewModel.setupViewPager(
                 childFragmentManager,
@@ -257,9 +258,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
             binding.stringConstant = it.value
 //            Log.e("MydataBasesss", it.value!!.messages)
         }
-        if (TempConstants.LanguageChanged) {
-            navController.navigate(com.i69.R.id.action_userProfileFragment_to_userEditProfileFragment)
-        }
+//        if (TempConstants.LanguageChanged) {
+//            navController.navigate(com.i69.R.id.action_userProfileFragment_to_userEditProfileFragment)
+//        }
 
         binding.userBaseInfo.visibility = View.GONE
         binding.otherProfileLayout.rvOtherprofile.visibility = View.GONE

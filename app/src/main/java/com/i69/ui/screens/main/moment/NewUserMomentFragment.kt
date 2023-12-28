@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -54,6 +55,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
     private val viewModel: UserViewModel by activityViewModels()
     private var mFilePath: String = ""
     lateinit var file: File
+    lateinit var fileType: String
     protected var mUser: User? = null
     final var DRAWABLE_LEFT = 0
     final var DRAWABLE_TOP = 1
@@ -67,6 +69,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 mFilePath = data?.getStringExtra("result").toString()
                 file = File(mFilePath)
+                fileType = ".jpg"
                 Timber.d("fileBase64 $mFilePath")
 //            val uri=Uri.parse(mFilePath)
                 //binding.cropView.setUri(uri);
@@ -84,7 +87,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
                 //binding.cropView.crop()
 
-                showImagePreview(file)
+                showFilePreview(file, fileType)
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
@@ -99,6 +102,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                 val openInputStream =
                     requireActivity().contentResolver?.openInputStream(data?.data!!)
                 val type = if (result?.contains("video") == true) ".mp4" else ".jpg"
+                fileType = type
                 val outputFile =
                     requireContext().filesDir.resolve("${System.currentTimeMillis()}$type")
                 openInputStream?.copyTo(outputFile.outputStream())
@@ -122,7 +126,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                 //binding.cropView.crop()
 
 
-                showImagePreview(file)
+                showFilePreview(file, fileType)
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
@@ -179,32 +183,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 //        }
 
         binding.btnSelectFileToUpload.setOnClickListener {
-            /*        val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
-                    photosLauncher.launch(intent)*/
-//            val dialog = Dialog(requireContext())
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//            dialog.setCancelable(true)
-//            dialog.setContentView(R.layout.dialog_image_option)
-//            dialog.findViewById<TextView>(R.id.header_title).text=
-//                AppStringConstant1.select_moment_pic
-////                resources.getString(R.string.select_moment_pic)
-//            dialog.findViewById<LinearLayoutCompat>(R.id.ll_camera).setOnClickListener {
-//                val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
-//                intent.putExtra("withCrop", false)
-//                photosLauncher.launch(intent)
-//                dialog.dismiss()
-//            }
-//            dialog.findViewById<LinearLayoutCompat>(R.id.ll_gallery).setOnClickListener {
-//                galleryImageLauncher.launch(
-//                    Intent(
-//                        Intent.ACTION_PICK,
-//                        MediaStore.Images.Media.INTERNAL_CONTENT_URI
-//                    )
-//                )
-//                dialog.dismiss()
-//            }
-//            dialog.show()
-
+            hideKeyboard(it)
             val inflater =
                 requireContext().applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.layout_attach_moment, null)
@@ -236,7 +215,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             mypopupWindow.showAsDropDown(it, (-it.x).toInt(), 0)
         }
 
-        binding.imgUploadFile.setOnClickListener { if (this::file.isInitialized) showImagePreview(file) }
+        binding.imgUploadFile.setOnClickListener { if (this::file.isInitialized) showFilePreview(file, fileType) }
 
         /*binding.editWhatsGoing.setOnTouchListener(OnTouchListener { _, event ->
 
@@ -265,6 +244,10 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             binding.rbAllowed.isChecked = false
             binding.rbNotAllowed.isChecked = true
         }
+
+        binding.rbAllowed.setOnClickListener { binding.cdAllowedComment.performClick() }
+
+        binding.rbNotAllowed.setOnClickListener { binding.cdNotAllowedComment.performClick() }
 
 //        if(binding.checkPermission.isChecked){
 //            binding.checkPermission.isChecked = false
@@ -346,15 +329,42 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         }
     }
 
-    private fun showImagePreview(file: File?) {
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun showFilePreview(file: File?, fileType: String) {
         val dialogBinding = DialogPreviewImageBinding.inflate(layoutInflater, null, false)
 
         val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.setContentView(dialogBinding.root)
+        dialog.window?.setBackgroundDrawableResource(R.color.color_transparant_80)
 
-        Glide.with(requireContext())
-            .load(file)
-            .into(dialogBinding.ivPreview)
+
+        if (fileType == ".jpg") {
+            dialogBinding.ivPreview.setViewVisible()
+            dialogBinding.vvPreview.setViewGone()
+            Glide.with(requireContext())
+                .load(file)
+                .into(dialogBinding.ivPreview)
+        }
+        else {
+            dialogBinding.ivPreview.setViewGone()
+            dialogBinding.vvPreview.setViewVisible()
+            dialogBinding.vvPreview.setVideoPath(file?.path)
+            dialogBinding.vvPreview.start()
+            dialogBinding.vvPreview.setOnCompletionListener {
+                if (dialog.isShowing && it != null) dialogBinding.vvPreview.start()
+            }
+        }
 
         dialogBinding.ibClose.setViewGone()
 
@@ -427,8 +437,8 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
     }
 
     private fun isUserHasPremiumSubscription(): Boolean {
-        return mUser?.userSubscription?.isActive == true
-//        return true
+//        return mUser?.userSubscription?.isActive == true
+        return true
     }
 
     private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {

@@ -1153,8 +1153,8 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
 
             var publishAt = node.publishAt.toString()
             var publishTimeInMillis = ""
-            if (publishAt.isNotEmpty()) {
-                publishAt = publishAt.replace("T", " ").substring(0, text.indexOf("."))
+            if (publishAt.isNotEmpty() && publishAt != "null") {
+                publishAt = publishAt.replace("T", " ").substring(0, publishAt.indexOf("+"))
                 val momentPublishTime = formatter.parse(publishAt)
                 publishTimeInMillis = DateUtils.getRelativeTimeSpanString(
                     momentPublishTime.time,

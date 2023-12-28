@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 129,
-      "versionName": "64.5.2",
+      "versionCode": 132,
+      "versionName": "64.5.5",
       "outputFile": "app-staging-release.apk"
     }
   ],

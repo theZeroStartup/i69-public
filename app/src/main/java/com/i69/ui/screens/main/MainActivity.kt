@@ -45,6 +45,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.*
+import com.google.android.material.navigation.NavigationView
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -97,7 +98,7 @@ import kotlin.random.Random
 
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private val mViewModel: UserViewModel by viewModels()
 
@@ -1840,6 +1841,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             R.navigation.nav_user_profile_graph
         )
         val bottomNav = findViewById<MyBottomNavigation>(R.id.bottomNavigation)
+        bottomNav.setOnItemSelectedListener(this)
         bottomNav1 = bottomNav
 
 
@@ -1875,6 +1877,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 displayMetrics
             ).toInt()
         )
+
 
 
 
@@ -2146,4 +2149,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         this.dialog = dialog
         this.dialog!!.show(childFragmentManager, s)
     }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        Log.d("OnBottomNavPressed", "onNavigationItemSelected: ${item.itemId}")
+        if (item.itemId == R.id.nav_user_profile_graph) {
+            openProfileScreen()
+        }
+        return false
+    }
+
+
 }

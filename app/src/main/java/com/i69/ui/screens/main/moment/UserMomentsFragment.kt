@@ -138,7 +138,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 file = File(mFilePath)
                 Timber.d("fileBase64 $mFilePath")
                 Log.d("UserMomentFragment", "Photo Choosed")
-                showImagePreview(file)
+                showFilePreview(file, ".jpg")
             }
         }
     val galleryImageLauncher =
@@ -155,7 +155,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 openInputStream?.copyTo(outputFile.outputStream())
                 file = File(outputFile.toURI())
                 Timber.d("fileBase64 $mFilePath")
-                showImagePreview(file)
+                showFilePreview(file, type)
             }
         }
 
@@ -201,6 +201,9 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             }
         }
 
+        bottomsheet.rbShareNow.setOnClickListener { bottomsheet.cvShareNow.performClick() }
+        bottomsheet.rbShareLater.setOnClickListener { bottomsheet.cvShareLater.performClick() }
+
         bottomsheet.btnShareMoment.setOnClickListener {
             if (shareOptionsDialog.isShowing) shareOptionsDialog.dismiss()
             onShared.invoke()
@@ -219,8 +222,8 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     }
 
     private fun isUserHasPremiumSubscription(): Boolean {
-        return mUser?.userSubscription?.isActive == true
-//        return true
+//        return mUser?.userSubscription?.isActive == true
+        return true
     }
 
     private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {
@@ -286,15 +289,29 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             }
         }
 
-    private fun showImagePreview(file: File?) {
+    private fun showFilePreview(file: File?, fileType: String) {
         val dialogBinding = DialogPreviewImageBinding.inflate(layoutInflater, null, false)
 
         val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.setContentView(dialogBinding.root)
+        dialog.window?.setBackgroundDrawableResource(R.color.color_transparant_80)
 
-        Glide.with(requireContext())
-            .load(file)
-            .into(dialogBinding.ivPreview)
+        if (fileType == ".jpg") {
+            dialogBinding.ivPreview.setViewVisible()
+            dialogBinding.vvPreview.setViewGone()
+            Glide.with(requireContext())
+                .load(file)
+                .into(dialogBinding.ivPreview)
+        }
+        else {
+            dialogBinding.ivPreview.setViewGone()
+            dialogBinding.vvPreview.setViewVisible()
+            dialogBinding.vvPreview.setVideoPath(file?.path)
+            dialogBinding.vvPreview.start()
+            dialogBinding.vvPreview.setOnCompletionListener {
+                if (dialog.isShowing && it != null) dialogBinding.vvPreview.start()
+            }
+        }
 
         dialogBinding.ibClose.setOnClickListener { dialog.dismiss() }
 
@@ -1233,8 +1250,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                             )
 
 
-                            val user =
-                                stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }
+                            val user = stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }
                                     .filter { it?.batchNumber == newStory.data?.onNewStory?.batchNumber }
 
                             if (user.isEmpty()) {
@@ -1720,12 +1736,14 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("UsermomentsStory", "ResponceError==> ${response.errors}")
                 Log.e("UsermomentsStory", Gson().toJson(response))
 
-                if(response.errors?.get(0)?.message!=null && response.errors?.get(0)?.message!!.contains("upgrade", true)!!) {
+                if(response.errors?.get(0)?.message!=null && response.errors?.get(0)?.message!!
+                        .contains("purchase a package", true)
+                ) {
                     binding.root.snackbarOnTop(
                         "${response.errors?.get(0)?.message}",
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
-                            //TODO: navigate to package/subscription screen
+                            findNavController().navigate(R.id.action_global_plan)
                         })
                 }else{
                     binding.root.snackbarOnTop(
@@ -1733,7 +1751,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
                             //TODO: navigate to package/subscription screen
-                            // findNavController().navigate(R.id.action_global_plan)
                         })
                 }
             }
@@ -1794,12 +1811,14 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("UsermomentsStory", "ResponceError==> ${response.errors}")
                 Log.e("UsermomentsStory", Gson().toJson(response))
 
-                if(response.errors?.get(0)?.message!=null && response.errors?.get(0)?.message!!.contains("upgrade", true)!!) {
+                if(response.errors?.get(0)?.message!=null
+                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)
+                ) {
                     binding.root.snackbarOnTop(
                         "${response.errors?.get(0)?.message}",
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
-                            //TODO: navigate to package/subscription screen
+                             findNavController().navigate(R.id.action_global_plan)
                         })
                 }else{
                     binding.root.snackbarOnTop(
@@ -1807,7 +1826,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
                             //TODO: navigate to package/subscription screen
-                            // findNavController().navigate(R.id.action_global_plan)
                         })
                 }
             }
@@ -2584,14 +2602,15 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                if (response.hasErrors()) {
+                if (response.hasErrors()
+                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                     Log.d("NewUserMomentFragment", "${response.errors}")
                     //binding.root.snackbar("${response.errors?.get(0)?.message}")
                     binding.root.snackbarOnTop(
                         "${response.errors?.get(0)?.message}",
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
-                            //TODO: navigate to package/subscription screen
+                            findNavController().navigate(R.id.action_global_plan)
                         })
                 } else {
                     binding.root.snackbar("New Moment Shared")
@@ -2649,14 +2668,15 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                if (response.hasErrors()) {
+                if (response.hasErrors()
+                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                     Log.d("NewUserMomentFragment", "${response.errors}")
                     //binding.root.snackbar("${response.errors?.get(0)?.message}")
                     binding.root.snackbarOnTop(
                         "${response.errors?.get(0)?.message}",
                         Snackbar.LENGTH_INDEFINITE,
                         callback = {
-                            //TODO: navigate to package/subscription screen
+                            findNavController().navigate(R.id.action_global_plan)
                         })
                 } else {
                     binding.root.snackbar("New Moment scheduled for later")

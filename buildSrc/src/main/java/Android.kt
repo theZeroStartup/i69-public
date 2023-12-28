@@ -5,8 +5,8 @@ object Android {
     const val buildTools = "33.0.1"
     const val minSdk = 21
     const val targetSdk = 33
-    const val versionCode = 130
-    const val versionName = "64.5.3"
+    const val versionCode = 133
+    const val versionName = "64.5.6"
 //  const val targetSdk = 32
 //  const val versionCode = 78
 //  const val 4 = "2.1.7"

@@ -669,6 +669,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
     private fun finalizeViewPagerSetup(userHasMoments: Boolean, data: VMProfile.DataCombined) {
         binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
+        binding.userDataViewPager.isSaveEnabled = false;
         binding.userDataViewPager.adapter = viewModel.setupViewPager(
             childFragmentManager,
             data?.user,

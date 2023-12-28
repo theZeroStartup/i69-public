@@ -44,12 +44,6 @@ import java.util.*
 @AndroidEntryPoint
 class UserEditProfileFragment : BaseEditProfileFragment(), AdapterView.OnItemSelectedListener {
 
-    private var selectedSeriousRelationship: com.i69.data.enums.InterestedInGender? = null
-    private var selectedCausalDating: com.i69.data.enums.InterestedInGender? = null
-    private var selectedNewFriends: com.i69.data.enums.InterestedInGender? = null
-    private var selectedRoommates: com.i69.data.enums.InterestedInGender? = null
-    private var selectedBusinessContacts: com.i69.data.enums.InterestedInGender? = null
-
     private val viewModel: UserViewModel by activityViewModels()
 
     var user: User? = null
