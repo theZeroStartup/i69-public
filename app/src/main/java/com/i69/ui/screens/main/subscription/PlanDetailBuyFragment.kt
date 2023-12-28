@@ -20,6 +20,7 @@ import com.i69.data.models.PlanBnefits
 import com.i69.databinding.FragmentPlanDetailBinding
 import com.i69.ui.adapters.*
 import com.i69.ui.base.BaseFragment
+import com.i69.ui.screens.main.MainActivity
 import com.i69.utils.*
 import timber.log.Timber
 
@@ -172,31 +173,13 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
                 Log.e("myCurrentPlanSelected", selectedPackageTitle)
                 if (response.data!!.userSubscription!!.`package` != null) {
-//                    if (response.data!!.userSubscription!!.`package`!!.name.contains(
-//                            "silver",
-//                            true
-//                        )
-//                    )
-                    if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                            AppStringConstant1.silver,
-                            true
-                        )
-                    ) {
-                        if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            )
-                        ) {
+                    if (response.data!!.userSubscription!!.`package`!!.name.contains(AppStringConstant1.silver, true)) {
+                        if (response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)) {
                             Log.e("silver", "silver")
 
                             purchaseSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) &&
-                            selectedPackageTitle.contains(AppStringConstant1.gold, true)
-//                            selectedPackageTitle.contains("gold", true)
-                        ) {
+                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)
+                            && selectedPackageTitle.contains(AppStringConstant1.gold, true)) {
                             Log.e("silver", "gold")
                             upgradeSubsription(response.data!!.userSubscription!!.plan!!.id!!.toInt())
                         } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
@@ -212,31 +195,12 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                             Log.e("silver", "purchase")
                             purchaseSubsription()
                         }
-                    } else if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                            AppStringConstant1.gold,
-                            true
-                        )
-//                        if (response.data!!.userSubscription!!.`package`!!.name.contains(
-//                            "gold",
-//                            true
-//                        )
-                    ) {
-                        if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            )
-                        ) {
+                    } else if (response.data!!.userSubscription!!.`package`!!.name.contains(AppStringConstant1.gold, true)) {
+                        if (response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)) {
                             Log.e("gold", "gold")
                             purchaseSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) &&
-//                            selectedPackageTitle.contains("silver", true)
-                            selectedPackageTitle.contains(AppStringConstant1.silver, true)
-                        ) {
-
-
+                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)
+                            && selectedPackageTitle.contains(AppStringConstant1.silver, true)) {
                             Log.e("gold", "silver")
                             downGradeSubsription()
                         } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
@@ -355,7 +319,9 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                                 )
                             })
                     } else {
-                        binding.root.snackbar(errorMessage)
+                        binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
+                            (requireActivity() as MainActivity).openProfileScreen()
+                        }
                     }
                 }
             } else {
@@ -367,9 +333,13 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                 )
                 hideProgressView()
 
-                if (response.data!!.purchasePackage!!.success!!) {
-                    findNavController().popBackStack()
+                binding.root.autoSnackbarOnTop("Subscription active", Snackbar.LENGTH_LONG) {
+                    (requireActivity() as MainActivity).openProfileScreen()
                 }
+//                if (response.data!!.upgradePackage!!.success!!) {
+//                    findNavController().popBackStack()
+//                }
+
 
             }
 
@@ -412,7 +382,9 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                                 )
                             })
                     } else {
-                        binding.root.snackbar(errorMessage)
+                        binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
+                            (requireActivity() as MainActivity).openProfileScreen()
+                        }
                     }
                 }
             } else {
@@ -424,10 +396,15 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                 )
 
                 hideProgressView()
-                response.data!!.downgradePackage!!.message?.let { binding.root.snackbar(it) }
-                if (response.data!!.downgradePackage!!.success!!) {
-                    findNavController().popBackStack()
+                response.data!!.downgradePackage!!.message?.let {
+                    binding.root.autoSnackbarOnTop(it, Snackbar.LENGTH_LONG) {
+                        (requireActivity() as MainActivity).openProfileScreen()
+                    }
                 }
+//                if (response.data!!.upgradePackage!!.success!!) {
+//                    findNavController().popBackStack()
+//                }
+
 
             }
 
@@ -470,7 +447,9 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                                 )
                             })
                     } else {
-                        binding.root.snackbar(errorMessage)
+                        binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
+                            (requireActivity() as MainActivity).openProfileScreen()
+                        }
                     }
                 }
             } else {
@@ -482,10 +461,14 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                 )
                 hideProgressView()
 
-                response.data!!.upgradePackage!!.message?.let { binding.root.snackbar(it) }
-                if (response.data!!.upgradePackage!!.success!!) {
-                    findNavController().popBackStack()
+                response.data!!.upgradePackage!!.message?.let {
+                    binding.root.autoSnackbarOnTop(it, Snackbar.LENGTH_LONG) {
+                        (requireActivity() as MainActivity).openProfileScreen()
+                    }
                 }
+//                if (response.data!!.upgradePackage!!.success!!) {
+//                    findNavController().popBackStack()
+//                }
 
 
             }

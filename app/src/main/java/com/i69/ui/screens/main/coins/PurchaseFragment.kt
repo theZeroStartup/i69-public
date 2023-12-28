@@ -41,6 +41,7 @@ import com.google.android.material.textview.MaterialTextView
 import androidx.activity.result.ActivityResult
 
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.i69.*
 import com.i69.R
@@ -1604,7 +1605,11 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
                         Log.e("myPurchaseCoinResponce", Gson().toJson(response))
                         viewModel.loadCurrentUser(userId, token = userToken, true)
                         hideProgressView()
-                        congratulationsToast(selectedCoins)
+
+                        val successMsg = String.format(AppStringConstant1.congrats_purchase, selectedCoins)
+                        binding.root.autoSnackbarOnTop(successMsg, Snackbar.LENGTH_LONG) {
+                            (requireActivity() as MainActivity).openProfileScreen()
+                        }
                     } else {
                         Log.e("myPurchaseCoinResponce", Gson().toJson(response))
 //                        onFailureListener(getString(R.string.something_went_wrong))

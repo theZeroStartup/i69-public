@@ -234,7 +234,8 @@ class SearchRepository @Inject constructor(
         callback: (List<User>, List<User>, List<User>, String?, MyPermission,MyPermission,MyPermission) -> Unit
     ) {
         try {
-            Log.d("TAG", "getUsers: ${query.getGraphqlApiBody()}")
+            Log.d("SRTAG", "getUsers: $query")
+            Log.d("SRTAG", "getUsers: ${query.getGraphqlApiBody()}")
             val result = api.callApi(token = "Token $token", body = query.getGraphqlApiBody())
             val jsonObject = Gson().fromJson(result.body(), JsonObject::class.java)
 
@@ -285,11 +286,9 @@ class SearchRepository @Inject constructor(
                         }
                     }
 
-                    if (randomUsersJsonArray != null) {
-                        randomUsersJsonArray.forEach { jsonElement ->
-                            val json = Gson().fromJson(jsonElement, User::class.java)
-                            randomUsersList.add(json)
-                        }
+                    randomUsersJsonArray?.forEach { jsonElement ->
+                        val json = Gson().fromJson(jsonElement, User::class.java)
+                        randomUsersList.add(json)
                     }
 
                     var popularUsersJsonArray: JsonArray? = null;

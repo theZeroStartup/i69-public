@@ -92,7 +92,12 @@
         android:id="@+id/planDetailFragment"
         android:name="com.i69.ui.screens.main.subscription.PlanDetailBuyFragment"
         android:label="@string/buy_coins"
-        tools:layout="@layout/fragment_plan_detail" />
+        tools:layout="@layout/fragment_plan_detail" >
+        <action
+            android:id="@+id/actionGoToUserProfile"
+            app:destination="@id/userProfileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 
     <fragment

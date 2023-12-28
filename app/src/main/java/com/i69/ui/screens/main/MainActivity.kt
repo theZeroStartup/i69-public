@@ -1687,7 +1687,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
         binding.bottomNavigation.selectedItemId = R.id.nav_chat_graph
     }
 
-    private fun openProfileScreen() {
+    fun openProfileScreen() {
         //navController.navigate(R.id.action_global_user_profile)
         binding.bottomNavigation.selectedItemId = R.id.nav_user_profile_graph
     }

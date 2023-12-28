@@ -28,6 +28,7 @@ import androidx.core.view.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.i69.R
 import com.i69.data.models.IdWithValue
@@ -173,6 +174,51 @@ fun View.snackbarOnTop(message: String, duration: Int = Snackbar.LENGTH_LONG, ca
         }.show()
 }
 
+fun View.autoSnackbarOnTop(message: String, duration: Int = Snackbar.LENGTH_LONG, callback: (() -> Unit)? = null) {
+    Snackbar
+        .make(this, message, duration)
+        .also { snackbar ->
+            snackbar.setAction("Ok") {
+                snackbar.dismiss()
+                callback?.invoke()
+            }
+            snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            val view = snackbar.view
+
+            snackbar.addCallback(object: Snackbar.Callback() {
+                override fun onDismissed(snackbar: Snackbar, event: Int) {
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        callback?.invoke()
+                    }
+                }
+
+                override fun onShown(snackbar: Snackbar) {}
+            })
+
+            if(view.layoutParams is FrameLayout.LayoutParams){
+                val params = view.layoutParams as FrameLayout.LayoutParams
+                params.gravity = Gravity.TOP
+                view.layoutParams = params
+            }else{
+                val params = view.layoutParams as CoordinatorLayout.LayoutParams
+                params.gravity = Gravity.TOP
+                view.layoutParams = params
+            }
+//            val params = view.layoutParams as FrameLayout.LayoutParams
+
+            view.background = ContextCompat.getDrawable(this.context, R.drawable.rounded_yellow_btn_snackbar)
+            val px16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, this.resources.displayMetrics)
+            view.updatePadding(top = 12, bottom = 12, left = px16.roundToInt(), right = px16.roundToInt())
+
+            val actionBtn = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
+            actionBtn.background = ContextCompat.getDrawable(this.context, R.drawable.snackbar_background)
+
+            val text = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            text.isSingleLine = false
+            text.setTextColor(ContextCompat.getColor(context, R.color.white))
+            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+        }.show()
+}
 
 fun View.hideKeyboard() {
     /*val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
