@@ -1304,6 +1304,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
             binding.clNotification.visibility = GONE
             handler.removeCallbacks(runnable)
         }
+
+        binding.ivDismissNotification.setOnClickListener { binding.clNotification.visibility = GONE }
     }
 
     private fun updateLanguage(id: String, token: String) {

@@ -353,6 +353,7 @@ class NewChatMessagesAdapter(
                         val items = content?.split(",")?.toTypedArray()
                         latitude = items?.get(0)?.toDouble() ?: 0.0
                         longitude = items?.get(1)?.toDouble() ?: 0.0
+
                     } catch (throwable: Throwable) {
                         throwable.printStackTrace()
                     }
