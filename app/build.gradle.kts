@@ -13,8 +13,8 @@ plugins {
 }
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
 
     signingConfigs {
         create("release") {
@@ -54,7 +54,7 @@ android {
              isShrinkResources=true*/
 
             signingConfig = signingConfigs.getByName("release")
-            isDebuggable = false
+            isDebuggable = true
 
             /*buildConfigField("String", "BASE_URL", "\"https://api.i69app.com/\"")
             buildConfigField("String", "BASE_URL_REP", "\"http://95.216.208.1:8000/\"")

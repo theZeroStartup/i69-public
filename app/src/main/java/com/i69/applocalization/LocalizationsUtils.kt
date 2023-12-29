@@ -28,7 +28,6 @@ fun getLoalizations(
         appStringConst.sign_in_app_description = LocalStringConstants.sign_in_app_description
         appStringConst.search = LocalStringConstants.search
         appStringConst.search_drawer = LocalStringConstants.search_drawer
-//        appStringConst.google_maps_key = LocalStringConstants.google_maps_key
         appStringConst.language_label = LocalStringConstants.language_label
         appStringConst.select_language = LocalStringConstants.select_language
         appStringConst.profile_complete_title = LocalStringConstants.profile_complete_title

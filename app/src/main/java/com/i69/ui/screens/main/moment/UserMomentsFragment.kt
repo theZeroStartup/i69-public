@@ -938,6 +938,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     newMomentToAdd.momentDescriptionPaginated ?: listOf(),
                                     user
                                 )
+                                Log.d("UMF", "subscribeForNewMoment: $node")
                                 val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
 
                                 Log.d(
@@ -957,7 +958,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 CoroutineScope(Dispatchers.Main).launch {
                                     Log.e("obj_node", "submitList1 801")
                                     sharedMomentAdapter.submitList1(allUserMomentsNew)
-                                    //       sharedMomentAdapter.notifyItemInserted(0)
+//                                           sharedMomentAdapter.notifyItemInserted(0)
 
                                     Log.e(
                                         "TAG",
