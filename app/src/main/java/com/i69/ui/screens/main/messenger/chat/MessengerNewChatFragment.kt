@@ -1825,7 +1825,8 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
         val intentFilter = IntentFilter()
         intentFilter.addAction("gift_Received")
 //        intentFilter.addAction("sent_message")
-        activity?.registerReceiver(broadCastReceiver, intentFilter)
+        activity?.registerReceiver(broadCastReceiver, intentFilter,
+            Context.RECEIVER_NOT_EXPORTED)
         Handler(Looper.getMainLooper()).postDelayed({
             kotlin.run {
 

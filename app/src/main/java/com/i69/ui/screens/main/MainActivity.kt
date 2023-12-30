@@ -1278,7 +1278,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
     }
 
     override fun setupClickListeners() {
-        registerReceiver(notiBroadcastReceiver, IntentFilter(ACTION_NEW_NOTIFICATION))
+        registerReceiver(notiBroadcastReceiver, IntentFilter(ACTION_NEW_NOTIFICATION),
+            Context.RECEIVER_NOT_EXPORTED
+        )
         binding.clNotification.setOnClickListener {
             remoteMessage?.let { messageBody ->
                 try {
@@ -1624,7 +1626,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
         intentFilter.addAction("com.my.app.onMessageReceived")
         intentFilter.addAction("gift_Received_1")
         intentFilter.addAction("notification_received")
-        registerReceiver(broadCastReceiver, intentFilter)
+        registerReceiver(broadCastReceiver, intentFilter,
+            Context.RECEIVER_NOT_EXPORTED)
 
 //        val intentFilter1 = IntentFilter()
 //        intentFilter1.addAction("notification_received")

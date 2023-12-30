@@ -3,6 +3,7 @@ package com.i69.ui.base
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.*

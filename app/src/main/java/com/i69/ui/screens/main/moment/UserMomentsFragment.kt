@@ -926,11 +926,12 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     newMomentUser?.onesignalPlayerId,
                                     avatarPhotos ?: listOf()
                                 )
+                                Log.d("UMF", "subscribeForNewMoment: ${newMomentToAdd.publishAt}")
                                 val node = GetAllUserMomentsQuery.Node(
                                     newMomentToAdd.pk,
                                     newMomentToAdd.comment,
-                                    newMomentToAdd.createdDate!!,
-                                    newMomentToAdd.publishAt!!,
+                                    newMomentToAdd.createdDate,
+                                    "",
                                     newMomentToAdd.file,
                                     newMomentToAdd.id,
                                     newMomentToAdd.like,
@@ -1553,7 +1554,8 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         super.onResume()
         val intentFilter = IntentFilter()
         intentFilter.addAction("moment_added")
-        activity?.registerReceiver(broadCastReceiver, intentFilter)
+        activity?.registerReceiver(broadCastReceiver, intentFilter,
+            Context.RECEIVER_NOT_EXPORTED)
         getMainActivity().setDrawerItemCheckedUnchecked(null)
     }
 
