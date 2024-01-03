@@ -1562,7 +1562,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         return newList
     }
 
-    override fun onPause(){
+    override fun onPause() {
         if (this::sharedMomentAdapter.isInitialized) {
             sharedMomentAdapter.pauseAll()
         }

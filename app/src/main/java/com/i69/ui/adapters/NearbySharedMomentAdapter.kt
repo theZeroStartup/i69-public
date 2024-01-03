@@ -152,7 +152,6 @@ class NearbySharedMomentAdapter(
     }
 
     fun pauseAll() {
-        Log.d("NSMA", "pauseAll: ")
         selectedItemPosition = -1
         notifyDataSetChanged()
     }
@@ -165,6 +164,7 @@ class NearbySharedMomentAdapter(
         RecyclerView.ViewHolder(viewBinding.root) {
 
         private var context: Context? = null
+        var exoPlayer: ExoPlayer? = null
 
         fun bind(position: Int, item_data: GetAllUserMomentsQuery.Edge?, ctx: Context) {
             context = ctx
@@ -500,8 +500,6 @@ class NearbySharedMomentAdapter(
             return itemData?.node?.file.toString().endsWith(".jpg") || itemData?.node?.file.toString().endsWith(".jpeg") ||
                     itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
         }
-
-        var exoPlayer: ExoPlayer? = null
 
         private fun initPlayer() {
             exoPlayer = context?.let { ExoPlayer.Builder(it).build() }
