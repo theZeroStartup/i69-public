@@ -16,6 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo3.exception.ApolloException
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.i69.*
@@ -61,6 +64,46 @@ class FeedsFragment : BaseFragment<FragmentFeedBinding>() ,
     private var userId: String? = null
     private val mViewModel: UserMomentsModelView by activityViewModels()
     private val viewStringConstModel: AppStringConstantViewModel by activityViewModels()
+
+    private lateinit var exoPlayer: ExoPlayer
+
+    override fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer {
+        exoPlayer.apply {
+            setMediaItem(mediaItem, false)
+            this.playWhenReady = playWhenReady
+            repeatMode = Player.REPEAT_MODE_OFF
+            prepare()
+        }
+        return exoPlayer
+    }
+
+    override fun isPlaying(): Boolean {
+        return exoPlayer.isPlaying
+    }
+
+    override fun pauseVideo() {
+        if (isPlaying())
+            exoPlayer.pause()
+    }
+
+    override fun onPause() {
+        if (exoPlayer.isPlaying) exoPlayer.pause()
+        if (this::sharedMomentAdapter.isInitialized) {
+            sharedMomentAdapter.pauseAll()
+        }
+        super.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        exoPlayer = ExoPlayer.Builder(requireContext()).build()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        exoPlayer.stop()
+        exoPlayer.release()
+    }
 
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentFeedBinding.inflate(inflater, container, false)

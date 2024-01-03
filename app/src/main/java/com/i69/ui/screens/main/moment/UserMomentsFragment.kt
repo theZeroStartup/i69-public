@@ -42,6 +42,10 @@ import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.content
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -131,6 +135,46 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     private var mUser: User? = null
 
     private lateinit var receivedGiftbottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+
+    private lateinit var exoPlayer: ExoPlayer
+
+    override fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer {
+        exoPlayer.apply {
+            setMediaItem(mediaItem, false)
+            this.playWhenReady = playWhenReady
+            repeatMode = Player.REPEAT_MODE_OFF
+            prepare()
+        }
+        return exoPlayer
+    }
+
+    override fun isPlaying(): Boolean {
+        return exoPlayer.isPlaying
+    }
+
+    override fun pauseVideo() {
+        if (isPlaying())
+            exoPlayer.pause()
+    }
+
+    override fun onPause() {
+        if (exoPlayer.isPlaying) exoPlayer.pause()
+        if (this::sharedMomentAdapter.isInitialized) {
+            sharedMomentAdapter.pauseAll()
+        }
+        super.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        exoPlayer = ExoPlayer.Builder(requireContext()).build()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        exoPlayer.stop()
+        exoPlayer.release()
+    }
 
     private val photosLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
@@ -1560,13 +1604,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             )
         }
         return newList
-    }
-
-    override fun onPause() {
-        if (this::sharedMomentAdapter.isInitialized) {
-            sharedMomentAdapter.pauseAll()
-        }
-        super.onPause()
     }
 
     override fun onResume() {
