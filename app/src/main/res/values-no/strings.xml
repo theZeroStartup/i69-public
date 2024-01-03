@@ -11,7 +11,7 @@
     <string name="select_language">Velg språk</string>
     <string name="account_deleted_error">Logg på mislykket! Du har slettet profilen din. Kontakt oss for å bli med på nytt.</string>
     <string name="do_you_want_to_leave_this_page">Vil du forlate denne siden?</string>
-
+    <string name="email_sent">E -post sendt vellykket</string>
     <string name="profile_complete_title">KOMPLETT PROFIL</string>
     <string name="profile_edit_title">REDIGER PROFIL</string>
     <string name="done">Ferdig</string>

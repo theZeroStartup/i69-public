@@ -9,7 +9,7 @@
     <string name="search_drawer">VYHLEDÁVÁNÍ</string>
     <string name="language_label">Jazyk</string>
     <string name="select_language">Zvolte jazyk</string>
-
+    <string name="email_sent">Email úspěšně odeslán</string>
     <string name="account_deleted_error">Přihlásit se! Odstranili jste svůj profil. Kontaktujte nás, abyste se znovu připojili.</string>
     
     <string name="profile_complete_title">KOMPLETNÍ PROFIL</string>

@@ -10,7 +10,7 @@
     <string name="search_drawer">ТЪРСЕНЕ</string>
     <string name="language_label">език</string>
     <string name="select_language">Избери език</string>
-
+    <string name="email_sent">Имейл изпрати успешно</string>
     
     <string name="profile_complete_title">ПЪЛЕН ПРОФИЛ</string>
     <string name="profile_edit_title">РЕДАКТИРАЙ ПРОФИЛ</string>

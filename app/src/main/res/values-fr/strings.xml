@@ -9,7 +9,7 @@
     <string name="search_drawer">RECHERCHE</string>
     <string name="language_label">Langue</string>
     <string name="select_language">Choisir la langue</string>
-
+    <string name="email_sent">E-mail envoyé avec succès</string>
     <string name="account_deleted_error">Connexion a échoué! Vous avez supprimé votre profil. Veuillez nous contacter pour vous réjouir.</string>
     
     <string name="profile_complete_title">PROFIL COMPLET</string>

@@ -11,7 +11,7 @@
     <string name="select_language">Оберіть мову</string>
     <string name="account_deleted_error">Ошибка входа! Вы удалили свой профиль. Пожалуйста, свяжитесь с нами, чтобы вновь пристально.</string>
     <string name="do_you_want_to_leave_this_page">Вы хотите покинуть эту страницу?</string>
-
+    <string name="email_sent">письмо успешно отправлено</string>
     <string name="profile_complete_title">ПОВНИЙ ПРОФІЛЬ</string>
     <string name="profile_edit_title">РЕДАГУВАТИ ПРОФІЛЬ</string>
     <string name="done">Готово</string>

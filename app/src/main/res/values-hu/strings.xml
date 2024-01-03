@@ -9,7 +9,7 @@
     <string name="search_drawer">KERESÉS</string>
     <string name="language_label">Nyelv</string>
     <string name="select_language">Válasszon nyelvet</string>
-
+    <string name="email_sent">Az e-mail sikeresen elküldve</string>
     <string name="account_deleted_error">Jelentkezzen be a sikertelen! Törölte a profilját. Kérjük, vegye fel velünk a kapcsolatot, hogy újra csatlakozzon.</string>
     
     <string name="profile_complete_title">TELJES PROFIL</string>

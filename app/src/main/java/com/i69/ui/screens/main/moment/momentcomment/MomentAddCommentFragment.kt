@@ -1,11 +1,13 @@
 package com.i69.ui.screens.main.moment.momentcomment
 
 
+import android.R.attr.button
 import android.app.AlertDialog
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -20,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +36,12 @@ import androidx.viewpager.widget.ViewPager
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textview.MaterialTextView
@@ -63,6 +72,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+
 
 class MomentAddCommentFragment : BaseFragment<FragmentMomentsAddcommentsBinding>(),
     CommentListAdapter.ClickPerformListener, CommentReplyListAdapter.ClickonListener {
@@ -470,7 +480,56 @@ class MomentAddCommentFragment : BaseFragment<FragmentMomentsAddcommentsBinding>
 
         val url = "${BuildConfig.BASE_URL}media/${filesUrl}"
 
-        binding.imgSharedMoment.loadImage(url)
+        Log.d("NSMA", "setupTheme: $url")
+        if (url.endsWith(".jpg") || url.endsWith(".jpeg") ||
+            url.endsWith(".png") || url.endsWith(".webp")){
+            binding.playerView.visibility = View.INVISIBLE
+            binding.imgSharedMoment.setViewVisible()
+
+            val params = binding.layoutSharedMomentInfo.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.ALIGN_BOTTOM, com.i69.R.id.imgSharedMoment)
+            binding.layoutSharedMomentInfo.layoutParams = params
+
+            binding.imgSharedMoment.loadImage(url)
+        }
+        else {
+            binding.playerView.setViewVisible()
+            binding.imgSharedMoment.visibility = View.INVISIBLE
+
+            val params = binding.layoutSharedMomentInfo.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.ALIGN_BOTTOM, com.i69.R.id.playerView)
+
+            binding.layoutSharedMomentInfo.layoutParams = params
+
+            binding.playerView.setOnClickListener {
+                if (exoPlayer.isPlaying) {
+                    exoPlayer.pause()
+                    binding.ivPlay.setViewVisible()
+                }
+                else {
+                    binding.ivPlay.setViewGone()
+                    if (exoPlayer.currentPosition > 0L) {
+                        exoPlayer.seekTo(exoPlayer.currentPosition)
+                        exoPlayer.play()
+                    }
+                    else {
+                        val uri: Uri = Uri.parse(url)
+                        val mediaItem = MediaItem.Builder()
+                            .setUri(uri)
+                            .setMimeType(MimeTypes.VIDEO_MP4)
+                            .build()
+                        playView(mediaItem)
+                    }
+                }
+            }
+
+            val uri: Uri = Uri.parse(url)
+            val mediaItem = MediaItem.Builder()
+                .setUri(uri)
+                .setMimeType(MimeTypes.VIDEO_MP4)
+                .build()
+            playView(mediaItem)
+        }
 
         binding.txtNearbyUserLikeCount.setText(likess)
 
@@ -518,6 +577,34 @@ class MomentAddCommentFragment : BaseFragment<FragmentMomentsAddcommentsBinding>
         }
         getAllCommentsofMoments()
 
+    }
+
+    private lateinit var exoPlayer: ExoPlayer
+    private fun playView(mediaItem: MediaItem) {
+        exoPlayer = ExoPlayer.Builder(getMainActivity()!!).build().apply {
+            playWhenReady = true
+            repeatMode = Player.REPEAT_MODE_ALL
+            setMediaItem(mediaItem, false)
+            prepare()
+        }
+        binding.playerView.player = exoPlayer
+        binding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+        var durationSet = false
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playbackState == ExoPlayer.STATE_READY && !durationSet) {
+
+                }
+            }
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (this::exoPlayer.isInitialized) {
+            exoPlayer.stop()
+            exoPlayer.release()
+        }
     }
 
     private fun getMomentLikes() {
@@ -588,7 +675,7 @@ class MomentAddCommentFragment : BaseFragment<FragmentMomentsAddcommentsBinding>
             bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
             bundle.putString("userId", it.uid)
             if (userId == it.uid) {
-                MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
+                getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
                     R.id.nav_user_profile_graph
             } else {
                 findNavController().navigate(

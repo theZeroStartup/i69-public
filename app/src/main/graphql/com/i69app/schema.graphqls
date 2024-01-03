@@ -796,6 +796,8 @@ type MomentsTyps implements Node {
 
     publishAt: DateTime
 
+#    isPlaying: Boolean
+
     file: String
 
     pk: Int

@@ -33,20 +33,18 @@ class FragmentRealGifts: BaseFragment<FragmentRealGiftsBinding>() {
         binding.recyclerViewGifts.adapter = giftsAdapter
         lifecycleScope.launch {
             showProgressView()
-            viewModel.getRealGifts(getCurrentUserToken()!!).observe(this@FragmentRealGifts, {
+            viewModel.getRealGifts(getCurrentUserToken()!!).observe(this@FragmentRealGifts) {
 
                 list.clear()
                 list.addAll(it)
-                for(image in it){
-                    Log.d("FragmentRealGifts","Image :  ${image.picture}")
-                    Log.d("FragmentRealGifts","price :  ${image.cost}")
+                for (image in it) {
+                    Log.d("FragmentRealGifts", "Image :  ${image.picture}")
+                    Log.d("FragmentRealGifts", "price :  ${image.cost}")
                 }
-                Log.e("list size",""+list.size)
-                Log.e("it size",""+it.size)
-                if(list.size>0)
-                {
-                    if(list.get(0).giftName.equals("error"))
-                    {
+                Log.e("list size", "" + list.size)
+                Log.e("it size", "" + it.size)
+                if (list.size > 0) {
+                    if (list.get(0).giftName.equals("error")) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             userPreferences.clear()
                             //App.userPreferences.saveUserIdToken("","","")
@@ -59,7 +57,7 @@ class FragmentRealGifts: BaseFragment<FragmentRealGiftsBinding>() {
 
                 giftsAdapter?.notifyDataSetChanged()
                 hideProgressView()
-            })
+            }
         }
     }
 

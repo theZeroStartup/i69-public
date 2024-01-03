@@ -11,7 +11,7 @@
     <string name="select_language">Selecteer Taal</string>
     <string name="account_deleted_error">Inloggen mislukt! U hebt uw profiel verwijderd. Neem contact met ons op om opnieuw te jagen.</string>
     <string name="do_you_want_to_leave_this_page">Wil je deze pagina verlaten?</string>
-
+    <string name="email_sent">E -mail met succes verzonden</string>
     <string name="profile_complete_title">VOLLEDIG PROFIEL</string>
     <string name="profile_edit_title">BEWERK PROFIEL</string>
     <string name="done">Klaar</string>

@@ -11,7 +11,7 @@
     <string name="select_language">ژبه غوره کړئ</string>
     <string name="account_deleted_error">ننوتل په ناکامۍ کې! تاسو خپل پروفایل حذف کړی دی. مهرباني وکړئ موږ سره اړیکه ونیسئ ترڅو یوځای شئ.</string>
     <string name="do_you_want_to_leave_this_page">ایا تاسو غواړئ دا پاڼه پریږدئ؟</string>
-
+    <string name="email_sent">بریښنالیک په بریالیتوب سره لیږل شوی</string>
     <string name="profile_complete_title">بشپړ پروفایل</string>
     <string name="profile_edit_title">پروفایل ایډیټ کړئ</string>
     <string name="done">ترسره شو</string>

@@ -9,7 +9,7 @@
     <string name="search_drawer">TRAŽI</string>
     <string name="language_label">Jezik</string>
     <string name="select_language">Odaberite Jezik</string>
-
+    <string name="email_sent">E-pošta je uspješno poslana</string>
     <string name="account_deleted_error">Prijavite se neuspjeli! Izbrisali ste svoj profil. Molimo kontaktirajte nas da se ponovo pridružite.</string>
     
     <string name="profile_complete_title">KOMPLETAN PROFIL</string>

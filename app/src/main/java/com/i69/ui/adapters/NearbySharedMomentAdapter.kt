@@ -3,6 +3,7 @@ package com.i69.ui.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -20,15 +21,20 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.util.MimeTypes
 import com.i69.BuildConfig
 import com.i69.GetAllUserMomentsQuery
 import com.i69.R
 import com.i69.applocalization.AppStringConstant1
-import com.i69.data.models.Edge
 import com.i69.databinding.ItemSharedUserMomentBinding
 import com.i69.utils.loadCircleImage
 import com.i69.utils.loadImage
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,6 +47,8 @@ class NearbySharedMomentAdapter(
     var userId: String?,
     var isShownearByUser: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var selectedItemPosition: Int = 0
 
     private val differCallback = object : DiffUtil.ItemCallback<GetAllUserMomentsQuery.Edge>() {
         override fun areItemsTheSame(
@@ -83,11 +91,12 @@ class NearbySharedMomentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): RecyclerView.ViewHolder =
         getViewHolderByType(type, getViewDataBinding(type, parent))
 
+    var holder: NearbySharedMomentHolder? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         holder as NearbySharedMomentHolder
+        this.holder = holder
         val item = differ.currentList.get(position)
-        holder.bind(position, item)
+        holder.bind(position, item, ctx)
     }
 
     fun submitList(data: List<GetAllUserMomentsQuery.Edge>) {
@@ -142,13 +151,23 @@ class NearbySharedMomentAdapter(
         }
     }
 
+    fun pauseAll() {
+        Log.d("NSMA", "pauseAll: ")
+        selectedItemPosition = -1
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
 
     inner class NearbySharedMomentHolder(val viewBinding: ItemSharedUserMomentBinding) :
         RecyclerView.ViewHolder(viewBinding.root) {
-        fun bind(position: Int, item_data: GetAllUserMomentsQuery.Edge?) {
+
+        private var context: Context? = null
+
+        fun bind(position: Int, item_data: GetAllUserMomentsQuery.Edge?, ctx: Context) {
+            context = ctx
             if (item_data!!.node!!.user == null) {
                 Log.e("obj_node", "data is null ${differ.currentList.size}")
                 return
@@ -168,7 +187,7 @@ class NearbySharedMomentAdapter(
 //                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 //            )
             s2.setSpan(
-                ForegroundColorSpan(ctx.resources.getColor(R.color.colorPrimary)),
+                ForegroundColorSpan(this@NearbySharedMomentAdapter.ctx.resources.getColor(R.color.colorPrimary)),
                 0,
                 s2.length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -199,8 +218,46 @@ class NearbySharedMomentAdapter(
                 viewBinding.imgNearbyUser.loadCircleImage(avatarUrl)
             }*/
 
-            viewBinding.imgSharedMoment.loadImage(url)
-//            Glide.with(contcex).load(url).into(viewBinding.imgSharedMoment);
+            if (isImageFile(item_data)){
+                viewBinding.playerView.visibility = View.INVISIBLE
+                viewBinding.ivPlay.setViewGone()
+                viewBinding.imgSharedMoment.setViewVisible()
+                viewBinding.imgSharedMoment.loadImage(url)
+            }
+            else {
+                initPlayer()
+                if (position == selectedItemPosition && selectedItemPosition != -1) {
+                    Log.d("NSMA", "play: $position")
+
+                    viewBinding.ivPlay.setViewGone()
+                    viewBinding.imgSharedMoment.visibility = View.INVISIBLE
+                    viewBinding.playerView.setViewVisible()
+
+                    val uri: Uri = Uri.parse(url)
+                    val mediaItem = MediaItem.Builder()
+                        .setUri(uri)
+                        .setMimeType(MimeTypes.VIDEO_MP4)
+                        .build()
+                    playView(mediaItem, true)
+                }
+                else {
+                    viewBinding.playerView.player?.volume = 0F
+                    viewBinding.playerView.player?.playWhenReady = false
+                    viewBinding.playerView.player?.stop()
+                    viewBinding.playerView.player?.release()
+                    viewBinding.playerView.visibility = View.INVISIBLE
+                    viewBinding.imgSharedMoment.setViewVisible()
+                    viewBinding.imgSharedMoment.loadImage(url)
+                    viewBinding.ivPlay.setViewVisible()
+                    Log.d("NSMA", "dont play: $position ${viewBinding.playerView?.player == null}")
+                }
+
+                viewBinding.ivPlay.setOnClickListener {
+                    selectedItemPosition = position
+                    notifyDataSetChanged()
+                }
+            }
+
             val avatarUrl = item_data.node.user?.avatar
             if (avatarUrl != null) {
                 avatarUrl.url?.replace(
@@ -255,7 +312,7 @@ class NearbySharedMomentAdapter(
 
                     viewBinding.imgNearbyUserGift.setImageDrawable(
                         ResourcesCompat.getDrawable(
-                            ctx.resources,
+                            this@NearbySharedMomentAdapter.ctx.resources,
                             R.drawable.yellow_gift_male,
                             null
                         )
@@ -264,7 +321,7 @@ class NearbySharedMomentAdapter(
                 } else if (item_data.node!!.user!!.gender!!.name.equals("A_1")) {
                     viewBinding.imgNearbyUserGift.setImageDrawable(
                         ResourcesCompat.getDrawable(
-                            ctx.resources,
+                            this@NearbySharedMomentAdapter.ctx.resources,
                             R.drawable.red_gift_female,
                             null
                         )
@@ -273,7 +330,7 @@ class NearbySharedMomentAdapter(
                 } else if (item_data.node!!.user!!.gender!!.name.equals("A_2")) {
                     viewBinding.imgNearbyUserGift.setImageDrawable(
                         ResourcesCompat.getDrawable(
-                            ctx.resources,
+                            this@NearbySharedMomentAdapter.ctx.resources,
                             R.drawable.purple_gift_nosay,
                             null
                         )
@@ -285,13 +342,6 @@ class NearbySharedMomentAdapter(
 //                viewBinding.imgNearbyUserGift.setImageDrawable(ResourcesCompat.getDrawable(ctx.resources,R.drawable.pink_gift_noavb,null))
 //
 //            }
-            }
-
-
-            /*viewBinding.imgNearbyShare.setImageBitmap(bmp.borderedCircularBitmap())*/
-            viewBinding.root.setOnClickListener {
-                //holder.viewBinding.photoCover.transitionName = "profilePhoto"
-                //listener.onSharedMomentClick(bindingAdapterPosition, item)
             }
 
             if (isShownearByUser && (item_data?.node!!.like!! > 0)) {
@@ -315,22 +365,66 @@ class NearbySharedMomentAdapter(
             })
 
             viewBinding.imgNearbyUserComment.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                if (exoPlayer?.isPlaying == true && !isImageFile(item_data)) {
+                    exoPlayer?.pause()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        exoPlayer?.pause()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
 
             viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-
+                if (exoPlayer?.isPlaying == true && !isImageFile(item_data)) {
+                    exoPlayer?.pause()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        exoPlayer?.pause()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
             viewBinding.itemCell.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-
+                if (exoPlayer?.isPlaying == true && !isImageFile(item_data)) {
+                    exoPlayer?.pause()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        exoPlayer?.pause()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
 
             viewBinding.imgNearbyUserGift.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-//                listener.onMomentGiftClick(bindingAdapterPosition,item_data)
-
+                if (exoPlayer?.isPlaying == true && !isImageFile(item_data)) {
+                    exoPlayer?.pause()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        exoPlayer?.pause()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
 
 
@@ -340,7 +434,7 @@ class NearbySharedMomentAdapter(
                 if (userId!!.equals(item_data!!.node!!.user!!.id)) {
                     //creating a popup menu
 
-                    val popup = PopupMenu(ctx, viewBinding.imgNearbySharedMomentOption)
+                    val popup = PopupMenu(this@NearbySharedMomentAdapter.ctx, viewBinding.imgNearbySharedMomentOption)
                     popup.getMenuInflater().inflate(R.menu.more_options, popup.getMenu());
 
                     //adding click listener
@@ -374,7 +468,7 @@ class NearbySharedMomentAdapter(
                     })
                     popup.show()
                 } else {
-                    val popup = PopupMenu(ctx, viewBinding.imgNearbySharedMomentOption)
+                    val popup = PopupMenu(this@NearbySharedMomentAdapter.ctx, viewBinding.imgNearbySharedMomentOption)
                     popup.getMenuInflater().inflate(R.menu.more_options1, popup.getMenu());
 
                     //adding click listener
@@ -401,6 +495,35 @@ class NearbySharedMomentAdapter(
             })
 
         }
+
+        private fun isImageFile(itemData: GetAllUserMomentsQuery.Edge): Boolean {
+            return itemData?.node?.file.toString().endsWith(".jpg") || itemData?.node?.file.toString().endsWith(".jpeg") ||
+                    itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
+        }
+
+        var exoPlayer: ExoPlayer? = null
+
+        private fun initPlayer() {
+            exoPlayer = context?.let { ExoPlayer.Builder(it).build() }
+            viewBinding.playerView.player = exoPlayer
+        }
+
+        private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
+            exoPlayer?.apply {
+                setMediaItem(mediaItem, false)
+                this.playWhenReady = playWhenReady
+                repeatMode = Player.REPEAT_MODE_OFF
+                prepare()
+            }
+            viewBinding.playerView.player = exoPlayer
+            viewBinding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        (holder as NearbySharedMomentHolder).exoPlayer?.release()
+        (holder as NearbySharedMomentHolder).exoPlayer = null
     }
 
     interface NearbySharedMomentListener {

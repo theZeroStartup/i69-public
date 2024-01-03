@@ -9,7 +9,7 @@
     <string name="search_drawer">CUARDACH</string>
     <string name="language_label">Teanga</string>
     <string name="select_language">Roghnaigh Teanga</string>
-
+    <string name="email_sent">Ríomhphost seolta go rathúil</string>
     <string name="account_deleted_error">Sínigh isteach theip! Tá do phróifíl scriosta agat. Téigh i dteagmháil linn le do thoil chun teacht arís.</string>
     
     <string name="profile_complete_title">PRÓIFÍL COMHLÁNAIGH</string>

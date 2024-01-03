@@ -9,7 +9,7 @@
     <string name="search_drawer">ΑΝΑΖΗΤΗΣΗ</string>
     <string name="language_label">Γλώσσα</string>
     <string name="select_language">Επιλέξτε γλώσσα</string>
-
+    <string name="email_sent">Το email αποστέλλεται με επιτυχία</string>
     <string name="account_deleted_error">Συνδεθείτε απέτυχε! Έχετε διαγράψει το προφίλ σας. Παρακαλούμε επικοινωνήστε μαζί μας για επανεξέταση.</string>
     
     <string name="profile_complete_title">ΠΛΗΡΕΣ ΠΡΟΦΙΛ</string>

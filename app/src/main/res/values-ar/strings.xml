@@ -7,7 +7,7 @@
 
     <string name="search">يبحث</string>
     <string name="search_drawer">بحث</string>
-
+    <string name="email_sent">أرسل البريد الإلكتروني بنجاح</string>
     <string name="profile_complete_title">ملف تعريف كامل</string>
     <string name="profile_edit_title">تعديل الملف الشخصي</string>
     <string name="done">فعله</string>

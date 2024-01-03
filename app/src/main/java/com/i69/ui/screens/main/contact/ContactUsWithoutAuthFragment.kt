@@ -25,6 +25,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import org.json.JSONObject
 
 class ContactUsWithoutAuthFragment:BaseFragment<FragmentContactusBinding>() {
 
@@ -111,11 +112,21 @@ class ContactUsWithoutAuthFragment:BaseFragment<FragmentContactusBinding>() {
                 .build()
             val response = client.newCall(request).execute()
 
-            if (response.isSuccessful) {
+            if(response.isSuccessful){
                 loadingDialog.dismiss()
                 binding.pg.visibility = View.GONE
-                binding.root.snackbar(" Email sent successfully!")
-                findNavController().popBackStack()
+
+                val responseBody = response.body?.string()
+                val jsonObject = JSONObject(responseBody)
+                val isSuccess = jsonObject.getBoolean("success")
+
+                if (isSuccess) {
+                    binding.root.snackbar(getString(R.string.email_sent))
+                    findNavController().popBackStack()
+                }
+                else {
+                    binding.root.snackbar(getString(R.string.somethig_went_wrong_please_try_again))
+                }
             }
         }
     }

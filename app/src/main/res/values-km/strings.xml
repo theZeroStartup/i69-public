@@ -9,7 +9,7 @@
     <string name="search_drawer">ស្វែងរក</string>
     <string name="account_deleted_error">ចូលបានបរាជ័យ! អ្នកបានលុបប្រវត្តិរូបរបស់អ្នកហើយ។ សូមទាក់ទងមកយើងខ្ញុំដើម្បីចូលរួមម្តងទៀត។</string>
     <string name="do_you_want_to_leave_this_page">តើអ្នកចង់ចាកចេញពីទំព័រនេះទេ?</string>
-
+    <string name="email_sent">អ៊ីមែលបានផ្ញើដោយជោគជ័យ</string>
     <string name="profile_complete_title">បំពេញប្រវត្តិរូប</string>
     <string name="profile_edit_title">កែសម្រួលប្រវត្តិរូប</string>
     <string name="done">រួចរាល់</string>

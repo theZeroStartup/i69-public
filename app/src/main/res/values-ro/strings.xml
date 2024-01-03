@@ -11,7 +11,7 @@
     <string name="select_language">Selecteaza limba</string>
     <string name="account_deleted_error">Conectați -vă nu a reușit! Ți -ai șters profilul. Vă rugăm să ne contactați pentru a ne alătura.</string>
     <string name="do_you_want_to_leave_this_page">Doriți să părăsiți această pagină?</string>
-
+    <string name="email_sent">Email-ul a fost trimis cu succes</string>
     <string name="profile_complete_title">PROFIL COMPLET</string>
     <string name="profile_edit_title">EDITEAZĂ PROFILUL</string>
     <string name="done">Terminat</string>

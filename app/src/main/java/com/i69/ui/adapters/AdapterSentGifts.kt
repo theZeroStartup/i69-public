@@ -57,8 +57,8 @@ class AdapterSentGifts(var context: Context, private val listener: SentGiftPicUs
     viewBinding.uname.text = item.node!!.receiver!!.fullName.toString()
 
     val avatarUrl = item?.node!!.receiver?.avatar
-    if (avatarUrl != null) {
-        viewBinding.upic.loadCircleImage(avatarUrl.url!!)
+    if (avatarUrl != null && avatarUrl.url != null) {
+        viewBinding.upic.loadCircleImage(avatarUrl.url)
     } else {
         viewBinding.upic.loadImage(R.drawable.ic_default_user)
     }

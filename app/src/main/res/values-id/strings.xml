@@ -11,7 +11,7 @@
     <string name="select_language">Pilih bahasa</string>
     <string name="account_deleted_error">Masuk Gagal! Anda telah menghapus profil Anda. Silakan hubungi kami untuk bergabung kembali.</string>
     <string name="do_you_want_to_leave_this_page">Apakah Anda ingin meninggalkan halaman ini?</string>
-
+    <string name="email_sent">Email berhasil dikirim</string>
     <string name="profile_complete_title">PROFIL LENGKAP</string>
     <string name="profile_edit_title">SUNTING PROFIL</string>
     <string name="done">Selesai</string>

@@ -9,7 +9,7 @@
     <string name="search_drawer">खोज</string>
     <string name="language_label">भाषा</string>
     <string name="select_language">भाषा चुने</string>
-
+    <string name="email_sent">सफलतापूर्वक भेजा गया ईमेल</string>
     <string name="account_deleted_error">भाग लेना विफल हुआ! आपने अपनी प्रोफ़ाइल हटा दी है। कृपया हमें फिर से शामिल करने के लिए संपर्क करें।</string>
     
     <string name="profile_complete_title">पूरा प्रोफाइल</string>

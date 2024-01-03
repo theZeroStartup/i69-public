@@ -11,7 +11,7 @@
     <string name="select_language">Dil Seçin</string>
     <string name="account_deleted_error">Oturum açma başarısız! Profilinizi sildiniz. Yeniden katılmak için lütfen bizimle iletişime geçin.</string>
     <string name="do_you_want_to_leave_this_page">Bu sayfadan ayrılmak istiyor musunuz?</string>
-
+    <string name="email_sent">e-posta başarıyla gönderildi</string>
     <string name="profile_complete_title">PROFİLİNİ TAMAMLA</string>
     <string name="profile_edit_title">PROFİLİ DÜZENLE</string>
     <string name="done">Tamamlamak</string>

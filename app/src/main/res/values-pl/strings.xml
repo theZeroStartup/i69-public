@@ -11,7 +11,7 @@
     <string name="select_language">Wybierz język</string>
     <string name="account_deleted_error">Logowanie Nie powiodło się! Usunąłeś swój profil. Skontaktuj się z nami, aby ponownie dołączyć.</string>
     <string name="do_you_want_to_leave_this_page">Czy chcesz opuścić tę stronę?</string>
-
+    <string name="email_sent">Wysłany e -mail wysłany pomyślnie</string>
     <string name="profile_complete_title">KOMPLETNY PROFIL</string>
     <string name="profile_edit_title">EDYTUJ PROFIL</string>
     <string name="done">Zrobione</string>

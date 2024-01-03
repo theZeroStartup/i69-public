@@ -71,21 +71,6 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                 file = File(mFilePath)
                 fileType = ".jpg"
                 Timber.d("fileBase64 $mFilePath")
-//            val uri=Uri.parse(mFilePath)
-                //binding.cropView.setUri(uri);
-                /* CropLayout.addOnCropListener(object : OnCropListener {
-                     override fun onSuccess(bitmap: Bitmap) {
-                         // do somethhing with bitmap.
-                     }
-
-                     override fun onFailure(e: Exception) {
-                         // do error handling.
-                     }
-                 })*/
-
-                //binding.cropView.isOffFrame() // optionally check if the image is off the frame.
-
-                //binding.cropView.crop()
 
                 showFilePreview(file, fileType)
                 binding.imgUploadFile.loadCircleImage(mFilePath)
@@ -107,24 +92,6 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                     requireContext().filesDir.resolve("${System.currentTimeMillis()}$type")
                 openInputStream?.copyTo(outputFile.outputStream())
                 file = File(outputFile.toURI())
-
-                Timber.d("fileBase64 $mFilePath")
-//                val uri=Uri.parse(mFilePath)
-                //binding.cropView.setUri(uri);
-                /* CropLayout.addOnCropListener(object : OnCropListener {
-                     override fun onSuccess(bitmap: Bitmap) {
-                         // do somethhing with bitmap.
-                     }
-
-                     override fun onFailure(e: Exception) {
-                         // do error handling.
-                     }
-                 })*/
-
-                //binding.cropView.isOffFrame() // optionally check if the image is off the frame.
-
-                //binding.cropView.crop()
-
 
                 showFilePreview(file, fileType)
                 binding.imgUploadFile.loadCircleImage(mFilePath)

@@ -61,7 +61,7 @@ class UsersSearchListAdapter(
             if (item.avatarPhotos != null) {
                 if (item.avatarPhotos!!.size != 0) {
 
-                    if (item.avatarIndex!! <= item.avatarPhotos!!.size - 1) {
+                    if (item.avatarIndex!! < item.avatarPhotos!!.size) {
                         val imageUrl = item.avatarPhotos!!.get(item.avatarIndex!!).url?.replace(
                             "http://95.216.208.1:8000/media/",
                             "${BuildConfig.BASE_URL}media/"

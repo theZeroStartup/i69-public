@@ -41,6 +41,7 @@ android {
         versionName = Android.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         signingConfig = signingConfigs.getByName("release")
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -54,7 +55,7 @@ android {
              isShrinkResources=true*/
 
             signingConfig = signingConfigs.getByName("release")
-            isDebuggable = true
+            isDebuggable = false
 
             /*buildConfigField("String", "BASE_URL", "\"https://api.i69app.com/\"")
             buildConfigField("String", "BASE_URL_REP", "\"http://95.216.208.1:8000/\"")
@@ -114,12 +115,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildFeatures {

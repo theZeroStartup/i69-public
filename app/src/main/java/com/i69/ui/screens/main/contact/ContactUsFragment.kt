@@ -4,7 +4,6 @@ import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -12,7 +11,6 @@ import com.i69.BuildConfig
 import com.i69.R
 import com.i69.databinding.FragmentContactusBinding
 import com.i69.ui.base.BaseFragment
-import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.MainActivity.Companion.getMainActivity
 import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.viewModels.AuthViewModel
@@ -24,6 +22,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
 import timber.log.Timber
 
 
@@ -123,7 +124,7 @@ class ContactUsFragment:BaseFragment<FragmentContactusBinding>() {
     }
 
     private fun contactUs(
-        name: String? = "",
+        name: String,
         email: String,
         message: String
 //        token : String
@@ -133,57 +134,36 @@ class ContactUsFragment:BaseFragment<FragmentContactusBinding>() {
             val userToken = getCurrentUserToken()!!
             loadingDialog.show()
             val formBody: RequestBody = FormBody.Builder()
-                .add("name", name!!)
                 .add("email", email)
+                .add("name", name.toString())
                 .add("message", message)
                 .build()
             val client = OkHttpClient()
             val mediaType = "application/json".toMediaType()
-//            val body = "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"john.doe@gmail.com\",\r\n    \"message\": \"This is a test message\"\r\n}".toRequestBody(mediaType)
+            val body = "{\r\n    \"name\": \"$name\",\r\n    \"email\": \"$email\",\r\n    \"message\": \"$message\"\r\n}".toRequestBody(mediaType)
             val request = Request.Builder()
                 .url(BuildConfig.BASE_URL+"api/contact-us/")
-                .post(formBody)
+                .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build()
             val response = client.newCall(request).execute()
 
             if(response.isSuccessful){
-
                 loadingDialog.dismiss()
                 binding.pg.visibility = View.GONE
-                binding.root.snackbar(" Email sent successfully!")
-                findNavController().popBackStack()
 
+                val responseBody = response.body?.string()
+                val jsonObject = JSONObject(responseBody)
+                val isSuccess = jsonObject.getBoolean("success")
+
+                if (isSuccess) {
+                    binding.root.snackbar(getString(R.string.email_sent))
+                    findNavController().popBackStack()
+                }
+                else {
+                    binding.root.snackbar(getString(R.string.somethig_went_wrong_please_try_again))
+                }
             }
-
-
-//            when (val response = viewModel.contactus(name!!,email,message,userToken)) {
-//
-//                is Resource.Success -> {
-//                    Log.d(
-//                        "Success",
-//                        "${getString(R.string.sign_in_failed)} ${response.message}"
-//                    )
-//                }
-//                is Resource.Error -> {
-//                    hideProgressView()
-//                    Log.d(
-//                        "Failuer",
-//                        "${getString(R.string.sign_in_failed)} ${response.code}"
-//                    )
-//                    Timber.e("${getString(R.string.sign_in_failed)} ${response.message}")
-//                    binding.root.snackbar("${getString(R.string.sign_in_failed)} ${response.message}")
-//                }
-//                else -> {
-//
-//                }03217454076
-//            }
         }
     }
-
-//    private val mWebChromeClient = object : WebChromeClient() {
-//        override fun onProgressChanged(view: WebView?, newProgress: Int) {
-//            if (newProgress == 100) loadingDialog.dismiss()
-//        }
-//    }
 }

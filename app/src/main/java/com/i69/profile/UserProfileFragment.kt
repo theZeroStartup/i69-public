@@ -5,6 +5,7 @@ import android.R
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -428,15 +429,6 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                                                         pos
                                                     )
                                                 )
-//
-//                                        data.user?.avatarPhotos?.get(position)?.let { it1 ->
-//                                            showImageDialog(
-//                                                it1.url.replace(
-//                                                    "http://95.216.208.1:8000/media/",
-//                                                    "${BuildConfig.BASE_URL}media/"
-//                                                )
-//                                            )
-//                                        }
                                             }
 
                                         }

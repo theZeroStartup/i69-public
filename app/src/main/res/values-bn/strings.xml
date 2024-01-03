@@ -10,7 +10,7 @@
     <string name="search_drawer">অনুসন্ধান করুন</string>
     <string name="language_label">ভাষা</string>
     <string name="select_language">ভাষা নির্বাচন কর</string>
-
+    <string name="email_sent">ইমেল সফলভাবে প্রেরণ</string>
     
     <string name="profile_complete_title">সম্পূর্ণ প্রোফাইল</string>
     <string name="profile_edit_title">জীবন বৃত্তান্ত সম্পাদনা</string>

@@ -11,7 +11,7 @@
     <string name="select_language">भाषा छनोट गर्नुस</string>
     <string name="account_deleted_error">असफल मा साइन इन गर्नुहोस्! तपाईंले आफ्नो प्रोफाइल हटाएको छ। कृपया हामीलाई फेरि सामेल हुन सम्पर्क गर्नुहोस्।</string>
     <string name="do_you_want_to_leave_this_page">के तपाईं यो पृष्ठ छोड्न चाहनुहुन्छ?</string>
-
+    <string name="email_sent">ईमेल सफलतापूर्वक पठाइयो</string>
     <string name="profile_complete_title">प्रोफाइल पूरा गर्नुहोस्</string>
     <string name="profile_edit_title">प्रोफाइल सम्पादन गर</string>
     <string name="done">सकियो</string>

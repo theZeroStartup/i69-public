@@ -11,7 +11,7 @@
     <string name="select_language">Seleziona la lingua</string>
     <string name="account_deleted_error">Accesso fallito! Hai eliminato il tuo profilo. Si prega di contattarci per ricongiungerci.</string>
     <string name="do_you_want_to_leave_this_page">Vuoi uscire da questa pagina?</string>
-
+    <string name="email_sent">email inviata correttamente</string>
     <string name="profile_complete_title">PROFILO COMPLETO</string>
     <string name="profile_edit_title">MODIFICA PROFILO</string>
     <string name="done">Fatto</string>

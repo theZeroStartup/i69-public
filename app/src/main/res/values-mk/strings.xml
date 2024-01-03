@@ -11,7 +11,7 @@
     <string name="select_language">Одбери јазик</string>
     <string name="account_deleted_error">Пријавете се во неуспех! Го избришавте вашиот профил. Ве молиме контактирајте не за повторно да се приклучиме.</string>
     <string name="do_you_want_to_leave_this_page">Дали сакате да ја напуштите оваа страница?</string>
-
+    <string name="email_sent">Е -пошта испратена успешно</string>
     <string name="profile_complete_title">КОМПЛЕТЕН ПРОФИЛ</string>
     <string name="profile_edit_title">УРЕДИ ГО ПРОФИЛОТ</string>
     <string name="done">Направено</string>

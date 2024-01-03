@@ -9,7 +9,7 @@
     <string name="search_drawer">CERCA</string>
     <string name="language_label">Llenguatge</string>
     <string name="select_language">Seleccionar idioma</string>
-
+    <string name="email_sent">Correu electrònic enviat amb èxit</string>
     <string name="account_deleted_error">Inicieu la sessió fallada! Heu suprimit el vostre perfil. Poseu-vos en contacte amb nosaltres per tornar-vos a unir.</string>
     
     <string name="profile_complete_title">PERFIL COMPLET</string>

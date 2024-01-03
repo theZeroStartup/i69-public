@@ -83,6 +83,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
+
 class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     NearbySharedMomentAdapter.NearbySharedMomentListener,
     UserMultiStoriesAdapter.UserMultiStoryListener {
@@ -91,6 +92,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         private const val TAG = "UserMomentsFragment"
     }
 
+    private var tempStories = mutableListOf<ApolloResponse<OnNewStorySubscription.Data>>()
     private var stories: ArrayList<GetAllUserMultiStoriesQuery.AllUserMultiStory?> = ArrayList()
     private val mViewModel: UserMomentsModelView by activityViewModels()
     private val viewModel: UserViewModel by activityViewModels()
@@ -389,7 +391,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
                 //allUserMoments = ArrayList()
                 layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-                binding.rvSharedMoments.setLayoutManager(layoutManager)
+                binding.rvSharedMoments.layoutManager = layoutManager
                 //   getAllUserStories()
                 Log.e("TAG", "try")
                 getAllUserMultiStories()
@@ -873,11 +875,15 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 ).toFlow().catch {
                     it.printStackTrace()
                     Timber.d("reealltime exception= ${it.message}")
+                    Log.d(
+                        "UserMomentsSub",
+                        "realtime retry ${it.message}"
+                    )
                 }
                     .retryWhen { cause, attempt ->
                         Timber.d("reealltime retry $attempt ${cause.message}")
                         Log.d(
-                            "yy",
+                            "UserMomentsSub",
                             "realtime retry  $attempt ${cause.message}"
                         )
                         delay(attempt * 1000)
@@ -926,12 +932,12 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     newMomentUser?.onesignalPlayerId,
                                     avatarPhotos ?: listOf()
                                 )
-                                Log.d("UMF", "subscribeForNewMoment: ${newMomentToAdd.publishAt}")
                                 val node = GetAllUserMomentsQuery.Node(
                                     newMomentToAdd.pk,
                                     newMomentToAdd.comment,
                                     newMomentToAdd.createdDate,
-                                    "",
+                                    newMomentToAdd.publishAt,
+//                                    isPlaying = false,
                                     newMomentToAdd.file,
                                     newMomentToAdd.id,
                                     newMomentToAdd.like,
@@ -939,7 +945,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     newMomentToAdd.momentDescriptionPaginated ?: listOf(),
                                     user
                                 )
-                                Log.d("UMF", "subscribeForNewMoment: $node")
                                 val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
 
                                 Log.d(
@@ -1171,6 +1176,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 newMomentToAdd?.comment,
                                 newMomentToAdd?.createdDate!!,
                                 newMomentToAdd?.publishAt!!,
+//                                isPlaying = false,
                                 newMomentToAdd.file,
                                 newMomentToAdd.id,
                                 newMomentToAdd.like,
@@ -1246,106 +1252,113 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         } else {
                             //   Timber.d("reealltime onNewMessage ${newMessage.data?.onNewMessage?.message?.timestamp}")
 
-                            Log.e(
+                            Log.d(
                                 "UserMomentSubsc",
-                                " story realtime NewStoryData content ${newStory.data?.onNewStory}"
+                                " story realtime NewStoryData content ${tempStories?.contains(newStory)}"
                             )
+                            if (tempStories?.contains(newStory) == false){
+                                tempStories?.add(newStory)
+                                Log.e(
+                                    "UserMomentSubsc",
+                                    " story realtime NewStoryData content ${newStory.data?.onNewStory}"
+                                )
+                                if (!stories.any { it?.user?.id == newStory.data?.onNewStory?.user?.id }) {
+                                    val user = stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }
+                                        .filter { it?.batchNumber == newStory.data?.onNewStory?.batchNumber }
 
-
-                            val user = stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }
-                                    .filter { it?.batchNumber == newStory.data?.onNewStory?.batchNumber }
-
-                            if (user.isEmpty()) {
-                                val newStoryData = newStory.data?.onNewStory
-                                val newStoryUser = newStory.data?.onNewStory?.user
-                                val avatar = newStory.data?.onNewStory?.user?.avatar
-                                val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
-                                val storiesTemp = newStory.data?.onNewStory?.stories
-                                val newStoryCollection =
-                                    GetAllUserMultiStoriesQuery.AllUserMultiStory(
-                                        GetAllUserMultiStoriesQuery.User(
-                                            newStoryUser?.id!!,
-                                            newStoryUser.fullName,
-                                            GetAllUserMultiStoriesQuery.Avatar(
-                                                avatar?.url,
-                                                avatar?.id!!
-                                            ),
-                                            newStoryUser.avatarIndex,
-                                            convertAvatarListQueryToSubscription(listOfAvatar)
-                                        ),
-                                        batchNumber = newStoryData?.batchNumber!!,
-                                        stories = GetAllUserMultiStoriesQuery.Stories(
-                                            convertEdgeListQueryToSubscrption(storiesTemp),
-                                            GetAllUserMultiStoriesQuery.PageInfo2(
-                                                storiesTemp?.pageInfo?.endCursor,
-                                                storiesTemp?.pageInfo?.hasNextPage!!,
-                                                storiesTemp.pageInfo.hasPreviousPage,
-                                                storiesTemp.pageInfo.startCursor
+                                    if (user.isEmpty()) {
+                                        val newStoryData = newStory.data?.onNewStory
+                                        val newStoryUser = newStory.data?.onNewStory?.user
+                                        val avatar = newStory.data?.onNewStory?.user?.avatar
+                                        val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
+                                        val storiesTemp = newStory.data?.onNewStory?.stories
+                                        val newStoryCollection =
+                                            GetAllUserMultiStoriesQuery.AllUserMultiStory(
+                                                GetAllUserMultiStoriesQuery.User(
+                                                    newStoryUser?.id!!,
+                                                    newStoryUser.fullName,
+                                                    GetAllUserMultiStoriesQuery.Avatar(
+                                                        avatar?.url,
+                                                        avatar?.id!!
+                                                    ),
+                                                    newStoryUser.avatarIndex,
+                                                    convertAvatarListQueryToSubscription(listOfAvatar)
+                                                ),
+                                                batchNumber = newStoryData?.batchNumber!!,
+                                                stories = GetAllUserMultiStoriesQuery.Stories(
+                                                    convertEdgeListQueryToSubscrption(storiesTemp),
+                                                    GetAllUserMultiStoriesQuery.PageInfo2(
+                                                        storiesTemp?.pageInfo?.endCursor,
+                                                        storiesTemp?.pageInfo?.hasNextPage!!,
+                                                        storiesTemp.pageInfo.hasPreviousPage,
+                                                        storiesTemp.pageInfo.startCursor
+                                                    )
+                                                )
                                             )
+                                        Log.d(
+                                            "UserMomentSubsc",
+                                            "Before Add TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
                                         )
-                                    )
-                                Log.d(
-                                    "UserMomentSubsc",
-                                    "Before Add TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
-                                )
-                                stories.add(0, newStoryCollection)
-                                Log.d("UserMomentSubsc", "Add UserStories $stories")
-                                Log.d(
-                                    "UserMomentSubsc",
-                                    "After Add TotalUserStories ${stories.size}"
-                                )
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    usersMultiStoryAdapter.storyList = stories
-                                    usersMultiStoryAdapter.notifyItemInserted(1)
-                                }
-                            } else {
-                                val position = stories.indexOf(user[0])
-                                val newStoryData = newStory.data?.onNewStory
-                                val newStoryUser = newStory.data?.onNewStory?.user
-                                val avatar = newStory.data?.onNewStory?.user?.avatar
-                                val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
-                                val storiesTemp = newStory.data?.onNewStory?.stories
-                                val newStoryCollection =
-                                    GetAllUserMultiStoriesQuery.AllUserMultiStory(
-                                        GetAllUserMultiStoriesQuery.User(
-                                            newStoryUser?.id!!,
-                                            newStoryUser.fullName,
-                                            GetAllUserMultiStoriesQuery.Avatar(
-                                                avatar?.url,
-                                                avatar?.id!!
-                                            ),
-                                            newStoryUser.avatarIndex,
-                                            convertAvatarListQueryToSubscription(listOfAvatar)
-                                        ),
-                                        batchNumber = newStoryData?.batchNumber!!,
-                                        stories = GetAllUserMultiStoriesQuery.Stories(
-                                            convertEdgeListQueryToSubscrption(storiesTemp),
-                                            GetAllUserMultiStoriesQuery.PageInfo2(
-                                                storiesTemp?.pageInfo?.endCursor,
-                                                storiesTemp?.pageInfo?.hasNextPage!!,
-                                                storiesTemp.pageInfo.hasPreviousPage,
-                                                storiesTemp.pageInfo.startCursor
+                                        stories.add(0, newStoryCollection)
+                                        Log.d("UserMomentSubsc", "Add UserStories $stories")
+                                        Log.d(
+                                            "UserMomentSubsc",
+                                            "After Add TotalUserStories ${stories.size}"
+                                        )
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            usersMultiStoryAdapter.storyList = stories
+                                            usersMultiStoryAdapter.notifyItemInserted(1)
+                                        }
+                                    } else {
+                                        val position = stories.indexOf(user[0])
+                                        val newStoryData = newStory.data?.onNewStory
+                                        val newStoryUser = newStory.data?.onNewStory?.user
+                                        val avatar = newStory.data?.onNewStory?.user?.avatar
+                                        val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
+                                        val storiesTemp = newStory.data?.onNewStory?.stories
+                                        val newStoryCollection =
+                                            GetAllUserMultiStoriesQuery.AllUserMultiStory(
+                                                GetAllUserMultiStoriesQuery.User(
+                                                    newStoryUser?.id!!,
+                                                    newStoryUser.fullName,
+                                                    GetAllUserMultiStoriesQuery.Avatar(
+                                                        avatar?.url,
+                                                        avatar?.id!!
+                                                    ),
+                                                    newStoryUser.avatarIndex,
+                                                    convertAvatarListQueryToSubscription(listOfAvatar)
+                                                ),
+                                                batchNumber = newStoryData?.batchNumber!!,
+                                                stories = GetAllUserMultiStoriesQuery.Stories(
+                                                    convertEdgeListQueryToSubscrption(storiesTemp),
+                                                    GetAllUserMultiStoriesQuery.PageInfo2(
+                                                        storiesTemp?.pageInfo?.endCursor,
+                                                        storiesTemp?.pageInfo?.hasNextPage!!,
+                                                        storiesTemp.pageInfo.hasPreviousPage,
+                                                        storiesTemp.pageInfo.startCursor
+                                                    )
+                                                )
                                             )
+                                        Log.d(
+                                            "UserMomentSubsc",
+                                            "Before Set TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
                                         )
-                                    )
-                                Log.d(
-                                    "UserMomentSubsc",
-                                    "Before Set TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
-                                )
-                                stories.removeAt(position)
-                                stories.add(0, newStoryCollection)
-                                Log.d("UserMomentSubsc", "Set UserStories $stories")
-                                Log.d(
-                                    "UserMomentSubsc",
-                                    "After Set TotalUserStories ${stories.size}"
-                                )
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    usersMultiStoryAdapter.storyList = stories
-                                    usersMultiStoryAdapter.notifyItemRemoved(position + 1)
-                                    usersMultiStoryAdapter.notifyItemInserted(1)
+                                        stories.removeAt(position)
+                                        stories.add(0, newStoryCollection)
+                                        Log.d("UserMomentSubsc", "Set UserStories $stories")
+                                        Log.d(
+                                            "UserMomentSubsc",
+                                            "After Set TotalUserStories ${stories.size}"
+                                        )
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            usersMultiStoryAdapter.storyList = stories
+                                            usersMultiStoryAdapter.notifyItemRemoved(position + 1)
+                                            usersMultiStoryAdapter.notifyItemInserted(1)
+                                        }
+                                    }
+                                    //  viewModel.onNewMessage(newMessage = newMessage.data?.onNewMessage?.message)
                                 }
                             }
-                            //  viewModel.onNewMessage(newMessage = newMessage.data?.onNewMessage?.message)
                         }
                     }
                 Timber.d("reealltime 2")
@@ -1547,6 +1560,13 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             )
         }
         return newList
+    }
+
+    override fun onPause(){
+        if (this::sharedMomentAdapter.isInitialized) {
+            sharedMomentAdapter.pauseAll()
+        }
+        super.onPause()
     }
 
     override fun onResume() {
@@ -1756,6 +1776,9 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                             //TODO: navigate to package/subscription screen
                         })
                 }
+            }
+            else {
+                binding.root.snackbar("New Story scheduled for later")
             }
             Timber.d("filee hasError= $response")
             Log.e("UsermomentsSuces", Gson().toJson(response))
@@ -2605,22 +2628,18 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                if (response.hasErrors()
-                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
+                if (response.hasErrors()) {
                     Log.d("NewUserMomentFragment", "${response.errors}")
-                    //binding.root.snackbar("${response.errors?.get(0)?.message}")
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                            findNavController().navigate(R.id.action_global_plan)
-                        })
+                    if (response.errors?.get(0)?.message!!.contains("purchase a package", true))
+                        binding.root.snackbar("${response.errors?.get(0)?.message}")
+                    else {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE, callback = { findNavController().navigate(R.id.action_global_plan) })
+                    }
                 } else {
                     binding.root.snackbar("New Moment Shared")
                     binding.llSharing.visibility = View.GONE
-//                    endCursor = ""
-//                    getMainActivity().mViewModelUser.userMomentsList.clear()
-//                    getUserMomentNextPage(width, size, 10, endCursor)
                 }
             } else {
 

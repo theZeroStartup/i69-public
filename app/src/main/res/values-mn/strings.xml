@@ -11,7 +11,7 @@
     <string name="select_language">Хэл сонгох</string>
     <string name="account_deleted_error">Нэвтрэх ажиллагаа амжилтгүй боллоо! Та өөрийн профайлыг устгасан байна. Дахин нэгдэхийн тулд бидэнтэй холбоо барина уу.</string>
     <string name="do_you_want_to_leave_this_page">Та энэ хуудсыг орхихыг хүсэж байна уу?</string>
-
+    <string name="email_sent">Имэйл амжилттай илгээгдсэн</string>
     <string name="profile_complete_title">ПРОФИЛЬ БҮРЭН БАЙНА</string>
     <string name="profile_edit_title">ЗАСВАРЛАХ ХУВИЙН МЭДЭЭЛЛИЙГ VЗЭХ</string>
     <string name="done">Дууслаа</string>

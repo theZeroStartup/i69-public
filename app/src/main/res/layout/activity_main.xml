@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:layout_marginEnd="@dimen/_8sdp"
                     android:textColor="@color/colorPrimaryPix"
@@ -101,6 +101,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvTitle"
                     app:layout_constraintStart_toEndOf="@+id/ivImage"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ivDismissNotification"
                     tools:text="Hello new message body here"/>
 
                 <ImageView

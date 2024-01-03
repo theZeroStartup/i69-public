@@ -9,7 +9,7 @@
     <string name="search_drawer">SEARCH</string>
     <string name="language_label">Language</string>
     <string name="select_language">Select Language</string>
-
+    <string name="email_sent">Email sent successfully</string>
     
     <string name="profile_complete_title">COMPLETE PROFILE</string>
     <string name="profile_edit_title">EDIT PROFILE</string>

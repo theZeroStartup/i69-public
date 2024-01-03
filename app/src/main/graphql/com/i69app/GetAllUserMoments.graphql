@@ -8,6 +8,7 @@ query GetAllUserMoments($width: Int!,$characterSize: Int!,$first: Int!,$after: S
                 comment
                 createdDate
                 publishAt
+#                isPlaying
                 file
                 id
                 like

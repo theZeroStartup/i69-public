@@ -11,7 +11,7 @@
     <string name="select_language">Select Language</string>
     <string name="account_deleted_error">A entrada falhou! Você excluiu seu perfil. Entre em contato conosco para se juntar novamente.</string>
     <string name="do_you_want_to_leave_this_page">Deseja sair desta página?</string>
-
+    <string name="email_sent">E-mail enviado com sucesso</string>
     <string name="profile_complete_title">COMPLETE PROFILE</string>
     <string name="profile_edit_title">EDIT PROFILE</string>
     <string name="done">Done</string>

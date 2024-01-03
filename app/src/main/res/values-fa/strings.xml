@@ -9,7 +9,7 @@
     <string name="search_drawer">جستجو کردن</string>
     <string name="language_label">زبان</string>
     <string name="select_language">زبان را انتخاب کنید</string>
-
+    <string name="email_sent">ایمیل با موفقیت ارسال شد</string>
     <string name="account_deleted_error">ورود به سیستم ناموفق! شما نمایه خود را حذف کرده اید. لطفا برای پیوستن به ما تماس بگیرید.</string>
     
     <string name="profile_complete_title">نمایه کامل</string>

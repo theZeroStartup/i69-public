@@ -11,7 +11,7 @@
     <string name="select_language">Оберіть мову</string>
     <string name="account_deleted_error">Увійдіть не вдалося! Ви видалили свій профіль. Будь ласка, зв\'яжіться з нами, щоб знову приєднатися.</string>
     <string name="do_you_want_to_leave_this_page">Ви хочете залишити цю сторінку?</string>
-
+    <string name="email_sent">Електронна пошта успішно надіслана</string>
     <string name="profile_complete_title">ПОВНИЙ ПРОФІЛЬ</string>
     <string name="profile_edit_title">РЕДАГУВАТИ ПРОФІЛЬ</string>
     <string name="done">Готово</string>

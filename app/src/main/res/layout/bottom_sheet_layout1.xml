@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:behavior_hideable="true"
+    android:paddingBottom="@dimen/_5sdp"
     android:maxHeight="@dimen/_450sdp"
     android:minHeight="@dimen/_200sdp"
     app:behavior_peekHeight="0dp"
@@ -68,32 +69,33 @@
                             android:layout_marginBottom="@dimen/_6sdp"
                             android:layout_below="@+id/giftsTabs" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/purchaseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_above="@+id/dummy_c"
-                    android:paddingLeft="@dimen/_15sdp"
-                    android:paddingRight="@dimen/_15sdp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/rounded_black_btn">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/purchaseButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:paddingLeft="@dimen/_15sdp"
+                            android:paddingRight="@dimen/_15sdp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/rounded_black_btn">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/sendgiftto"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
-                        app:layout_constraintTop_toTopOf="@id/purchaseButton"
-                        app:layout_constraintBottom_toBottomOf="@id/purchaseButton"
-                        android:text="@string/send_gift"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/sendgiftto"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                app:layout_constraintTop_toTopOf="@id/purchaseButton"
+                                app:layout_constraintBottom_toBottomOf="@id/purchaseButton"
+                                android:text="@string/send_gift"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorPrimary"
+                                android:textStyle="bold"
 
-                        />
+                                />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                         <ImageView
                             android:id="@+id/dummy_c"
                             android:layout_alignParentBottom="true"

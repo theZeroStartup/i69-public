@@ -9,7 +9,7 @@
     <string name="search_drawer">SØG</string>
     <string name="language_label">Sprog</string>
     <string name="select_language">Vælg sprog</string>
-
+    <string name="email_sent">E -mail sendt med succes</string>
     <string name="account_deleted_error">Log ind mislykket! Du har slettet din profil. Kontakt os for at få sammen igen.</string>
     
     <string name="profile_complete_title">KOMPLET PROFIL</string>

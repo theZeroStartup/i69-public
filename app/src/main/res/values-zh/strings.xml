@@ -4,7 +4,7 @@
     <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">連心</string>
-
+    <string name="email_sent">电子邮件已成功发送</string>
     <string name="search">搜索</string>
     <string name="search_drawer">搜索</string>
     <string name="language_label">語言</string>

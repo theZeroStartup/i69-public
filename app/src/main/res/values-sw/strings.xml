@@ -11,7 +11,7 @@
     <string name="select_language">Chagua Lugha</string>
     <string name="account_deleted_error">Ingia imeshindwa! Umefuta wasifu wako. Tafadhali wasiliana nasi ili kujiunga tena.</string>
     <string name="do_you_want_to_leave_this_page">Je, ungependa kuondoka kwenye ukurasa huu?</string>
-
+    <string name="email_sent">Barua pepe imetumwa kwa mafanikio</string>
     <string name="profile_complete_title">KAMILI WASIFU</string>
     <string name="profile_edit_title">BADILISHA WASIFU</string>
     <string name="done">Imekamilika</string>

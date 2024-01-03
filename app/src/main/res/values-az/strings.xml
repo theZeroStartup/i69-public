@@ -4,7 +4,7 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Ürəkləri birləşdirən</string>
-
+    <string name="email_sent">E-poçt uğurla göndərildi</string>
     <string name="search">Axtar</string>
     <string name="search_drawer">AXTAR</string>
     <string name="profile_complete_title">PROFİLİ TAM EDİN</string>
