@@ -1067,8 +1067,10 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
         }
         curStoryType = node?.fileType.toString()
 
+        val relativeLayoutCenter = views.findViewById<RelativeLayout>(R.id.relativeLayoutCenter)
         if (node?.fileType != "video") {
             player_view!!.visibility = View.GONE
+            pause.setViewGone()
             imgUserStory.visibility = View.VISIBLE
             imgUserStory.loadImage(url, {
                // Log.e("timer__","startDismissCountDown1")
@@ -1127,7 +1129,12 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
             txtTimeAgo.text = publishTimeInMillis.ifEmpty { times }
 
         } else {
+            pause.setViewGone()
             player_view!!.visibility = View.VISIBLE
+            relativeLayoutCenter.setOnClickListener {
+                if (exoPlayer.isPlaying) pauseTimerAndPlayer()
+                else resumeTimerAndPlayer()
+            }
             imgUserStory.visibility = View.GONE
             userurl = ""
             progressBar1!!.progress = 0

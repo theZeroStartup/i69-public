@@ -29,18 +29,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <RelativeLayout
                 android:id="@+id/relativeLayoutLeft"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:elevation="@dimen/_10sdp"
                 android:layout_weight="1" />
-
+            <RelativeLayout
+                android:id="@+id/relativeLayoutCenter"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:elevation="@dimen/_10sdp"
+                android:layout_weight="1" />
             <RelativeLayout
                 android:id="@+id/relativeLayoutRight"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:elevation="@dimen/_10sdp"
                 android:layout_weight="1" />
         </LinearLayout>
 

@@ -47,7 +47,7 @@ class NearbySharedMomentAdapter(
     var isShownearByUser: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var selectedItemPosition: Int = 0
+    private var selectedItemPosition: Int = -1
 
     private val differCallback = object : DiffUtil.ItemCallback<GetAllUserMomentsQuery.Edge>() {
         override fun areItemsTheSame(

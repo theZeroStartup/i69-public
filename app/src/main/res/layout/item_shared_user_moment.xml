@@ -147,7 +147,7 @@
                 android:layout_height="60dp"
                 android:contentDescription="@string/app_name"
                 android:visibility="gone"
-                android:src="@drawable/baseline_play_circle_24"
+                android:src="@drawable/ic_action_playcircle"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -71,7 +71,7 @@ class FeedsFragment : BaseFragment<FragmentFeedBinding>() ,
         exoPlayer.apply {
             setMediaItem(mediaItem, false)
             this.playWhenReady = playWhenReady
-            repeatMode = Player.REPEAT_MODE_OFF
+            repeatMode = Player.REPEAT_MODE_ALL
             prepare()
         }
         return exoPlayer
