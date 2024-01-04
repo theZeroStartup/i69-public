@@ -106,6 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:background="@color/CE4F3FF">
 
                     <RadioButton
@@ -125,15 +126,40 @@
                         android:layout_gravity="center"
                         app:tint="@color/black" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tvShareLater"
-                        android:layout_width="wrap_content"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/_17sdp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/schedule_for_later"
-                        android:textStyle="bold"/>
+                        android:weightSum="2"
+                        android:layout_gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tvShareLater"
+                            android:layout_width="0dp"
+                            android:layout_weight="1.5"
+                            android:maxLines="2"
+                            android:ellipsize="middle"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_17sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/schedule_for_later"
+                            android:textStyle="bold"/>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tvShareLaterCoins"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:fontFamily="sans-serif-medium"
+                            android:drawableStart="@drawable/coins_small"
+                            android:text="0"
+                            android:textStyle="bold"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

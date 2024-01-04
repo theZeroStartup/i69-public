@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -24,6 +26,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.i69.BuildConfig
@@ -33,6 +36,7 @@ import com.i69.applocalization.AppStringConstant1
 import com.i69.applocalization.AppStringConstantViewModel
 import com.i69.data.models.User
 import com.i69.databinding.BottomsheetShareOptionsBinding
+import com.i69.databinding.DialogBuySubscriptionOrCoinsBinding
 import com.i69.databinding.DialogPreviewImageBinding
 import com.i69.databinding.FragmentNewUserMomentBinding
 import com.i69.ui.base.BaseFragment
@@ -347,15 +351,26 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
         var shareAt = ""
 
-        if (isUserHasPremiumSubscription()) {
-            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
-            bottomsheet.rbShareLater.setViewVisible()
-            bottomsheet.ivLocked.setViewGone()
-        }
-        else {
-            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
-            bottomsheet.rbShareLater.setViewGone()
-            bottomsheet.ivLocked.setViewVisible()
+        bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+        bottomsheet.rbShareLater.setViewGone()
+        bottomsheet.ivLocked.setViewVisible()
+
+        if ((requireActivity() as MainActivity).isUserAllowedToScheduleMoment()) {
+            if ((requireActivity() as MainActivity).isUserHasSubscription()) {
+                bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+                bottomsheet.rbShareLater.setViewVisible()
+                bottomsheet.ivLocked.setViewGone()
+                bottomsheet.tvShareLaterCoins.setViewGone()
+            }
+            else {
+                (requireActivity() as MainActivity).getRequiredCoins("SCHEDULE_MOMENT_COINS") {
+                    bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+                    bottomsheet.rbShareLater.setViewVisible()
+                    bottomsheet.ivLocked.setViewGone()
+                    bottomsheet.tvShareLaterCoins.setViewVisible()
+                    bottomsheet.tvShareLaterCoins.text = it.toString()
+                }
+            }
         }
 
         bottomsheet.rbShareNow.setOnClickListener { bottomsheet.cvShareNow.performClick() }
@@ -367,7 +382,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         }
 
         bottomsheet.cvShareLater.setOnClickListener {
-            if (isUserHasPremiumSubscription()) {
+            if ((requireActivity() as MainActivity).isUserAllowedToScheduleMoment()) {
                 bottomsheet.rbShareLater.isChecked = true
                 bottomsheet.rbShareNow.isChecked = false
                 showDateTimePicker { displayTime, apiTime ->
@@ -382,8 +397,11 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                 }
             }
             else {
-            binding.root.snackbar("Feature Locked. Please purchase a package to unlock")
-        }
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
+            }
         }
 
         bottomsheet.btnShareMoment.setOnClickListener {
@@ -403,9 +421,33 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         shareOptionsDialog.show()
     }
 
-    private fun isUserHasPremiumSubscription(): Boolean {
-//        return mUser?.userSubscription?.isActive == true
-        return true
+    private fun showUpgradePlanDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogBuySubscriptionOrCoinsBinding.inflate(layoutInflater)
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+        dialogBinding.ivCross.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.clBuyCoins.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_global_purchase)
+        }
+
+        dialogBinding.clBuySubscription.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_global_plan)
+        }
+
+        dialog.setContentView(dialogBinding.root)
+        dialog.show()
+        dialog.window?.attributes = lp
     }
 
     private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {

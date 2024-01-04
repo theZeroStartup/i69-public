@@ -500,4 +500,5 @@
     <string name="please_select_a_future_date">Please select a future date</string>
     <string name="please_select_a_future_time">Selected time has to be greater than current time</string>
     <string name="proceed">Proceed</string>
+    <string name="feature_locked_npurchase_coins_or_subscription">Feature Locked\nPurchase coins or subscription</string>
 </resources>

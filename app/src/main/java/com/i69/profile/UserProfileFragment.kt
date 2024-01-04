@@ -12,6 +12,7 @@ import android.content.res.Configuration
 import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -690,11 +691,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                 }
             })
 
-        Handler().postDelayed(object : Runnable {
-            override fun run() {
-                hideProgressView()
-            }
-        }, 1000)
+        Handler(Looper.getMainLooper()).post { hideProgressView() }
 
     }
 

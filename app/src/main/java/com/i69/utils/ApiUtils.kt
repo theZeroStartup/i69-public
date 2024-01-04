@@ -31,7 +31,7 @@ fun String.getGraphqlApiBody(): String {
 fun getUserDetailsQueryResponse(): String =
     StringBuilder().append("id, username, fullName, email,userLanguageCode, subscription,")
         .append("photosQuota, ${getPhotosQueryResponse()}, ")
-        .append("country, city, state, countryCode, countryFlag, purchaseCoins, giftCoins,isOnline, gender, age, height, about, avatarIndex,")
+        .append("country, city, state, countryCode, countryFlag, purchaseCoins, giftCoins,isOnline, gender, age, height, about, avatarIndex, canScheduleMoment, canScheduleStory,")
         .append("location, familyPlans, religion, politics, isConnected, planname, ")
         .append("interestedIn, tags, sportsTeams, books, ")
         .append("followersCount, followingCount, userVisitorsCount, userVisitingCount, ")

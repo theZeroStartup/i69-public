@@ -18,7 +18,6 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.RemoteViews
 import android.widget.TextView
 import android.widget.Toast
@@ -32,7 +31,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.size
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -45,7 +43,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.*
-import com.google.android.material.navigation.NavigationView
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -65,7 +62,6 @@ import com.i69.profile.db.dao.UserDao
 import com.i69.singleton.App
 import com.i69.ui.base.BaseActivity
 //import com.i69.ui.screens.MY_REQUEST_CODE
-import com.i69.ui.screens.PrivacyOrTermsConditionsActivity
 import com.i69.ui.screens.SplashActivity
 import com.i69.ui.screens.main.coins.PurchaseFragment
 import com.i69.ui.screens.main.messenger.chat.MessengerNewChatFragment
@@ -74,7 +70,6 @@ import com.i69.ui.screens.main.moment.UserStoryDetailFragment
 import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.screens.main.search.SearchInterestedInFragment
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment
-import com.i69.ui.viewModels.PurchaseCoinsViewModel
 import com.i69.ui.viewModels.UserMomentsModelView
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.ui.views.MyBottomNavigation
@@ -2161,6 +2156,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
             openProfileScreen()
         }
         return false
+    }
+
+    fun isUserAllowedToScheduleStory() = mUser?.canScheduleStory == true
+
+    fun isUserAllowedToScheduleMoment() = mUser?.canScheduleMoment == true
+
+    fun isUserHasSubscription(): Boolean {
+        return mUser?.userSubscription?.isActive == true && mUser?.userSubscription?.isCancelled == false
+    }
+
+    fun getRequiredCoins(coinsNeededFor: String, coinsNeeded: (Int) -> Unit) {
+        viewModel.getCoinSettingsByRegion(userToken.toString(), coinsNeededFor).observe(this) {
+            Log.d("getRequiredCoins", "getRequiredCoins: ${it.coinsNeeded}")
+            coinsNeeded.invoke(it.coinsNeeded)
+        }
     }
 
 

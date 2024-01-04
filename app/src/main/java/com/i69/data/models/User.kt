@@ -35,6 +35,10 @@ data class User(
 
     @SerializedName("isOnline")
     var isOnline: Boolean = false,
+    @SerializedName("canScheduleMoment")
+    var canScheduleMoment: Boolean = false,
+    @SerializedName("canScheduleStory")
+    var canScheduleStory: Boolean = false,
     var gender: Int? = 0,
     var age: Int? = 0,
     var avatarIndex: Int? = 0,

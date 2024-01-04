@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 138,
-      "versionName": "64.6.1",
+      "versionCode": 139,
+      "versionName": "64.6.2",
       "outputFile": "app-production-release.apk"
     }
   ],

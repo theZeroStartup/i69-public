@@ -22,6 +22,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window.FEATURE_NO_TITLE
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -45,11 +47,11 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.android.play.core.splitinstall.d
 import com.google.gson.Gson
 import com.i69.*
 import com.i69.applocalization.AppStringConstant
@@ -57,6 +59,7 @@ import com.i69.data.models.ModelGifts
 import com.i69.data.models.User
 import com.i69.data.remote.responses.MomentLikes
 import com.i69.databinding.BottomsheetShareOptionsBinding
+import com.i69.databinding.DialogBuySubscriptionOrCoinsBinding
 import com.i69.databinding.DialogPreviewImageBinding
 import com.i69.databinding.FragmentUserMomentsBinding
 import com.i69.di.modules.AppModule.provideGraphqlApi
@@ -211,24 +214,35 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
         var shareAt = ""
 
-        if (isUserHasPremiumSubscription()) {
-            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
-            bottomsheet.rbShareLater.setViewVisible()
-            bottomsheet.ivLocked.setViewGone()
-        }
-        else {
-            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
-            bottomsheet.rbShareLater.setViewGone()
-            bottomsheet.ivLocked.setViewVisible()
-        }
 
+        bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+        bottomsheet.rbShareLater.setViewGone()
+        bottomsheet.ivLocked.setViewVisible()
+
+        if ((requireActivity() as MainActivity).isUserAllowedToScheduleStory()) {
+            if ((requireActivity() as MainActivity).isUserHasSubscription()){
+                bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+                bottomsheet.rbShareLater.setViewVisible()
+                bottomsheet.ivLocked.setViewGone()
+                bottomsheet.tvShareLaterCoins.setViewGone()
+            }
+            else{
+                (requireActivity() as MainActivity).getRequiredCoins("SCHEDULE_STORY_COINS") {
+                    bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+                    bottomsheet.rbShareLater.setViewVisible()
+                    bottomsheet.ivLocked.setViewGone()
+                    bottomsheet.tvShareLaterCoins.setViewVisible()
+                    bottomsheet.tvShareLaterCoins.text = it.toString()
+                }
+            }
+        }
         bottomsheet.cvShareNow.setOnClickListener {
             bottomsheet.rbShareNow.isChecked = true
             bottomsheet.rbShareLater.isChecked = false
         }
 
         bottomsheet.cvShareLater.setOnClickListener {
-            if (isUserHasPremiumSubscription()) {
+            if ((requireActivity() as MainActivity).isUserAllowedToScheduleStory()) {
                 bottomsheet.rbShareLater.isChecked = true
                 bottomsheet.rbShareNow.isChecked = false
                 showDateTimePicker { displayTime, apiTime ->
@@ -243,7 +257,10 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 }
             }
             else {
-                binding.root.snackbar("Feature Locked. Please purchase a package to unlock")
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
             }
         }
 
@@ -267,9 +284,33 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         shareOptionsDialog.show()
     }
 
-    private fun isUserHasPremiumSubscription(): Boolean {
-//        return mUser?.userSubscription?.isActive == true
-        return true
+    private fun showUpgradePlanDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(FEATURE_NO_TITLE)
+        val dialogBinding = DialogBuySubscriptionOrCoinsBinding.inflate(layoutInflater)
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+        dialogBinding.ivCross.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.clBuyCoins.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_global_purchase)
+        }
+
+        dialogBinding.clBuySubscription.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_global_plan)
+        }
+
+        dialog.setContentView(dialogBinding.root)
+        dialog.show()
+        dialog.window?.attributes = lp
     }
 
     private fun showDateTimePicker(onDateAndTimePicked: (String, String) -> Unit) {
@@ -1300,108 +1341,111 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 "UserMomentSubsc",
                                 " story realtime NewStoryData content ${tempStories?.contains(newStory)}"
                             )
-                            if (tempStories?.contains(newStory) == false){
+                            if (!tempStories?.contains(newStory)) {
                                 tempStories?.add(newStory)
                                 Log.e(
                                     "UserMomentSubsc",
-                                    " story realtime NewStoryData content ${newStory.data?.onNewStory}"
+                                    " story realtime NewStoryData content ${!stories.any { it?.user?.id == newStory.data?.onNewStory?.user?.id }}"
                                 )
-                                if (!stories.any { it?.user?.id == newStory.data?.onNewStory?.user?.id }) {
-                                    val user = stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }
-                                        .filter { it?.batchNumber == newStory.data?.onNewStory?.batchNumber }
 
-                                    if (user.isEmpty()) {
-                                        val newStoryData = newStory.data?.onNewStory
-                                        val newStoryUser = newStory.data?.onNewStory?.user
-                                        val avatar = newStory.data?.onNewStory?.user?.avatar
-                                        val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
-                                        val storiesTemp = newStory.data?.onNewStory?.stories
-                                        val newStoryCollection =
-                                            GetAllUserMultiStoriesQuery.AllUserMultiStory(
-                                                GetAllUserMultiStoriesQuery.User(
-                                                    newStoryUser?.id!!,
-                                                    newStoryUser.fullName,
-                                                    GetAllUserMultiStoriesQuery.Avatar(
-                                                        avatar?.url,
-                                                        avatar?.id!!
-                                                    ),
-                                                    newStoryUser.avatarIndex,
-                                                    convertAvatarListQueryToSubscription(listOfAvatar)
+                                val user =
+                                    stories.filter { it?.user?.id == newStory.data?.onNewStory?.user?.id }.filter{ it?.batchNumber == newStory.data?.onNewStory?.batchNumber }
+
+                                Log.e(
+                                    "UserMomentSubsc",
+                                    "Filter, story realtime NewStoryData content ${user.toString()} ${user.isEmpty()}"
+                                )
+                                if (user.isEmpty()) {
+                                    val newStoryData = newStory.data?.onNewStory
+                                    val newStoryUser = newStory.data?.onNewStory?.user
+                                    val avatar = newStory.data?.onNewStory?.user?.avatar
+                                    val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
+                                    val storiesTemp = newStory.data?.onNewStory?.stories
+                                    val newStoryCollection =
+                                        GetAllUserMultiStoriesQuery.AllUserMultiStory(
+                                            GetAllUserMultiStoriesQuery.User(
+                                                newStoryUser?.id!!,
+                                                newStoryUser.fullName,
+                                                GetAllUserMultiStoriesQuery.Avatar(
+                                                    avatar?.url,
+                                                    avatar?.id!!
                                                 ),
-                                                batchNumber = newStoryData?.batchNumber!!,
-                                                stories = GetAllUserMultiStoriesQuery.Stories(
-                                                    convertEdgeListQueryToSubscrption(storiesTemp),
-                                                    GetAllUserMultiStoriesQuery.PageInfo2(
-                                                        storiesTemp?.pageInfo?.endCursor,
-                                                        storiesTemp?.pageInfo?.hasNextPage!!,
-                                                        storiesTemp.pageInfo.hasPreviousPage,
-                                                        storiesTemp.pageInfo.startCursor
-                                                    )
+                                                newStoryUser.avatarIndex,
+                                                convertAvatarListQueryToSubscription(listOfAvatar)
+                                            ),
+                                            batchNumber = newStoryData?.batchNumber!!,
+                                            stories = GetAllUserMultiStoriesQuery.Stories(
+                                                convertEdgeListQueryToSubscrption(storiesTemp),
+                                                GetAllUserMultiStoriesQuery.PageInfo2(
+                                                    storiesTemp?.pageInfo?.endCursor,
+                                                    storiesTemp?.pageInfo?.hasNextPage!!,
+                                                    storiesTemp.pageInfo.hasPreviousPage,
+                                                    storiesTemp.pageInfo.startCursor
                                                 )
                                             )
-                                        Log.d(
-                                            "UserMomentSubsc",
-                                            "Before Add TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
                                         )
-                                        stories.add(0, newStoryCollection)
-                                        Log.d("UserMomentSubsc", "Add UserStories $stories")
-                                        Log.d(
-                                            "UserMomentSubsc",
-                                            "After Add TotalUserStories ${stories.size}"
-                                        )
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            usersMultiStoryAdapter.storyList = stories
-                                            usersMultiStoryAdapter.notifyItemInserted(1)
-                                        }
-                                    } else {
-                                        val position = stories.indexOf(user[0])
-                                        val newStoryData = newStory.data?.onNewStory
-                                        val newStoryUser = newStory.data?.onNewStory?.user
-                                        val avatar = newStory.data?.onNewStory?.user?.avatar
-                                        val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
-                                        val storiesTemp = newStory.data?.onNewStory?.stories
-                                        val newStoryCollection =
-                                            GetAllUserMultiStoriesQuery.AllUserMultiStory(
-                                                GetAllUserMultiStoriesQuery.User(
-                                                    newStoryUser?.id!!,
-                                                    newStoryUser.fullName,
-                                                    GetAllUserMultiStoriesQuery.Avatar(
-                                                        avatar?.url,
-                                                        avatar?.id!!
-                                                    ),
-                                                    newStoryUser.avatarIndex,
-                                                    convertAvatarListQueryToSubscription(listOfAvatar)
-                                                ),
-                                                batchNumber = newStoryData?.batchNumber!!,
-                                                stories = GetAllUserMultiStoriesQuery.Stories(
-                                                    convertEdgeListQueryToSubscrption(storiesTemp),
-                                                    GetAllUserMultiStoriesQuery.PageInfo2(
-                                                        storiesTemp?.pageInfo?.endCursor,
-                                                        storiesTemp?.pageInfo?.hasNextPage!!,
-                                                        storiesTemp.pageInfo.hasPreviousPage,
-                                                        storiesTemp.pageInfo.startCursor
-                                                    )
-                                                )
-                                            )
-                                        Log.d(
-                                            "UserMomentSubsc",
-                                            "Before Set TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
-                                        )
-                                        stories.removeAt(position)
-                                        stories.add(0, newStoryCollection)
-                                        Log.d("UserMomentSubsc", "Set UserStories $stories")
-                                        Log.d(
-                                            "UserMomentSubsc",
-                                            "After Set TotalUserStories ${stories.size}"
-                                        )
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            usersMultiStoryAdapter.storyList = stories
-                                            usersMultiStoryAdapter.notifyItemRemoved(position + 1)
-                                            usersMultiStoryAdapter.notifyItemInserted(1)
-                                        }
+                                    Log.d(
+                                        "UserMomentSubsc",
+                                        "If, Before Add TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
+                                    )
+                                    stories.add(0, newStoryCollection)
+                                    Log.d("UserMomentSubsc", "Add UserStories $stories")
+                                    Log.d(
+                                        "UserMomentSubsc",
+                                        "After Add TotalUserStories ${stories.size}"
+                                    )
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        usersMultiStoryAdapter.storyList = stories
+                                        usersMultiStoryAdapter.notifyItemInserted(1)
                                     }
-                                    //  viewModel.onNewMessage(newMessage = newMessage.data?.onNewMessage?.message)
+                                } else {
+                                    val position = stories.indexOf(user[0])
+                                    val newStoryData = newStory.data?.onNewStory
+                                    val newStoryUser = newStory.data?.onNewStory?.user
+                                    val avatar = newStory.data?.onNewStory?.user?.avatar
+                                    val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
+                                    val storiesTemp = newStory.data?.onNewStory?.stories
+                                    val newStoryCollection =
+                                        GetAllUserMultiStoriesQuery.AllUserMultiStory(
+                                            GetAllUserMultiStoriesQuery.User(
+                                                newStoryUser?.id!!,
+                                                newStoryUser.fullName,
+                                                GetAllUserMultiStoriesQuery.Avatar(
+                                                    avatar?.url,
+                                                    avatar?.id!!
+                                                ),
+                                                newStoryUser.avatarIndex,
+                                                convertAvatarListQueryToSubscription(listOfAvatar)
+                                            ),
+                                            batchNumber = newStoryData?.batchNumber!!,
+                                            stories = GetAllUserMultiStoriesQuery.Stories(
+                                                convertEdgeListQueryToSubscrption(storiesTemp),
+                                                GetAllUserMultiStoriesQuery.PageInfo2(
+                                                    storiesTemp?.pageInfo?.endCursor,
+                                                    storiesTemp?.pageInfo?.hasNextPage!!,
+                                                    storiesTemp.pageInfo.hasPreviousPage,
+                                                    storiesTemp.pageInfo.startCursor
+                                                )
+                                            )
+                                        )
+                                    Log.d(
+                                        "UserMomentSubsc",
+                                        "Else, Before Set TotalUserStories ${stories.size} and newStory ${storiesTemp.edges.size}"
+                                    )
+                                    stories.removeAt(position)
+                                    stories.add(0, newStoryCollection)
+                                    Log.d("UserMomentSubsc", "Set UserStories $stories")
+                                    Log.d(
+                                        "UserMomentSubsc",
+                                        "After Set TotalUserStories ${stories.size}"
+                                    )
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        usersMultiStoryAdapter.storyList = stories
+                                        usersMultiStoryAdapter.notifyItemRemoved(position + 1)
+                                        usersMultiStoryAdapter.notifyItemInserted(1)
+                                    }
                                 }
+                                //  viewModel.onNewMessage(newMessage = newMessage.data?.onNewMessage?.message)
                             }
                         }
                     }

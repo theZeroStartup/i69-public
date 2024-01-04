@@ -25,6 +25,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class ContactUsWithoutAuthFragment:BaseFragment<FragmentContactusBinding>() {
@@ -97,17 +98,13 @@ class ContactUsWithoutAuthFragment:BaseFragment<FragmentContactusBinding>() {
         lifecycleScope.launch(Dispatchers.Main) {
 
             loadingDialog.show()
-            val formBody: RequestBody = FormBody.Builder()
-                .add("name", name!!)
-                .add("email", email)
-                .add("message", message)
-                .build()
             val client = OkHttpClient()
             val mediaType = "application/json".toMediaType()
+            val body = "{\r\n    \"name\": \"$name\",\r\n    \"email\": \"$email\",\r\n    \"message\": \"$message\"\r\n}".toRequestBody(mediaType)
 
             val request = Request.Builder()
                 .url(BuildConfig.BASE_URL + "api/contact-us/")
-                .post(formBody)
+                .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build()
             val response = client.newCall(request).execute()

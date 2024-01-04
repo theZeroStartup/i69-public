@@ -133,11 +133,6 @@ class ContactUsFragment:BaseFragment<FragmentContactusBinding>() {
 
             val userToken = getCurrentUserToken()!!
             loadingDialog.show()
-            val formBody: RequestBody = FormBody.Builder()
-                .add("email", email)
-                .add("name", name.toString())
-                .add("message", message)
-                .build()
             val client = OkHttpClient()
             val mediaType = "application/json".toMediaType()
             val body = "{\r\n    \"name\": \"$name\",\r\n    \"email\": \"$email\",\r\n    \"message\": \"$message\"\r\n}".toRequestBody(mediaType)
