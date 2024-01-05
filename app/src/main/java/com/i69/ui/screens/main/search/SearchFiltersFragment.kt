@@ -129,6 +129,7 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                 searchKey = searchKey
 
             )
+            Log.d("ExtraSearchCalls", "setupTheme: ")
             mViewModel.getSearchUsers(
                 _searchRequest = searchRequest,
                 token = userToken!!,
@@ -162,7 +163,7 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                     id = userId!!,
                     searchKey = searchKey,
                 )
-
+                Log.d("ExtraSearchCalls", "setupTheme: 2")
                 mViewModel.getSearchUsers(
                     _searchRequest = searchRequest,
                     token = userToken!!,
@@ -216,6 +217,7 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                                     long = lon
                                 )
                                 Log.e("search params", Gson().toJson(searchRequest))
+                                Log.d("ExtraSearchCalls", "onGranted: 2 $searchKey")
                                 mViewModel.getSearchUsers(
                                     _searchRequest = searchRequest,
                                     token = userToken!!,
@@ -227,6 +229,7 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                                         bundle.putInt("interestedIn", interestedIn.id)
                                         bundle.putString("searchKey", searchKey)
 
+                                        mViewModel.clearDataOnStop()
                                         navController.navigate(
                                             R.id.action_searchFiltersFragment_to_searchResultFragment,
                                             args = bundle

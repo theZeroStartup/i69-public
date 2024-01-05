@@ -293,6 +293,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
             }
     }
 
+    fun loadUser(isFetched: (Boolean, String) -> Unit) {
+        mViewModel.getCurrentUser(userId!!, token = userToken!!, true)
+            .observe(this@MainActivity) { user ->
+                Timber.d("User $user")
+                user?.let {
+                    try {
+                        mUser = it
+                        mUser!!.id = "$userId"
+                        updateNavItem(
+                            mUser!!.avatarPhotos!!.get(mUser!!.avatarIndex!!).url?.replace(
+                                "${BuildConfig.BASE_URL}media/",
+                                "${BuildConfig.BASE_URL}media/"
+                            ).toString()
+                        )
+                    } catch (e: Exception) {
+                        Timber.e("${e.message}")
+                    }
+                }
+            }
+    }
+
     fun handleNotificationClick() {
         if ((intent.hasExtra("isNotification") && intent.getStringExtra("isNotification") != null)) {
             Log.e("notii", "--> " + "11")

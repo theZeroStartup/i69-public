@@ -43,12 +43,10 @@ class UpdateUserMomentFragment : BaseFragment<FragmentUpdateUserMomentBinding>()
             showProgressView()
             lifecycleScope.launch(Dispatchers.Main) {
                 try {
-
-                val response =    apolloClient(
+                    val response = apolloClient(
                         requireContext(),
                         getCurrentUserToken()!!
-                    ).mutation(UpdateMomentMutation(pk, binding.editWhatsGoing.text.toString()))
-                        .execute()
+                    ).mutation(UpdateMomentMutation(pk, binding.editWhatsGoing.text.toString())).execute()
 
                     if(response.hasErrors()){
                         val error = response.errors?.get(0)?.message
@@ -57,7 +55,6 @@ class UpdateUserMomentFragment : BaseFragment<FragmentUpdateUserMomentBinding>()
                         hideProgressView()
                         return@launch
                     }
-
                     else{
                         val responseData = response.data?.updateMoment
                         if (responseData?.success==true){

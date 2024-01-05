@@ -118,6 +118,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             binding.stringConstant = data
 
         }
+        (requireActivity() as MainActivity).loadUser()
         viewStringConstModel.data?.also {
             binding.stringConstant = it.value
 //            Log.e("MydataBasesss", it.value!!.messages)
@@ -259,7 +260,6 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
                 binding.root.snackbar(AppStringConstant1.you_cant_share_moment)
                 return@setOnClickListener
             }
-
             showShareOptions {}
         }
 
@@ -270,27 +270,24 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             viewModel.getCurrentUser(userId, token = token, false)
                 .observe(viewLifecycleOwner) { user ->
                     user?.let {
-                        if (it != null) {
-                            mUser = it.copy()
-                            Timber.d("Userrname ${mUser?.username}")
+                        mUser = it.copy()
+                        Timber.d("Userrname ${mUser?.username}")
 
-                            if (mUser != null) {
+                        if (mUser != null) {
+                            if (mUser!!.avatarPhotos != null && mUser!!.avatarPhotos!!.size != 0) {
 
-                                if (mUser!!.avatarPhotos != null && mUser!!.avatarPhotos!!.size != 0) {
-
-                                    if (mUser!!.avatarPhotos!!.size != 0 && mUser?.avatarPhotos?.size!! > mUser?.avatarIndex!!) {
-                                        binding.imgCurrentUser.loadCircleImage(
-                                            mUser!!.avatarPhotos!!.get(
-                                                mUser!!.avatarIndex!!
-                                            ).url?.replace(
-                                                "http://95.216.208.1:8000/media/",
-                                                "${BuildConfig.BASE_URL}media/"
-                                            ).toString()
-                                        )
-
-                                    }
+                                if (mUser!!.avatarPhotos!!.size != 0 && mUser?.avatarPhotos?.size!! > mUser?.avatarIndex!!) {
+                                    binding.imgCurrentUser.loadCircleImage(
+                                        mUser!!.avatarPhotos!!.get(
+                                            mUser!!.avatarIndex!!
+                                        ).url?.replace(
+                                            "http://95.216.208.1:8000/media/",
+                                            "${BuildConfig.BASE_URL}media/"
+                                        ).toString()
+                                    )
 
                                 }
+
                             }
                         }
 

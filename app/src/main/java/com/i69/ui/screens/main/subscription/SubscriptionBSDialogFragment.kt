@@ -134,6 +134,7 @@ class SubscriptionBSDialogFragment : BottomSheetDialogFragment() {
         var searchResutModel = mViewModel.getSearchRequest()
 
         if (searchResutModel != null) {
+            Log.d("ExtraSearchCalls", "updateSearchResultWithCoin: ")
             mViewModel.getSearchUsers(
                 _searchRequest = searchResutModel,
                 token = userToken!!,

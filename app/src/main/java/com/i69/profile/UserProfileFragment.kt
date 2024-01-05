@@ -70,6 +70,7 @@ import com.i69.ui.screens.main.search.userProfile.getimageSliderIntent
 import com.i69.ui.viewModels.CommentsModel
 import com.i69.ui.viewModels.UserMomentsModelView
 import com.i69.utils.*
+import com.paypal.pyplcheckout.sca.runOnUiThread
 import com.synnapps.carouselview.ViewListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -126,13 +127,12 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
     private val addSliderImageIntent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            Timber.d("RESULT" + result)
+            Timber.d("RESULT $result")
         }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val config: Configuration = resources.configuration
         if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
@@ -150,6 +150,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         val paint = Paint()
         paint.setTextSize(scaledPx);
         size = paint.measureText("s").roundToInt();
+
     }
 
     private fun redirectVisitirPage() {
@@ -184,7 +185,6 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
     }
 
     private fun getAllUserMoments(width: Int, size: Int, data: VMProfile.DataCombined) {
-
         Log.d("MFR", "getAllUserMoments: $width $size")
 
         lifecycleScope.launch {
@@ -246,6 +246,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         showProgressView()
         navController = findNavController()
 //        updateLanguageTranslation()
+        Log.d("UPFrag", "setupTheme: ")
+        binding.userDataViewPager.setViewGone()
         viewStringConstModel.data.observe(this@UserProfileFragment) { data ->
             binding.stringConstant = data
             Log.e("MYValuesAreChanged", "${data.feed}")
@@ -257,6 +259,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         Log.e("callTranslation", "AppStr-Feed=User=>" + AppStringConstant1.feed)
         Log.e("callTranslation", "AppStr-Feed=User=>" + AppStringConstant1.wallet)
         viewStringConstModel.data?.also {
+            Log.d("UPFrag", "setupTheme: ${it.value}")
             binding.stringConstant = it.value
 //            Log.e("MydataBasesss", it.value!!.messages)
         }
@@ -327,7 +330,15 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 //        subscribeonUpdatePrivatePhotoRequest()
 
             Log.e("callUserProfile1", "callUserProfile1")
-            viewModel.getProfile(userId)
+            viewModel.getProfile(userId) {
+                Log.d("UPFrag", "datareceived: ")
+                Handler(Looper.getMainLooper()).postDelayed({
+                    runOnUiThread {
+                        if (view != null)
+                            binding.userDataViewPager.setViewVisible()
+                    }
+                }, 750)
+            }
 
 
 //        binding.actionCoins.setOnClickListener {
@@ -465,8 +476,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                     if (data.user != null) {
                         if (data.user!!.avatarPhotos != null) {
 
-                            if (data.user?.avatarPhotos!!.size != null && data.user?.avatarPhotos!!.size != 0
-                                && data.user?.avatarIndex != null) {
+                            if (data.user?.avatarPhotos?.size != 0 && data.user?.avatarIndex != null) {
                                 if (data.user!!.avatarPhotos?.size!! > data.user?.avatarIndex!!) {
                                     binding.userProfileImg.loadCircleImage(
                                         data.user!!.avatarPhotos?.get(
@@ -480,22 +490,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                             }
                         }
                         try {
-                            //val substring = data.user!!.country.subSequence(0, 2)
-                            // binding.ownProfileLayout.textFlag.setText(data.user!!.city + ", " + substring)
                             binding.textFlag1.setText(data.user!!.city + ", " + data.user!!.countryCode)
-                            binding.imgFlag.loadImage(data.user!!.countryFlag)
-//                            try {
-//                                Glide
-//                                    .with(requireActivity())
-//                                    .load(data.user!!.countryFlag)
-//                                    .apply(RequestOptions().fitCenter())
-//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                    .into(binding.imgFlag)
-//
-//                            } catch (e: Exception) {
-//                                e.printStackTrace()
-//                            }
-//                             binding.ownProfileLayout.imageFlag.loadImage(data.user!!.countryFlag)
+                            binding.imgFlag.loadImage(data.user!!.countryFlag.toString())
 
                             Timber.d("Flag Image " + data.user!!.countryFlag)
                         } catch (e: Exception) {
@@ -1119,7 +1115,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
     public fun updateView(state: String) {
         Log.e(":updateViewState", "$state")
-        viewModel.getProfile(userId)
+        viewModel.getProfile(userId) {
+
+        }
     }
 
 //    private val broadCastReceiver = object : BroadcastReceiver() {
@@ -1199,7 +1197,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
             val success = res.data?.updateCoin?.success
             Timber.d("apolloResponse updateCoins ${success}")
             if (success == true) {
-                viewModel.getProfile()
+                viewModel.getProfile {
+
+                }
             }
         }
     }

@@ -64,7 +64,7 @@ fun ImageView.loadBlurImage(imageSrc: Any, requestOptions: RequestOptions, callb
             .with(this.context)
             .load(imageSrc)
             .apply(requestOptions)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
 
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -93,7 +93,7 @@ fun ImageView.loadImage(imageSrc: Any, requestOptions: RequestOptions, callback:
             .load(imageSrc)
             .thumbnail(0.5f)
             .apply(requestOptions)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     failure?.invoke(e)
@@ -118,7 +118,7 @@ fun loadImage(context: Context, imageSrc: String, callback: ((Bitmap?) -> Unit)?
         GlideApp.with(context)
             .asBitmap()
             .apply(requestOptions)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .load(imageSrc)
             .into(object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -152,7 +152,7 @@ fun ImageView.loadImage_byspecificsize(imageSrc: Any, requestOptions: RequestOpt
             .with(this.context)
             .load(imageSrc)
             .apply(requestOptions)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     failure?.invoke(e)

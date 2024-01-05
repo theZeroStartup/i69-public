@@ -162,7 +162,7 @@ class VMProfile @Inject constructor(
         onCoins?.invoke("${data.value?.user?.purchaseCoins}")
     }
 
-    fun getProfile(userid: String? = "") {
+    fun getProfile(userid: String? = "", onDataLoaded: () -> Unit) {
         _data.value?.user = null
         Log.e("callUserProfile2", "callUserProfile2")
         viewModelScope.launch(Dispatchers.Default) {
@@ -178,8 +178,10 @@ class VMProfile @Inject constructor(
             if (resOne.await().status == Status.SUCCESS && resTwo.await().code == HttpStatusCode.OK) {
                 resOne.await().data.let {
                     it?.id = userid ?: ""
+                    Log.d("UPFrag", "getProfile: $it")
                     resTwo.await().data?.data.let { it2 ->
                         userDao.insertPicker(it2)
+                        Log.d("UPFrag", "getProfile: $it2")
                         it?.ageValue =
                             "${it2?.agePicker?.getSelectedValueFromDefaultPicker(it?.age)} ${
 //                                context.getString(R.string.years)
@@ -209,10 +211,11 @@ class VMProfile @Inject constructor(
                         Log.e("insertedUserData", Gson().toJson(it))
                         userDao.insertUser(it)
                         _data.postValue(DataCombined(it, it2))
+                        onDataLoaded.invoke()
                     }
                 }
             } else {
-
+                onDataLoaded.invoke()
                 _data.postValue(null)
             }
         }

@@ -251,6 +251,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun clearDataOnStop() {
+        this._randomUsers.clear()
+        this._popularUsers.clear()
+        this._mostActiveUsers.clear()
+    }
 
     /// Search
     fun getSearchUsers(

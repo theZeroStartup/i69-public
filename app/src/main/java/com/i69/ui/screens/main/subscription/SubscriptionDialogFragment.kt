@@ -236,6 +236,7 @@ class SubscriptionDialogFragment(
 //
 //                Timber.i("usertokenn $userToken")
 //            }
+            Log.d("ExtraSearchCalls", "updateSearchResultWithCoin: ")
             mViewModel.getSearchUsers(
                 _searchRequest = searchResutModel,
                 token = userToken!!,

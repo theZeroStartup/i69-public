@@ -377,6 +377,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         }
 
     private fun showFilePreview(file: File?, fileType: String) {
+        (requireActivity() as MainActivity).loadUser()
         val dialogBinding = DialogPreviewImageBinding.inflate(layoutInflater, null, false)
 
         val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
@@ -402,9 +403,11 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
         dialogBinding.ibClose.setOnClickListener { dialog.dismiss() }
 
-        dialogBinding.btnShareMoment.setOnClickListener { showShareOptions {
-            dialog.dismiss()
-        } }
+        dialogBinding.btnShareMoment.setOnClickListener {
+            showShareOptions {
+                dialog.dismiss()
+            }
+        }
 
         dialog.show()
     }
@@ -1201,9 +1204,11 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
                             if (LikebottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
 
+                                Log.d("UMFrag", "subscribeForUpdateMoment: if")
                                 if (likeMomentItemPK.toString() == newMomentToAdd!!.pk.toString()) {
                                     momentLikesUsers.clear()
 
+                                    Log.d("UMFrag", "subscribeForUpdateMoment: iff")
                                     likedUser!!.map {
 
 //                                      var avtrat =  UserAvatar(url = it?.avatar?.url!!)
@@ -1260,8 +1265,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 newMomentToAdd?.pk,
                                 newMomentToAdd?.comment,
                                 newMomentToAdd?.createdDate!!,
-                                newMomentToAdd?.publishAt!!,
-//                                isPlaying = false,
+                                newMomentToAdd.publishAt,
                                 newMomentToAdd.file,
                                 newMomentToAdd.id,
                                 newMomentToAdd.like,
@@ -1270,21 +1274,27 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 user
                             )
 
-
                             val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
                             val replaceMoment =
                                 allUserMomentsNew.filter { it.node?.pk.toString() == newMomentToAdd.pk.toString() }
+                            Log.d("UMFrag", "replaceMoment: $replaceMoment")
+                            Log.d(
+                                "UserMomentSubsc Update",
+                                "1. ${replaceMoment.isEmpty()}"
+                            )
                             if (replaceMoment.isNotEmpty()) {
+
+                                Log.d("UMFrag", "subscribeForUpdateMoment: replace")
                                 Log.d(
                                     "UserMomentSubsc Update",
-                                    "Item found before update ${replaceMoment[0].node?.momentDescriptionPaginated}"
+                                    "2. Item found before update ${replaceMoment[0].node?.momentDescriptionPaginated}"
                                 )
                                 val position = allUserMomentsNew.indexOf(replaceMoment[0])
                                 allUserMomentsNew.removeAt(position)
                                 allUserMomentsNew.add(position, newMomentEdge)
                                 Log.d(
                                     "UserMomentSubsc Update",
-                                    "Item found after update ${allUserMomentsNew[position].node?.momentDescriptionPaginated}"
+                                    "3. Item found after update $position ${allUserMomentsNew[position].node?.momentDescriptionPaginated}"
                                 )
                                 CoroutineScope(Dispatchers.Main).launch {
                                     Log.e("obj_node", "submitList1 1098")
@@ -1452,7 +1462,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Timber.d("reealltime 2")
             } catch (e2: Exception) {
                 e2.printStackTrace()
-                Log.d("UserMomentSubsc", "story realtime exception= ${e2.message}")
+                Log.d("UserMomentSubsc", "story realtime exception= ${e2.localizedMessage}")
                 Timber.d("reealltime exception= ${e2.message}")
             }
         }
@@ -1840,22 +1850,24 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("UsermomentsStory", "ResponceError==> ${response.errors}")
                 Log.e("UsermomentsStory", Gson().toJson(response))
 
-                if(response.errors?.get(0)?.message!=null && response.errors?.get(0)?.message!!
-                        .contains("purchase a package", true)
-                ) {
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                            findNavController().navigate(R.id.action_global_plan)
-                        })
-                }else{
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                            //TODO: navigate to package/subscription screen
-                        })
+                if(response.errors?.get(0)?.message != null) {
+                    if (response.errors?.get(0)?.message!!
+                            .contains("purchase a package", true)) {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = {
+                                findNavController().navigate(R.id.action_global_plan)
+                            })
+                    }
+                    else {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = {
+                                //TODO: navigate to package/subscription screen
+                            })
+                    }
                 }
             }
             else {
@@ -1918,22 +1930,24 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("UsermomentsStory", "ResponceError==> ${response.errors}")
                 Log.e("UsermomentsStory", Gson().toJson(response))
 
-                if(response.errors?.get(0)?.message!=null
-                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)
-                ) {
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                             findNavController().navigate(R.id.action_global_plan)
-                        })
-                }else{
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                            //TODO: navigate to package/subscription screen
-                        })
+                if(response.errors?.get(0)?.message != null) {
+                    if (response.errors?.get(0)?.message!!
+                            .contains("purchase a package", true)) {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = {
+                                findNavController().navigate(R.id.action_global_plan)
+                            })
+                    }
+                    else {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = {
+                                //TODO: navigate to package/subscription screen
+                            })
+                    }
                 }
             }
             Timber.d("filee hasError= $response")
@@ -2710,13 +2724,14 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 hideProgressView()
 
                 if (response.hasErrors()) {
-                    Log.d("NewUserMomentFragment", "${response.errors}")
-                    if (response.errors?.get(0)?.message!!.contains("purchase a package", true))
-                        binding.root.snackbar("${response.errors?.get(0)?.message}")
-                    else {
+                    if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                         binding.root.snackbarOnTop(
                             "${response.errors?.get(0)?.message}",
-                            Snackbar.LENGTH_INDEFINITE, callback = { findNavController().navigate(R.id.action_global_plan) })
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = { findNavController().navigate(R.id.action_global_plan) })
+                    }
+                    else {
+                        binding.root.snackbar("${response.errors?.get(0)?.message}")
                     }
                 } else {
                     binding.root.snackbar("New Moment Shared")
@@ -2771,22 +2786,19 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                if (response.hasErrors()
-                    && response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
-                    Log.d("NewUserMomentFragment", "${response.errors}")
-                    //binding.root.snackbar("${response.errors?.get(0)?.message}")
-                    binding.root.snackbarOnTop(
-                        "${response.errors?.get(0)?.message}",
-                        Snackbar.LENGTH_INDEFINITE,
-                        callback = {
-                            findNavController().navigate(R.id.action_global_plan)
-                        })
+                if (response.hasErrors()) {
+                    if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
+                        binding.root.snackbarOnTop(
+                            "${response.errors?.get(0)?.message}",
+                            Snackbar.LENGTH_INDEFINITE,
+                            callback = { findNavController().navigate(R.id.action_global_plan) })
+                    }
+                    else {
+                        binding.root.snackbar("${response.errors?.get(0)?.message}")
+                    }
                 } else {
                     binding.root.snackbar("New Moment scheduled for later")
                     binding.llSharing.visibility = View.GONE
-//                    endCursor = ""
-//                    getMainActivity().mViewModelUser.userMomentsList.clear()
-//                    getUserMomentNextPage(width, size, 10, endCursor)
                 }
             } else {
 

@@ -80,10 +80,6 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
         setupViewPagerData()
 
-        callSearchRandomPeopleQuery()
-        callSearchPopularUserQuery()
-        callSearchMostActiveUserQuery()
-
         mViewModel.getupdateSearchResultWithCoin()?.observe(viewLifecycleOwner) {
             Log.e("getUpdateListQuery", "getUpdateListQuery")
             callSearchPopularUserQuery()
@@ -91,10 +87,13 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onStart() {
+        super.onStart()
 
-        Log.d("onAttach", "onAttach: ")
+//        mViewModel.clearDataOnStop()
+        callSearchRandomPeopleQuery()
+//        callSearchPopularUserQuery()
+//        callSearchMostActiveUserQuery()
     }
 
     fun setupViewPagerData() {
@@ -158,7 +157,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
         val interestedIn = requireArguments().getInt("interestedIn")
         val searchKey = requireArguments().getString("searchKey")
-        Log.e("interestedIn ", "$interestedIn")
+        Log.e("interestedInRandom ", "$interestedIn")
         Log.e("searchKey ", "$searchKey")
 
         val searchRequest = SearchRequest(
@@ -197,6 +196,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
         }
 
         Log.e("search params", Gson().toJson(searchRequest))
+        Log.d("ExtraSearchCalls", "callSearchRandomPeopleQuery: ")
         mViewModel.getSearchUsers(
             _searchRequest = searchRequest,
             token = userToken!!,

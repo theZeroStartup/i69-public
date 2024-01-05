@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
@@ -54,6 +55,7 @@ import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.viewModels.CommentsModel
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
+import com.paypal.pyplcheckout.sca.runOnUiThread
 import com.synnapps.carouselview.ViewListener
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -163,6 +165,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
     override fun setupTheme() {
         showProgressView()
+        binding.userDataViewPager.setViewGone()
         viewStringConstModel.data.observe(this@SearchUserProfileFragment) { data ->
 
             binding.stringConstant = data
@@ -219,7 +222,14 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
         chatBundle.putString("otherUserId", otherUserId)
         chatBundle.putString("otherUserPhoto", "")
 
-        viewModel.getProfile(otherUserId)
+        viewModel.getProfile(otherUserId) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                runOnUiThread {
+                    if (view != null)
+                        binding.userDataViewPager.setViewVisible()
+                }
+            }, 500)
+        }
 
         subscribeonUpdatePrivatePhotoRequest()
 
@@ -461,12 +471,12 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                         }
                     }
                     try {
-                        val substring = data.user!!.country.subSequence(0, 2)
+                        val substring = data.user!!.country?.subSequence(0, 2)
                         binding.otherProfileLayout.textFlag.setText(data.user!!.city + ", " + substring)
 
                         binding.textFlag1.setText(data.user!!.city + ", " + substring)
-                        binding.imgFlag.loadImage(data.user!!.countryFlag)
-                        binding.otherProfileLayout.imageFlag.loadImage(data.user!!.countryFlag)
+                        binding.imgFlag.loadImage(data.user!!.countryFlag.toString())
+                        binding.otherProfileLayout.imageFlag.loadImage(data.user!!.countryFlag.toString())
                     } catch (e: Exception) {
                         Timber.d(e.message)
                     }
@@ -1291,8 +1301,9 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 //                                "realtime  DeleteMessage Id  ${newMessage.data}"
 //                            )
                         lifecycleScope.launchWhenResumed {
+                            viewModel.getProfile(otherUserId) {
 
-                            viewModel.getProfile(otherUserId)
+                            }
                         }
 
 

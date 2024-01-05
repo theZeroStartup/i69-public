@@ -166,6 +166,7 @@ class FiltersDialogFragment(
                                 long = lon
                             )
                             Log.d("TAG", Gson().toJson(searchRequest))
+                            Log.d("ExtraSearchCalls", "onGranted: ")
                             mViewModel.getSearchUsers(
                                 _searchRequest = searchRequest,
                                 token = userToken!!,
