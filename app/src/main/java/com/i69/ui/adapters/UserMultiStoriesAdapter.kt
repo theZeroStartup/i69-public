@@ -27,6 +27,8 @@ import com.i69.data.models.User
 import com.i69.databinding.ItemAddNewNearbyThumbBinding
 import com.i69.databinding.ItemNearbyThumbBinding
 import com.i69.utils.loadCircleImage
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 
 
 private const val TYPE_NEW_STORY = 0
@@ -171,8 +173,10 @@ class UserMultiStoriesAdapter(
             val user = item?.user
             if (node?.fileType.equals("video")) {
                 storyImage = "${BuildConfig.BASE_URL}media/${node?.thumbnail}"
+                viewBinding.ivPlay.setViewGone()
                 Log.e("thumbnail","thumbnail from node\n${Gson().toJson(node)}}")
             } else {
+                viewBinding.ivPlay.setViewGone()
                 Log.e("thumbnail","file from node \n" +
                         "${Gson().toJson(node)}")
                 storyImage = "${BuildConfig.BASE_URL}media/${node?.file}"

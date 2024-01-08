@@ -1,5 +1,6 @@
 package com.i69.ui.screens.main.moment
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -9,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Build
@@ -28,7 +30,9 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -51,9 +55,26 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.google.android.play.core.splitinstall.d
 import com.google.gson.Gson
-import com.i69.*
+import com.i69.BuildConfig
+import com.i69.DeleteStoryMutation
+import com.i69.DeletemomentMutation
+import com.i69.GetAllUserMomentsQuery
+import com.i69.GetAllUserMultiStoriesQuery
+import com.i69.GetNotificationCountQuery
+import com.i69.GiftPurchaseMutation
+import com.i69.LikeOnMomentMutation
+import com.i69.MomentMutation
+import com.i69.OnDeleteMomentSubscription
+import com.i69.OnDeleteStorySubscription
+import com.i69.OnNewMomentSubscription
+import com.i69.OnNewStorySubscription
+import com.i69.OnUpdateMomentSubscription
+import com.i69.R
+import com.i69.ReportonmomentMutation
+import com.i69.ScheduleMomentMutation
+import com.i69.ScheduleStoryMutation
+import com.i69.StoryMutation
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.ModelGifts
 import com.i69.data.models.User
@@ -66,7 +87,10 @@ import com.i69.di.modules.AppModule.provideGraphqlApi
 import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentVirtualGifts
-import com.i69.ui.adapters.*
+import com.i69.ui.adapters.NearbySharedMomentAdapter
+import com.i69.ui.adapters.StoryLikesAdapter
+import com.i69.ui.adapters.UserItemsAdapter
+import com.i69.ui.adapters.UserMultiStoriesAdapter
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.SplashActivity
@@ -77,7 +101,19 @@ import com.i69.ui.viewModels.CommentsModel
 import com.i69.ui.viewModels.UserMomentsModelView
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.ui.views.InsLoadingView
-import com.i69.utils.*
+import com.i69.utils.AnimationTypes
+import com.i69.utils.LogUtil
+import com.i69.utils.apolloClient
+import com.i69.utils.apolloClientSubscription
+import com.i69.utils.getResponse
+import com.i69.utils.getVideoFilePath
+import com.i69.utils.loadImage
+import com.i69.utils.navigate
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
+import com.i69.utils.showOkAlertDialog
+import com.i69.utils.snackbar
+import com.i69.utils.snackbarOnTop
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -87,9 +123,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.roundToInt
-
 
 class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     NearbySharedMomentAdapter.NearbySharedMomentListener,
@@ -214,10 +252,52 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
         var shareAt = ""
 
-
         bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
         bottomsheet.rbShareLater.setViewGone()
         bottomsheet.ivLocked.setViewVisible()
+
+        if ((requireActivity() as MainActivity).isUserAllowedToPostStory()) {
+            bottomsheet.llShareNowRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+            bottomsheet.rbShareNow.setViewVisible()
+            bottomsheet.ivPostLocked.setViewGone()
+            if ((requireActivity() as MainActivity).isUserHasStoryQuota()) {
+                bottomsheet.tvShareNowCoins.setViewGone()
+            }
+            else {
+                (requireActivity() as MainActivity).getRequiredCoins("POST_STORY_COINS") {
+                    bottomsheet.tvShareNowCoins.setViewVisible()
+                    bottomsheet.tvShareNowCoins.text = it.toString()
+                }
+            }
+        }
+        else {
+            bottomsheet.llShareNowRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareNow.setViewGone()
+            bottomsheet.ivPostLocked.setViewVisible()
+
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareLater.setViewGone()
+            bottomsheet.ivLocked.setViewVisible()
+
+            bottomsheet.cvShareNow.setOnClickListener {
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
+            }
+
+            bottomsheet.cvShareLater.setOnClickListener {
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
+            }
+
+            shareOptionsDialog.setContentView(bottomsheet.root)
+            shareOptionsDialog.show()
+
+            return
+        }
 
         if ((requireActivity() as MainActivity).isUserAllowedToScheduleStory()) {
             if ((requireActivity() as MainActivity).isUserHasSubscription()){
@@ -1619,20 +1699,20 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 GetAllUserMultiStoriesQuery.Edge(
                     story?.cursor.toString(),
                     GetAllUserMultiStoriesQuery.Node(
-                        node?.createdDate!!,
-                        node?.publishAt!!,
-                        node.file,
-                        node.fileType,
-                        node.id,
-                        node.pk,
-                        node.thumbnail,
-                        node.commentsCount,
+                        node?.createdDate.toString(),
+                        node?.publishAt.toString(),
+                        node?.file.toString(),
+                        node?.fileType,
+                        node?.id.toString(),
+                        node?.pk,
+                        node?.thumbnail,
+                        node?.commentsCount,
                         GetAllUserMultiStoriesQuery.Comments(
                             GetAllUserMultiStoriesQuery.PageInfo(
-                                node.comments?.pageInfo?.endCursor,
-                                node.comments?.pageInfo?.hasNextPage!!,
-                                node.comments.pageInfo.hasPreviousPage,
-                                node.comments.pageInfo.startCursor
+                                node?.comments?.pageInfo?.endCursor,
+                                node?.comments?.pageInfo?.hasNextPage!!,
+                                node?.comments.pageInfo.hasPreviousPage,
+                                node?.comments.pageInfo.startCursor
                             ),
                             convertCommentListQueryToSubscription(node.comments.edges)
                         ),
@@ -2048,6 +2128,12 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         dialog.show(childFragmentManager, "story")
         // }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    var mediaPermissions = arrayOf(
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_MEDIA_VIDEO
+    )
 
     override fun onAddNewUserStoryClick(isCamera: Boolean) {
 

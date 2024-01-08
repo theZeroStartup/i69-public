@@ -8,7 +8,7 @@ object Others {
     private const val expandableLayoutVersion = "2.9.2"
 //    private const val chatKitVersion = "0.4.1"
     private const val chatKitVersion = "1.2.0"
-    private const val pixImagePickerVersion = "1.6.2"
+    private const val pixImagePickerVersion = "1.6.3"
 //    private const val carouselVersion = "0.1.5"
     private const val carouselVersion = "d46b3c394f"
     private const val permissionsVersion = "3.8"
@@ -22,6 +22,8 @@ object Others {
     private const val exoversion = "2.18.2"
     private const val paypalVersion = "0.8.7"
     private const val googleMapVersion = "18.1.0"
+
+    private const val camera2Version = "1.2.3"
 
     //ExoPlayer
     const val exoplayer = "com.google.android.exoplayer:exoplayer:$exoversion"
@@ -73,5 +75,9 @@ object Others {
     //Google Maps
     const val googleMaps = "com.google.android.gms:play-services-maps:$googleMapVersion"
 
+
+    const val camera2 = "androidx.camera:camera-camera2:$camera2Version"
+    const val cameraLifeCycle = "androidx.camera:camera-lifecycle:$camera2Version"
+    const val cameraView = "androidx.camera:camera-view:$camera2Version"
 
 }

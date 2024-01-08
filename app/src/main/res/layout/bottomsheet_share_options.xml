@@ -57,15 +57,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                >
+                app:layout_constraintStart_toStartOf="parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/llShareNowRoot"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:background="@color/CE4F3FF">
-
 
                     <RadioButton
                         android:id="@+id/rbShareNow"
@@ -73,19 +73,51 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:layout_marginStart="16dp" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tvShareNow"
+                    <ImageView
+                        android:id="@+id/ivPostLocked"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_marginStart="@dimen/_16sdp"
-                        android:text="@string/share_now"
-                        android:textStyle="bold" />
+                        android:src="@drawable/lock"
+                        android:visibility="gone"
+                        android:paddingVertical="13dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_gravity="center"
+                        app:tint="@color/black" />
 
-
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="2"
+                        android:layout_gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tvShareNow"
+                            android:layout_width="0dp"
+                            android:layout_weight="1.5"
+                            android:maxLines="2"
+                            android:ellipsize="middle"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_17sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/share_now"
+                            android:textStyle="bold"/>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tvShareNowCoins"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:fontFamily="sans-serif-medium"
+                            android:drawableStart="@drawable/coins_small"
+                            android:text="0"
+                            android:textStyle="bold"/>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView

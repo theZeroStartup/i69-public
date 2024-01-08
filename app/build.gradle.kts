@@ -286,6 +286,11 @@ dependencies {
     implementation(Others.exoplayer)
 
 
+    //Camera2
+    implementation(Others.camera2)
+    implementation(Others.cameraView)
+    implementation(Others.cameraLifeCycle)
+
     //PayPal
     implementation(Others.paypal)
 

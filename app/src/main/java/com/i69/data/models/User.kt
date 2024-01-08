@@ -39,6 +39,14 @@ data class User(
     var canScheduleMoment: Boolean = false,
     @SerializedName("canScheduleStory")
     var canScheduleStory: Boolean = false,
+    @SerializedName("canPostMoment")
+    var canPostMoment: Boolean = false,
+    @SerializedName("canPostStory")
+    var canPostStory: Boolean = false,
+    @SerializedName("hasStoryQuota")
+    var hasStoryQuota: Boolean = false,
+    @SerializedName("hasMomentQuota")
+    var hasMomentQuota: Boolean = false,
     var gender: Int? = 0,
     var age: Int? = 0,
     var avatarIndex: Int? = 0,

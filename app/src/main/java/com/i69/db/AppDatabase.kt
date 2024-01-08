@@ -11,7 +11,7 @@ import com.i69.profile.db.converters.PickerConverters
 import com.i69.profile.db.converters.UserConverters
 import com.i69.profile.db.dao.UserDao
 
-@Database(entities = [User::class, DefaultPicker::class, ModelQBChatDialogs::class], version = 17, exportSchema = false)
+@Database(entities = [User::class, DefaultPicker::class, ModelQBChatDialogs::class], version = 19, exportSchema = false)
 @TypeConverters(UserConverters::class, PickerConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 

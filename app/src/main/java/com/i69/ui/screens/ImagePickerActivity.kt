@@ -47,7 +47,7 @@ class ImagePickerActivity : AppCompatActivity() {
             flash = Flash.Auto
             mode = Mode.All
             isFrontFacing = true
-            videoDurationLimitInSeconds = intent.getIntExtra("video_duration_limit", 15)
+//            videoDurationLimitInSeconds = intent.getIntExtra("video_duration_limit", 15)
             path = "/"
         }
 

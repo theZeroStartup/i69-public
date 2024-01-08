@@ -2179,6 +2179,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
         return false
     }
 
+    fun isUserAllowedToPostStory() = mUser?.canPostStory == true
+
+    fun isUserAllowedToPostMoment() = mUser?.canPostMoment == true
+
+    fun isUserHasMomentQuota(): Boolean {
+        return mUser?.hasMomentQuota == true
+    }
+
+    fun isUserHasStoryQuota(): Boolean {
+        return mUser?.hasStoryQuota == true
+    }
+
     fun isUserAllowedToScheduleStory() = mUser?.canScheduleStory == true
 
     fun isUserAllowedToScheduleMoment() = mUser?.canScheduleMoment == true

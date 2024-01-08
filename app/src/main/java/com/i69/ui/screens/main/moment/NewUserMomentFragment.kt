@@ -316,7 +316,6 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         dialog.setContentView(dialogBinding.root)
         dialog.window?.setBackgroundDrawableResource(R.color.color_transparant_80)
 
-
         if (fileType == ".jpg") {
             dialogBinding.ivPreview.setViewVisible()
             dialogBinding.vvPreview.setViewGone()
@@ -352,18 +351,59 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         bottomsheet.rbShareLater.setViewGone()
         bottomsheet.ivLocked.setViewVisible()
 
+        if ((requireActivity() as MainActivity).isUserAllowedToPostMoment()) {
+            bottomsheet.llShareNowRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+            bottomsheet.rbShareNow.setViewVisible()
+            bottomsheet.ivPostLocked.setViewGone()
+            if ((requireActivity() as MainActivity).isUserHasMomentQuota()) {
+                bottomsheet.tvShareNowCoins.setViewGone()
+            }
+            else {
+                (requireActivity() as MainActivity).getRequiredCoins("POST_MOMENT_COINS") {
+                    bottomsheet.tvShareNowCoins.setViewVisible()
+                    bottomsheet.tvShareNowCoins.text = it.toString()
+                }
+            }
+        }
+        else {
+            bottomsheet.llShareNowRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareNow.setViewGone()
+            bottomsheet.ivPostLocked.setViewVisible()
+
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.profileTransBlackOverlayColor, null))
+            bottomsheet.rbShareLater.setViewGone()
+            bottomsheet.ivLocked.setViewVisible()
+
+            bottomsheet.cvShareNow.setOnClickListener {
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
+            }
+
+            bottomsheet.cvShareLater.setOnClickListener {
+                if (shareOptionsDialog.isShowing)
+                    shareOptionsDialog.dismiss()
+                onShared.invoke()
+                showUpgradePlanDialog()
+            }
+
+            shareOptionsDialog.setContentView(bottomsheet.root)
+            shareOptionsDialog.show()
+
+            return
+        }
+
         if ((requireActivity() as MainActivity).isUserAllowedToScheduleMoment()) {
+            bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
+            bottomsheet.rbShareLater.setViewVisible()
+            bottomsheet.ivLocked.setViewGone()
+
             if ((requireActivity() as MainActivity).isUserHasSubscription()) {
-                bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
-                bottomsheet.rbShareLater.setViewVisible()
-                bottomsheet.ivLocked.setViewGone()
                 bottomsheet.tvShareLaterCoins.setViewGone()
             }
             else {
                 (requireActivity() as MainActivity).getRequiredCoins("SCHEDULE_MOMENT_COINS") {
-                    bottomsheet.llShareLaterRoot.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.CE4F3FF, null))
-                    bottomsheet.rbShareLater.setViewVisible()
-                    bottomsheet.ivLocked.setViewGone()
                     bottomsheet.tvShareLaterCoins.setViewVisible()
                     bottomsheet.tvShareLaterCoins.text = it.toString()
                 }

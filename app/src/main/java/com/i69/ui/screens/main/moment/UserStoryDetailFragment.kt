@@ -49,7 +49,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.ArrayList
 
-
 class UserStoryDetailFragment(val listener: DeleteCallback?) : DialogFragment(),
     StoryCommentListAdapter.ClickPerformListener, CommentReplyListAdapter.ClickonListener {
 
