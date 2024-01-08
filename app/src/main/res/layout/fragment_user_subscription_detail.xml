@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="stringConstant"
+            type="com.i69.applocalization.AppStringConstant" />
 
     </data>
 
@@ -113,56 +117,75 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/subScriptionLayout"/>
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/buyCoinsContainer"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="@dimen/settings_buy_element_height"-->
-<!--                android:background="@drawable/background_main_theme_gradient"-->
-<!--                android:clickable="true"-->
-<!--                android:focusable="true"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/settingsAppBar">-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llActionsRoot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subscription_divider"
+                android:layout_marginTop="@dimen/_10sdp">
+                <LinearLayout
+                    android:id="@+id/llButtonSubscribe"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/subscribe_btn_gradiant"
+                    android:elevation="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="48dp"-->
-<!--                    android:layout_height="48dp"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_marginStart="@dimen/settings_buy_element_margin_start"-->
-<!--                    android:contentDescription="@string/app_name"-->
-<!--                    android:src="@drawable/icon_buy_chat_coins" />-->
+                    <ImageView
+                        android:id="@+id/ivSubIcon"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/subscription" />
 
-<!--                <com.google.android.material.textview.MaterialTextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_marginStart="@dimen/settings_buy_element_text_margin_start"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:fontFamily="sans-serif"-->
-<!--                    android:gravity="start"-->
-<!--                    android:text="@string/settings_buy"-->
-<!--                    android:textAllCaps="true"-->
-<!--                    android:id="@+id/tv_buyCoinsContainer"-->
-<!--                    android:textColor="@color/settings_buy_text_color"-->
-<!--                    android:textStyle="bold" />-->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:elevation="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="@string/subscribe"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        tools:text="@string/subscribe" />
 
-<!--                <ImageView-->
-<!--                    android:layout_width="24dp"-->
-<!--                    android:layout_height="24dp"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_marginEnd="@dimen/settings_element_margin_end"-->
-<!--                    android:contentDescription="@string/app_name"-->
-<!--                    android:src="@drawable/ic_keyboard_arrow_right"-->
-<!--                    app:tint="@color/settings_buy_next_tint_color" />-->
+                </LinearLayout>
 
-<!--            </LinearLayout>-->
+                <LinearLayout
+                    android:id="@+id/llButtonUpgrade"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/subscribe_btn_gradiant"
+                    android:elevation="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/subscription" />
 
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:elevation="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="@string/upgrade"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        tools:text="@string/upgrade" />
 
+                </LinearLayout>
 
-
-            <!-- Logout container-->
-
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

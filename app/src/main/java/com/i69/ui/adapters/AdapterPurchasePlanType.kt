@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.i69.GetAllPackagesQuery
 import com.i69.R
 import com.i69.databinding.ListItemPlanNameBinding
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 
 
 //private val listener: AdapterPurchasePlanType.ClickonListener,
@@ -40,41 +42,42 @@ class AdapterPurchasePlanType(
         return if (allusermoments == null) 0 else allusermoments?.size!!
     }
 
+    val hidePackagesList = mutableListOf<String>()
+
+    fun hidePackages(hidePackagesList: MutableList<String>) {
+        this.hidePackagesList.addAll(hidePackagesList)
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(val viewBinding: ListItemPlanNameBinding) :
         RecyclerView.ViewHolder(viewBinding.root) {
         fun bind(position: Int, item: GetAllPackagesQuery.AllPackage?) {
 
-            viewBinding.planTitle.setText(item!!.name)
-            if (item!!.id == "1") {
-                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.silver_plan))
-            } else if(item!!.id == "2") {
-                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.gold_plan))
+            viewBinding.planTitle.text = item!!.name
+            if (item.id == "1") {
+                if (hidePackagesList.contains(item.id)) {
+                    viewBinding.root.setViewGone()
+                    planInterface.onClick(1, allusermoments[1])
+                }
+                else {
+                    viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.silver_plan))
+                }
+            } else if(item.id == "2") {
+                if (hidePackagesList.contains(item.id)) {
+                    viewBinding.root.setViewGone()
+                    planInterface.onClick(1, allusermoments[1])
+                }
+                else {
+                    viewBinding.root.setViewVisible()
+                    viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.gold_plan))
+                }
             } else if(item!!.id == "3") {
                 viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.platinum_plan))
             }
-            /*if(item!!.name.contains(AppStringConstant1.silver_package, true)) {
-                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.silver_plan))
-            }else  if(item!!.name.contains(AppStringConstant1.gold_package, true)){
-                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.gold_plan))
-            }else  if(item!!.name.contains(AppStringConstant1.platimum_package, true)){
-                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.platinum_plan))
-            }*/
+
             viewBinding.cvPlanType.setOnClickListener(View.OnClickListener {
                 planInterface.onClick(bindingAdapterPosition, item)
-
             })
-//            if(item!!.name.contains("silver", true)) {
-//                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.silver_plan))
-//            }else  if(item!!.name.contains("gold", true)){
-//                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.gold_plan))
-//            }else  if(item!!.name.contains("platimum", true)){
-//                viewBinding.clPlanType.setBackgroundColor(ctx.resources.getColor(R.color.platinum_plan))
-//            }
-//            viewBinding.cvPlanType.setOnClickListener(View.OnClickListener {
-//                planInterface.onClick(bindingAdapterPosition, item)
-//
-//            })
         }
 
     }

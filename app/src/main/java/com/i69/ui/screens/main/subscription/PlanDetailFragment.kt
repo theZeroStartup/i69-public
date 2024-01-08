@@ -29,7 +29,9 @@ import timber.log.Timber
 
 class PlanDetailFragment : BaseFragment<FragmentPurchasePlanBinding>() {
 
-//    private lateinit var adapterCoinPrice: AdapterUserPlanCoinPrice
+    private var isSilverHidden = false
+
+    //    private lateinit var adapterCoinPrice: AdapterUserPlanCoinPrice
 private lateinit var adapterCoinPrice: AdapterPlanCoinPrice
     private lateinit var adapterPlanBenefits : AdapterPlanBenefits
     var amount = 0.0
@@ -49,8 +51,22 @@ private lateinit var adapterCoinPrice: AdapterPlanCoinPrice
             stringConstant = AppStringConstant(requireContext())
         }
 
+    private val hidePackagesList = mutableListOf<String>()
 
     override fun setupTheme() {
+        val bundle = arguments
+        if (bundle?.containsKey("type") == true){
+            val type = bundle.getString("type")
+            if (type == "Silver") {
+                hidePackagesList.add("1")
+            }
+            else if (type == "Gold") {
+                isSilverHidden = true
+                hidePackagesList.add("1")
+                hidePackagesList.add("2")
+            }
+        }
+
         viewStringConstModel.data.observe(this@PlanDetailFragment) { data ->
 
             binding.stringConstant = data
@@ -183,6 +199,7 @@ private lateinit var adapterCoinPrice: AdapterPlanCoinPrice
                         }
                     }
                 )
+                adapterPurchasePlanType.hidePackages(hidePackagesList)
                 binding.recyclerViewPlan.adapter = adapterPurchasePlanType
                 hideProgressView()
             }
@@ -207,6 +224,7 @@ private lateinit var adapterCoinPrice: AdapterPlanCoinPrice
         bundle.putString("selectedPlanTitle",selectedPlanName)
         bundle.putInt("selectedPackageId",selectedPackageId)
         bundle.putString("selectedPackageName",selectedPackageName)
+        bundle.putBoolean("isSilverHidden",isSilverHidden)
         findNavController().navigate(
             destinationId = R.id.action_global_plan_detail,
             popUpFragId = null,

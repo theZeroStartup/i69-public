@@ -6,6 +6,7 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,13 +21,13 @@ import com.i69.data.models.PlanBnefits
 import com.i69.databinding.FragmentPlanDetailBinding
 import com.i69.ui.adapters.*
 import com.i69.ui.base.BaseFragment
-import com.i69.ui.screens.main.MainActivity
 import com.i69.utils.*
 import timber.log.Timber
 
 class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
 
+    private var isSilverHidden = false
     private lateinit var adapterPlanBenefits: AdapterPlanDetailsBenefits
 
     private var planBenefitsList = mutableListOf<PlanBnefits>()
@@ -46,6 +47,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
 
     override fun setupTheme() {
+        navController = findNavController()
         viewStringConstModel.data.observe(this@PlanDetailBuyFragment) { data ->
 
             binding.stringConstant = data
@@ -66,8 +68,16 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
         selectedPackageTitle = requireArguments().getString("selectedPackageName").toString()
         selectedPlanName = requireArguments().getString("selectedPlanTitle").toString()
         selectedPlanId = requireArguments().getInt("selectedPlanID")
+        isSilverHidden = requireArguments().getBoolean("isSilverHidden")
 
-
+        if (isSilverHidden) {
+            binding.llSilver.setViewGone()
+            binding.llGold.background = ResourcesCompat.getDrawable(resources, R.drawable.bg_right_corners_curved, null)
+        }
+        else {
+            binding.llGold.background = ResourcesCompat.getDrawable(resources, R.drawable.plan_gold_back_gradient, null)
+            binding.llSilver.setViewVisible()
+        }
 
         Log.e("MySelectedPackahgeType", selectedPackageTitle)
 //        if (selectedPackageTitle.contains("silver", true)) {
@@ -320,7 +330,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                             })
                     } else {
                         binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
-                            (requireActivity() as MainActivity).openProfileScreen()
+                            moveToSubscriptionDetailScreen()
                         }
                     }
                 }
@@ -334,7 +344,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                 hideProgressView()
 
                 binding.root.autoSnackbarOnTop("Subscription active", Snackbar.LENGTH_LONG) {
-                    (requireActivity() as MainActivity).openProfileScreen()
+                    moveToSubscriptionDetailScreen()
                 }
 //                if (response.data!!.upgradePackage!!.success!!) {
 //                    findNavController().popBackStack()
@@ -345,6 +355,10 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
         }
         }
+    }
+
+    fun moveToSubscriptionDetailScreen() {
+        navController.navigate(com.i69.R.id.action_global_subscription_detail)
     }
 
     fun downGradeSubsription() {
@@ -383,7 +397,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                             })
                     } else {
                         binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
-                            (requireActivity() as MainActivity).openProfileScreen()
+                            moveToSubscriptionDetailScreen()
                         }
                     }
                 }
@@ -398,7 +412,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                 hideProgressView()
                 response.data!!.downgradePackage!!.message?.let {
                     binding.root.autoSnackbarOnTop(it, Snackbar.LENGTH_LONG) {
-                        (requireActivity() as MainActivity).openProfileScreen()
+                        moveToSubscriptionDetailScreen()
                     }
                 }
 //                if (response.data!!.upgradePackage!!.success!!) {
@@ -448,7 +462,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                             })
                     } else {
                         binding.root.autoSnackbarOnTop(errorMessage, Snackbar.LENGTH_LONG) {
-                            (requireActivity() as MainActivity).openProfileScreen()
+                            moveToSubscriptionDetailScreen()
                         }
                     }
                 }
@@ -463,7 +477,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
                 response.data!!.upgradePackage!!.message?.let {
                     binding.root.autoSnackbarOnTop(it, Snackbar.LENGTH_LONG) {
-                        (requireActivity() as MainActivity).openProfileScreen()
+                        moveToSubscriptionDetailScreen()
                     }
                 }
 //                if (response.data!!.upgradePackage!!.success!!) {
@@ -623,7 +637,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
 
 
 
-                adapterPlanBenefits = AdapterPlanDetailsBenefits(requireContext())
+                adapterPlanBenefits = AdapterPlanDetailsBenefits(requireContext(), isSilverHidden)
                 binding.recyclerViewCoins.adapter = adapterPlanBenefits
                 adapterPlanBenefits.updateItemList(planBenefitsList, selectedPackageTitle)
                 hideProgressView()

@@ -10,9 +10,12 @@ import com.google.android.material.textview.MaterialTextView
 import com.i69.GetAllPackagesQuery
 import com.i69.R
 import com.i69.data.models.PlanBnefits
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 
 class AdapterPlanDetailsBenefits(
-    var context: Context
+    var context: Context,
+    private val isSilverHidden: Boolean
 ) :
     RecyclerView.Adapter<AdapterPlanDetailsBenefits.CoinPriceViewHolder>() {
 
@@ -46,6 +49,8 @@ class AdapterPlanDetailsBenefits(
         val coinPrice = itemList.get(holder.adapterPosition)
         holder.txtName.text = coinPrice?.name
 
+        if (isSilverHidden) holder.imgSilver.setViewGone()
+        else holder.imgSilver.setViewVisible()
 //        coinPrice.
 
         if (coinPrice.isPlatnium) {

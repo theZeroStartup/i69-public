@@ -1,5 +1,6 @@
 package com.i69.ui.screens.main.settings
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -100,12 +101,31 @@ class UserSubscriptionDetailFragment : BaseFragment<FragmentUserSubscriptionDeta
                 hideProgressView()
 
                 if (response.data!!.userSubscription!!.`package` != null) {
+                    if (response.data?.userSubscription?.`package`?.id?.contains("1", true) == true
+                        || response.data?.userSubscription?.`package`?.id?.contains("2", true) == true) {
+                        binding.llActionsRoot.setViewVisible()
+                        binding.llButtonSubscribe.setViewGone()
+                        binding.llButtonUpgrade.setViewVisible()
+                        binding.llButtonUpgrade.setOnClickListener {
+                            if (response.data?.userSubscription?.`package`?.id?.contains("2", true) == true)
+                                navigatePlanPurchase("Gold")
+                            else
+                                navigatePlanPurchase("Silver")
+                        }
+                    }
+
                     binding.tvSubScription.text =
                         requireContext().resources.getString(com.i69.R.string.your_subscription)
                             .plus(response.data!!.userSubscription!!.`package`!!.name).plus("(")
                             .plus(response.data!!.userSubscription!!.plan!!.title).plus(")")
-
-//    your_subscription
+                }
+                if (response.data?.userSubscription?.isActive == false) {
+                    binding.llActionsRoot.setViewVisible()
+                    binding.llButtonSubscribe.setViewVisible()
+                    binding.llButtonUpgrade.setViewGone()
+                    binding.llButtonSubscribe.setOnClickListener {
+                        navigatePlanPurchase("")
+                    }
                 }
             }
 
@@ -114,5 +134,9 @@ class UserSubscriptionDetailFragment : BaseFragment<FragmentUserSubscriptionDeta
 
     }
 
-
+    private fun navigatePlanPurchase(type: String) {
+        val bundle = Bundle()
+        bundle.putString("type", type)
+        findNavController().navigate(com.i69.R.id.action_global_plan, bundle)
+    }
 }

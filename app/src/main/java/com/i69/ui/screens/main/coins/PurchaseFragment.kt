@@ -130,6 +130,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
 
 
     override fun setupTheme() {
+        navController = findNavController()
 
         viewStringConstModel.data.observe(this@PurchaseFragment) { data ->
             if (data != null) {
@@ -1608,7 +1609,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
 
                         val successMsg = String.format(AppStringConstant1.congrats_purchase, selectedCoins)
                         binding.root.autoSnackbarOnTop(successMsg, Snackbar.LENGTH_LONG) {
-                            (requireActivity() as MainActivity).openProfileScreen()
+                            moveToSubscriptionDetailScreen()
                         }
                     } else {
                         Log.e("myPurchaseCoinResponce", Gson().toJson(response))
@@ -1627,6 +1628,10 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
                 }
             }
         }
+    }
+
+    fun moveToSubscriptionDetailScreen() {
+        navController.navigate(com.i69.R.id.action_global_subscription_detail)
     }
 
     public fun onGooglePaymentSuccess(method: String, paymentId: String) {

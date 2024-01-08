@@ -124,6 +124,11 @@
 
 
     </fragment>
+    <action
+        android:id="@+id/action_global_subscription_detail"
+        app:destination="@id/userSubScriptionDetailFragment"
+        app:popUpTo="@+id/settingsFragment"
+        app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/blockedUsersFragment"
         android:name="com.i69.ui.screens.main.settings.BlockedUsersFragment"
