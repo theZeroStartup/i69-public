@@ -36,6 +36,7 @@ import com.i69.ui.screens.main.moment.PlayUserStoryDialogFragment
 import com.i69.ui.screens.main.moment.UserStoryDetailFragment
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment
 import com.i69.utils.AnimationTypes
+import com.i69.utils.ApiUtil
 import com.i69.utils.apolloClient
 import com.i69.utils.navigate
 import com.i69.utils.snackbar
@@ -430,7 +431,11 @@ class NotificationDialogFragment(
                             timeZone = TimeZone.getTimeZone("UTC")
                         }
                     Timber.d("filee ${userStory?.node!!.fileType} ${userStory.node.file}")
-                    val url = "${BuildConfig.BASE_URL}media/${userStory.node.file}"
+                    val url = if (!BuildConfig.USE_S3) {
+                        "${BuildConfig.BASE_URL}${userStory.node.file}"
+                    }
+                    else if (userStory.node.file.toString().startsWith(ApiUtil.S3_URL)) userStory.node.file.toString()
+                    else ApiUtil.S3_URL.plus(userStory.node.file.toString())
                     var userurl = ""
                     userurl =
                         if (userStory.node.user!!.avatar != null && userStory.node.user!!.avatar!!.url != null) {

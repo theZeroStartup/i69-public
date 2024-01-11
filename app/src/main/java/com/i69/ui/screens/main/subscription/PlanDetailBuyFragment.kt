@@ -120,7 +120,7 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
             binding.purchaseDescription.setText(AppStringConstant1.maximise_your_dating_with_all_the_benefits_of_premium_plus_extra_features_included)
 
             binding.purchaseDescription.attributedString(
-                AppStringConstant1.platnium,
+                AppStringConstant1.platinum,
                 requireActivity().resources.getColor(R.color.colorPrimary),
                 StyleSpan(Typeface.BOLD)
             )
@@ -186,19 +186,11 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                     if (response.data!!.userSubscription!!.`package`!!.name.contains(AppStringConstant1.silver, true)) {
                         if (response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)) {
                             Log.e("silver", "silver")
-
                             purchaseSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)
-                            && selectedPackageTitle.contains(AppStringConstant1.gold, true)) {
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.gold, true)) {
                             Log.e("silver", "gold")
                             upgradeSubsription(response.data!!.userSubscription!!.plan!!.id!!.toInt())
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) &&
-                            selectedPackageTitle.contains(AppStringConstant1.platnium, true)
-//                            selectedPackageTitle.contains("platimum", true)
-                        ) {
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.platinum, true)) {
                             Log.e("silver", "platinum")
                             upgradeSubsription(response.data!!.userSubscription!!.plan!!.id!!.toInt())
                         } else {
@@ -209,56 +201,24 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
                         if (response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)) {
                             Log.e("gold", "gold")
                             purchaseSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)
-                            && selectedPackageTitle.contains(AppStringConstant1.silver, true)) {
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.silver, true)) {
                             Log.e("gold", "silver")
                             downGradeSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) &&
-                            selectedPackageTitle.contains(AppStringConstant1.platnium, true)
-//                            selectedPackageTitle.contains("platimum", true)
-                        ) {
-
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.platinum, true)) {
                             Log.e("gold", "platinum")
                             upgradeSubsription(response.data!!.userSubscription!!.plan!!.id!!.toInt())
                         } else {
                             Log.e("gold", "purchase")
                             purchaseSubsription()
                         }
-                    } else if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                            AppStringConstant1.platnium,
-                            true
-                        )
-//                        if ( response.data!!.userSubscription!!.`package`!!.name.contains(
-//                            "platimum",
-//                            true
-//                        )
-                    ) {
-                        if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            )
-                        ) {
+                    } else if (response.data!!.userSubscription!!.`package`!!.name.contains(AppStringConstant1.platinum, true)) {
+                        if (response.data!!.userSubscription!!.`package`!!.name.contains(selectedPackageTitle, true)) {
                             Log.e("platinum", "platinum")
                             purchaseSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) && selectedPackageTitle.contains(AppStringConstant1.silver, true)
-//                            selectedPackageTitle.contains("silver", true)
-                        ) {
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.silver, true)) {
                             Log.e("platinum", "silver")
                             downGradeSubsription()
-                        } else if (!response.data!!.userSubscription!!.`package`!!.name.contains(
-                                selectedPackageTitle,
-                                true
-                            ) &&
-                            selectedPackageTitle.contains(AppStringConstant1.gold, true)
-//                            selectedPackageTitle.contains("gold", true)
-                        ) {
-
+                        } else if (selectedPackageTitle.contains(AppStringConstant1.gold, true)) {
                             Log.e("platinum", "gold")
                             downGradeSubsription()
                         } else {
@@ -276,13 +236,9 @@ class PlanDetailBuyFragment : BaseFragment<FragmentPlanDetailBinding>() {
             }
 
         }
-
-
     }
 
-
-    fun purchaseSubsription() {
-
+    private fun purchaseSubsription() {
         var itisFromSubScriptionDialog = false
         if(requireArguments().containsKey("itisFromSubScriptionDialog")){
              itisFromSubScriptionDialog =   requireArguments().getBoolean("itisFromSubScriptionDialog")

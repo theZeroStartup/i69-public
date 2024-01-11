@@ -9,9 +9,9 @@
     <string name="search_drawer">تلاش کریں۔</string>
     <string name="language_label">زبان</string>
     <string name="select_language">زبان منتخب کریں۔</string>
-
+    <string name="share_now">ابھی شیئر کریں</string>
     <string name="account_deleted_error">سائن ان ناکام! آپ نے اپنا پروفائل حذف کردیا ہے۔ براہ کرم ہم سے رابطہ کریں۔</string>
-
+    <string name="schedule_for_later">بعد میں شیڈول</string>
     <string name="do_you_want_to_leave_this_page">کیا آپ یہ صفحہ چھوڑنا چاہتے ہیں؟</string>
 
     <string name="profile_complete_title">پروفائل مکمل کریں۔</string>

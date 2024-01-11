@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,6 +43,7 @@ import com.i69.databinding.FragmentNewUserMomentBinding
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.main.MainActivity
+import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
 import com.i69.utils.KeyboardUtils.SoftKeyboardToggleListener
@@ -172,7 +174,13 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
             val llGallary = view.findViewById<View>(R.id.ll_gallery) as LinearLayout
 
             llCamera.setOnClickListener {
-                val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
+                val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Intent(requireActivity(), CameraActivity::class.java)
+                }
+                else {
+                    Intent(requireActivity(), ImagePickerActivity::class.java)
+                }
+                intent.putExtra("video_duration_limit", 60)
                 intent.putExtra("withCrop", false)
                 photosLauncher.launch(intent)
                 mypopupWindow.dismiss()
@@ -335,7 +343,7 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
 
         dialogBinding.ibClose.setViewGone()
 
-        dialogBinding.tvShare.text = getString(R.string.proceed)
+        dialogBinding.tvShare.text = getString(R.string.next)
         dialogBinding.btnShareMoment.setOnClickListener { dialog.dismiss() }
 
         dialog.show()

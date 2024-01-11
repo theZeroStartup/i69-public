@@ -299,8 +299,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(),
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.getLanguages()
             val response = viewModel.getLanguages()
-            if (response.body()?.defaultPickers?.languages?.isNotEmpty()!!){
-                Timber.tag("csvccvs").e(response.body()?.defaultPickers?.languages!!.size.toString())
+            if (response.body()?.defaultPickers?.languages?.isNotEmpty() == true){
+                Timber.tag("csvccvs").e(response.body()?.defaultPickers?.languages?.size.toString())
                 }
                 else {
 

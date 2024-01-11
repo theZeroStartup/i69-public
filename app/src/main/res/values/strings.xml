@@ -393,7 +393,7 @@
     <string name="subscription">Subscription</string>
     <string name="subscription_caps">SUBSCRIPTION</string>
 
-    <string name="platnium">platimum</string>
+    <string name="platnium">platinum</string>
     <string name="silver">silver</string>
 
     <string name="free_member">Free Member</string>
@@ -479,8 +479,8 @@
     <string name="subscription_automatically_renews_after_trail_ends">SUBSCRIPTION AUTOMATICALLY RENEWS AFTER TRAIL ENDS.</string>
     <string name="silver_package">Silver Package</string>
     <string name="gold_package">GOLD Package</string>
-    <string name="platimum_package">Platimum Package</string>
-    <string name="paypal">Paypal</string>
+    <string name="platimum_package">Platinum Package</string>
+    <string name="paypal" translatable="false">Paypal</string>
     <string name="chat_new">Chat</string>
     <string name="maximize_dating_with_premium">Maximise your dating with all the benefits of premium, plus extra features included</string>
     <string name="more_details_">More details...</string>
@@ -501,4 +501,5 @@
     <string name="please_select_a_future_time">Selected time has to be greater than current time</string>
     <string name="proceed">Proceed</string>
     <string name="feature_locked_npurchase_coins_or_subscription">Feature Locked\nPurchase coins or subscription</string>
+    <string name="hold_for_video_tap_for_photo">Hold for video, tap for photo</string>
 </resources>

@@ -395,7 +395,7 @@ class AppStringConstant1 {
         var buy_subscription = "Buy Subscription"
         var subscription = "Subscription"
 
-        var platnium = "platimum"
+        var platinum = "platinum"
         var silver = "silver"
 
 
@@ -491,7 +491,7 @@ class AppStringConstant1 {
 
         var silver_package = "Silver Package"
         var gold_package = "GOLD Package"
-        var platimum_package= "Platimum Package"
+        var platimum_package= "Platinum Package"
 
         var paypal = "Paypal"
         var chat_new = "Chat"

@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -65,6 +66,7 @@ import com.i69.ui.adapters.UserItemsAdapter
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.main.MainActivity
+import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
@@ -818,8 +820,13 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
             } else {
                 binding.includeAttached.clAttachments.visibility = View.VISIBLE
                 binding.includeAttached.llCamera.setOnClickListener {
-                    val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
-                    intent.putExtra("video_duration_limit",60)
+                    val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Intent(requireActivity(), CameraActivity::class.java)
+                    }
+                    else {
+                        Intent(requireActivity(), ImagePickerActivity::class.java)
+                    }
+                    intent.putExtra("video_duration_limit", 60)
                     intent.putExtra("withCrop", false)
                     photosLauncher.launch(intent)
                     binding.includeAttached.clAttachments.visibility = View.GONE

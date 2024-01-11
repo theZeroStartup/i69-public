@@ -79,5 +79,8 @@ object Others {
     const val camera2 = "androidx.camera:camera-camera2:$camera2Version"
     const val cameraLifeCycle = "androidx.camera:camera-lifecycle:$camera2Version"
     const val cameraView = "androidx.camera:camera-view:$camera2Version"
+    const val cameraCore = "androidx.camera:camera-core:${camera2Version}"
+    const val cameraVideo = "androidx.camera:camera-video:${camera2Version}"
+    const val cameraExtensions = "androidx.camera:camera-extensions:${camera2Version}"
 
 }

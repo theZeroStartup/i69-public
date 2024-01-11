@@ -270,12 +270,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
                 user?.let {
                     try {
                         mUser = it
-                        mUser!!.id = "$userId"
+                        mUser?.id = "$userId"
                         updateNavItem(
-                            mUser!!.avatarPhotos!!.get(mUser!!.avatarIndex!!).url?.replace(
-                                "${BuildConfig.BASE_URL}media/",
-                                "${BuildConfig.BASE_URL}media/"
-                            ).toString()
+                            mUser?.avatarIndex?.let { it1 ->
+                                mUser?.avatarPhotos?.get(it1)?.url?.replace(
+                                    "${BuildConfig.BASE_URL}media/",
+                                    "${BuildConfig.BASE_URL}media/"
+                                ).toString()
+                            }
                         )
 //                            mUser = it
 //                            updateNavItem(
@@ -573,7 +575,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
                             timeZone = TimeZone.getTimeZone("UTC")
                         }
                     Timber.d("filee ${userStory?.node!!.fileType} ${userStory.node.file}")
-                    val url = "${BuildConfig.BASE_URL}media/${userStory.node.file}"
+                    val url = if (!BuildConfig.USE_S3) {
+                        "${BuildConfig.BASE_URL}${userStory.node.file}"
+                    }
+                    else if (userStory.node.file.toString().startsWith(ApiUtil.S3_URL)) userStory.node.file.toString()
+                    else ApiUtil.S3_URL.plus(userStory.node.file.toString())
                     var userurl = ""
                     userurl =
                         if (userStory.node.user!!.avatar != null && userStory.node.user!!.avatar!!.url != null) {

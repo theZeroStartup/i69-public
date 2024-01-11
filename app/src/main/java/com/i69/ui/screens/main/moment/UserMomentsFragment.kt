@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Build
@@ -32,7 +31,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -95,6 +93,7 @@ import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.SplashActivity
 import com.i69.ui.screens.main.MainActivity
+import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment
 import com.i69.ui.viewModels.CommentsModel
@@ -102,6 +101,7 @@ import com.i69.ui.viewModels.UserMomentsModelView
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.ui.views.InsLoadingView
 import com.i69.utils.AnimationTypes
+import com.i69.utils.ApiUtil
 import com.i69.utils.LogUtil
 import com.i69.utils.apolloClient
 import com.i69.utils.apolloClientSubscription
@@ -137,6 +137,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         private const val TAG = "UserMomentsFragment"
     }
 
+    private var tempMoments = mutableListOf<ApolloResponse<OnNewMomentSubscription.Data>>()
     private var tempStories = mutableListOf<ApolloResponse<OnNewStorySubscription.Data>>()
     private var stories: ArrayList<GetAllUserMultiStoriesQuery.AllUserMultiStory?> = ArrayList()
     private val mViewModel: UserMomentsModelView by activityViewModels()
@@ -223,12 +224,18 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 mFilePath = data?.getStringExtra("result")
                 file = File(mFilePath)
-                Timber.d("fileBase64 $mFilePath")
-                Log.d("UserMomentFragment", "Photo Choosed")
-                showFilePreview(file, ".jpg")
+                if (mFilePath?.contains(".") == true) {
+                    val regex = "\\.".toRegex()
+                    val type: String = mFilePath?.reversed()?.split(regex)?.get(0)?.reversed().toString()
+                    Log.d("UMF", "$type: ")
+                    Timber.d("fileBase64 $mFilePath")
+                    Log.d("UserMomentFragment", "Photo Choosed")
+                    showFilePreview(file, ".$type")
+                }
             }
         }
-    val galleryImageLauncher =
+
+    private val galleryImageLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             val data = activityResult.data
             if (activityResult.resultCode == Activity.RESULT_OK) {
@@ -1074,71 +1081,73 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 "moment realtime NewStoryData ${newMoment.data}"
                             )
 
-                            val newMomentToAdd = newMoment.data?.onNewMoment?.moment
+                            if (!tempMoments.contains(newMoment)){
+                                tempMoments.add(newMoment)
 
-                            if (newMomentToAdd != null && !allUserMomentsNew.any { it.node!!.id == newMomentToAdd.id }) {
-                                val newMomentUser = newMoment.data?.onNewMoment?.moment?.user
-                                val avatar = GetAllUserMomentsQuery.Avatar(
-                                    newMomentUser?.avatar?.url,
-                                    newMomentUser?.avatar?.id.toString(),
-                                    newMomentUser?.avatar?.user
-                                )
-                                val avatarPhotos = newMomentUser?.avatarPhotos?.map {
-                                    GetAllUserMomentsQuery.AvatarPhoto(
-                                        it?.url,
-                                        it.id,
-                                        it.user
+                                val newMomentToAdd = newMoment.data?.onNewMoment?.moment
+                                if (newMomentToAdd != null && !allUserMomentsNew.any { it.node!!.id == newMomentToAdd.id }) {
+                                    val newMomentUser = newMoment.data?.onNewMoment?.moment?.user
+                                    val avatar = GetAllUserMomentsQuery.Avatar(
+                                        newMomentUser?.avatar?.url,
+                                        newMomentUser?.avatar?.id.toString(),
+                                        newMomentUser?.avatar?.user
                                     )
-                                }
-                                val user = GetAllUserMomentsQuery.User(
-                                    newMomentUser?.id.toString(),
-                                    newMomentUser?.email.toString(),
-                                    newMomentUser?.fullName.toString(),
-                                    newMomentUser?.username.toString(),
-                                    newMomentUser?.gender,
-                                    avatar,
-                                    newMomentUser?.onesignalPlayerId,
-                                    avatarPhotos ?: listOf()
-                                )
-                                val node = GetAllUserMomentsQuery.Node(
-                                    newMomentToAdd.pk,
-                                    newMomentToAdd.comment,
-                                    newMomentToAdd.createdDate,
-                                    newMomentToAdd.publishAt,
-//                                    isPlaying = false,
-                                    newMomentToAdd.file,
-                                    newMomentToAdd.id,
-                                    newMomentToAdd.like,
-                                    newMomentToAdd.momentDescription,
-                                    newMomentToAdd.momentDescriptionPaginated ?: listOf(),
-                                    user
-                                )
-                                val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
+                                    val avatarPhotos = newMomentUser?.avatarPhotos?.map {
+                                        GetAllUserMomentsQuery.AvatarPhoto(
+                                            it?.url,
+                                            it.id,
+                                            it.user
+                                        )
+                                    }
+                                    val user = GetAllUserMomentsQuery.User(
+                                        newMomentUser?.id.toString(),
+                                        newMomentUser?.email.toString(),
+                                        newMomentUser?.fullName.toString(),
+                                        newMomentUser?.username.toString(),
+                                        newMomentUser?.gender,
+                                        avatar,
+                                        newMomentUser?.onesignalPlayerId,
+                                        avatarPhotos ?: listOf()
+                                    )
+                                    val node = GetAllUserMomentsQuery.Node(
+                                        newMomentToAdd.pk,
+                                        newMomentToAdd.comment,
+                                        newMomentToAdd.createdDate,
+                                        newMomentToAdd.publishAt,
+                                        newMomentToAdd.file,
+                                        newMomentToAdd.id,
+                                        newMomentToAdd.like,
+                                        newMomentToAdd.momentDescription,
+                                        newMomentToAdd.momentDescriptionPaginated ?: listOf(),
+                                        user
+                                    )
+                                    val newMomentEdge = GetAllUserMomentsQuery.Edge("", node)
 
-                                Log.d(
-                                    "UserMomentsSub",
-                                    "Initial Size  " + allUserMomentsNew.size.toString()
-                                )
-                                allUserMomentsNew.add(0, newMomentEdge)
+                                    Log.d(
+                                        "UserMomentsSub",
+                                        "Initial Size  " + allUserMomentsNew.size.toString()
+                                    )
+                                    allUserMomentsNew.add(0, newMomentEdge)
 
-                                Log.d(
-                                    "UserMomentsSub",
-                                    "After Size  " + allUserMomentsNew.size.toString()
-                                )
-                                Log.d(
-                                    "UserMomentsSub",
-                                    "Added Moment ${newMomentEdge}"
-                                )
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    Log.e("obj_node", "submitList1 801")
-                                    sharedMomentAdapter.submitList1(allUserMomentsNew)
+                                    Log.d(
+                                        "UserMomentsSub",
+                                        "After Size  " + allUserMomentsNew.size.toString()
+                                    )
+                                    Log.d(
+                                        "UserMomentsSub",
+                                        "Added Moment ${newMomentEdge}"
+                                    )
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        Log.e("obj_node", "submitList1 801")
+                                        sharedMomentAdapter.submitList1(allUserMomentsNew)
 //                                           sharedMomentAdapter.notifyItemInserted(0)
 
-                                    Log.e(
-                                        "TAG",
-                                        "subscribeForNewMoment: " + scrollY1 + " " + height
-                                    )
-                                    binding.bubble.isVisible = scrollY1 > height
+                                        Log.e(
+                                            "TAG",
+                                            "subscribeForNewMoment: " + scrollY1 + " " + height
+                                        )
+                                        binding.bubble.isVisible = scrollY1 > height
+                                    }
                                 }
                             }
                         }
@@ -2068,7 +2077,11 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         }
 
         val node = userStory.stories.edges.get(0)?.node
-        val url = "${BuildConfig.BASE_URL}media/${node?.file}"
+        val url = if (!BuildConfig.USE_S3) {
+            "${BuildConfig.BASE_URL}${node?.file}"
+        }
+        else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
+        else ApiUtil.S3_URL.plus(node?.file.toString())
 
         var userurl = if (node!!.user!!.avatar != null && node.user!!.avatar!!.url != null) {
             node.user.avatar!!.url!!
@@ -2136,13 +2149,16 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     )
 
     override fun onAddNewUserStoryClick(isCamera: Boolean) {
-
         if (isCamera) {
-            val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Intent(requireActivity(), CameraActivity::class.java)
+            }
+            else {
+                Intent(requireActivity(), ImagePickerActivity::class.java)
+            }
             intent.putExtra("video_duration_limit", 60)
             intent.putExtra("withCrop", false)
             photosLauncher.launch(intent)
-
         } else {
 
             galleryImageLauncher.launch(
@@ -2151,7 +2167,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                     MediaStore.Images.Media.INTERNAL_CONTENT_URI
                 )
             )
-
         }
 
 //        val dialog = Dialog(requireContext())
@@ -2535,20 +2550,20 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         position: Int, item: GetAllUserMomentsQuery.Edge?
     ) {
         val bundle = Bundle().apply {
-            putString("momentID", item?.node!!.pk.toString())
+            putString("momentID", item?.node?.pk.toString())
             putInt("itemPosition", position)
-            putString("filesUrl", item.node.file!!)
-            putString("Likes", item.node.like!!.toString())
-            putString("Comments", item.node.comment!!.toString())
+            putString("filesUrl", item?.node?.file.toString())
+            putString("Likes", item?.node?.like?.toString())
+            putString("Comments", item?.node?.comment!!.toString())
             val gson = Gson()
-            putString("Desc", gson.toJson(item.node.momentDescriptionPaginated))
-            putString("fullnames", item.node.user!!.fullName)
-            if (item.node.user.gender != null) {
+            putString("Desc", gson.toJson(item?.node.momentDescriptionPaginated))
+            putString("fullnames", item.node.user?.fullName)
+            if (item.node.user?.gender != null) {
                 putString("gender", item.node.user.gender.name)
             } else {
                 putString("gender", null)
             }
-            putString("momentuserID", item.node.user.id.toString())
+            putString("momentuserID", item.node.user?.id.toString())
         }
         navController.navigate(R.id.momentsAddCommentFragment, bundle)
     }

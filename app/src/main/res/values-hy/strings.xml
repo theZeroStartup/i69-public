@@ -11,7 +11,8 @@
     <string name="select_language">Ընտրել լեզուն</string>
     <string name="account_deleted_error">Մուտք գործեք ձախողված: Դուք ջնջել եք ձեր պրոֆիլը: Խնդրում ենք կապվել մեզ հետ `կրկին միանալու համար:</string>
     <string name="do_you_want_to_leave_this_page">Ցանկանու՞մ եք լքել այս էջը:</string>
-
+    <string name="share_now">Կիսվեք հիմա</string>
+    <string name="schedule_for_later">Ժամանակացույցը ավելի ուշ</string>
     <string name="profile_complete_title">ԼՐԱՑՎԱԾ ՊՐՈՖԻԼ</string>
     <string name="profile_edit_title">ԽՄԲԱԳՐԵԼ ՊՐՈՖԻԼԸ</string>
     <string name="done">Կատարած</string>

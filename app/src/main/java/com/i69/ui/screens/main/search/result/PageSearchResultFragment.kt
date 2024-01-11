@@ -261,7 +261,7 @@ class PageSearchResultFragment : BaseFragment<FragmentPageSearchResultBinding>()
                         Log.e("UpdateUserList", "${lockUsers.size}")
                         Log.e("UpdateUserList1", "${unLockUsers.size}")
                         Log.e("UpdateUserList2", "${users.size}")
-                        if (users.isNullOrEmpty()) {
+                        if (users.isEmpty()) {
                             binding.noUsersLabel.setViewVisible()
                             binding.usersLockRecyclerView.setViewGone()
                             binding.unlockLayout.setViewGone()

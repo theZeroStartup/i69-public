@@ -10,7 +10,9 @@
     <string name="language_label">Language</string>
     <string name="select_language">Select Language</string>
     <string name="email_sent">Email sent successfully</string>
-    
+
+    <string name="share_now">Share now</string>
+    <string name="schedule_for_later">Schedule for later</string>
     <string name="profile_complete_title">COMPLETE PROFILE</string>
     <string name="profile_edit_title">EDIT PROFILE</string>
     <string name="done">Done</string>

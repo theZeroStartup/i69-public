@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Цоннецтинг Хеартс</string>
-
+    <string name="share_now">Поделите сада</string>
+    <string name="schedule_for_later">Распоред за касније</string>
     <string name="search">Претрага</string>
     <string name="search_drawer">ПРЕТРАГА</string>
     <string name="language_label">Језик</string>

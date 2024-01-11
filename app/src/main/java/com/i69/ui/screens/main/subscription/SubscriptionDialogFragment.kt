@@ -487,7 +487,7 @@ class SubscriptionDialogFragment(
                                 selectedPackageName,
                                 true
                             ) &&
-                            selectedPackageName.contains(AppStringConstant1.platnium, true)
+                            selectedPackageName.contains(AppStringConstant1.platinum, true)
 //                            selectedPackageTitle.contains("platimum", true)
                         ) {
                             Log.e("silver", "platinum")
@@ -523,7 +523,7 @@ class SubscriptionDialogFragment(
                                 selectedPackageName,
                                 true
                             ) &&
-                            selectedPackageName.contains(AppStringConstant1.platnium, true)
+                            selectedPackageName.contains(AppStringConstant1.platinum, true)
 //                            selectedPackageTitle.contains("platimum", true)
                         ) {
 
@@ -534,7 +534,7 @@ class SubscriptionDialogFragment(
                             purchaseSubsription(selectedPlanId)
                         }
                     } else if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                            AppStringConstant1.platnium,
+                            AppStringConstant1.platinum,
                             true
                         )
                     ) {

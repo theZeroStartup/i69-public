@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
@@ -44,6 +45,7 @@ import com.i69.ui.adapters.PhotosNewAdapter
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.interest.getInterestsListActivityIntent
+import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.views.InterestsView
 import com.i69.ui.views.ToggleImageView
 import com.i69.utils.snackbar
@@ -301,7 +303,13 @@ abstract class BaseEditProfileFragment : BaseFragment<FragmentEditProfileBinding
         val llGalerry = view.findViewById<View>(R.id.ll_gallery) as LinearLayoutCompat
 
         llCamera.setOnClickListener {
-            val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Intent(requireActivity(), CameraActivity::class.java)
+            }
+            else {
+                Intent(requireActivity(), ImagePickerActivity::class.java)
+            }
+            intent.putExtra("video_duration_limit", 60)
             intent.putExtra("withCrop", false)
             photosLauncher.launch(intent)
             myPopupWindow.dismiss()
@@ -613,7 +621,13 @@ abstract class BaseEditProfileFragment : BaseFragment<FragmentEditProfileBinding
         val llPrivate = view.findViewById<View>(R.id.ll_private) as LinearLayoutCompat
 
         llPublic.setOnClickListener {
-            val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Intent(requireActivity(), CameraActivity::class.java)
+            }
+            else {
+                Intent(requireActivity(), ImagePickerActivity::class.java)
+            }
+            intent.putExtra("video_duration_limit", 60)
             intent.putExtra("withCrop", false)
             photosLauncher.launch(intent)
             myPopupWindow.dismiss()

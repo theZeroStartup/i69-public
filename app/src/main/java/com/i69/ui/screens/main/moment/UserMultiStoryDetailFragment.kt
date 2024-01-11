@@ -1060,7 +1060,12 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
         LogUtil.debug("Position : : $pos")
 
         val node = stories[pos]?.node
-        val url = "${BuildConfig.BASE_URL}media/${node?.file}"
+        val url = if (!BuildConfig.USE_S3) {
+            "${BuildConfig.BASE_URL}${node?.file}"
+        }
+        else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
+        else ApiUtil.S3_URL.plus(node?.file.toString())
+        Log.d("UMSDF", "setStory: $url")
         controlProgressBar(pos)
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).apply {
             timeZone = TimeZone.getTimeZone("UTC")

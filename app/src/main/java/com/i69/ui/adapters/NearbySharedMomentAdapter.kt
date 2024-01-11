@@ -30,6 +30,7 @@ import com.i69.GetAllUserMomentsQuery
 import com.i69.R
 import com.i69.applocalization.AppStringConstant1
 import com.i69.databinding.ItemSharedUserMomentBinding
+import com.i69.utils.ApiUtil
 import com.i69.utils.loadCircleImage
 import com.i69.utils.loadImage
 import com.i69.utils.setViewGone
@@ -205,8 +206,13 @@ class NearbySharedMomentAdapter(
             viewBinding.lblItemNearbyName.text = builder
 
 
-            val url = "${BuildConfig.BASE_URL}media/${item_data.node!!.file}"
-            Timber.d("binnd user avatar= ${item_data.node.user?.avatar}")
+            val url = if (!BuildConfig.USE_S3) {
+                "${BuildConfig.BASE_URL}${item_data.node!!.file}"
+            }
+            else if (item_data?.node?.file.toString().startsWith(ApiUtil.S3_URL)) item_data?.node?.file.toString()
+            else ApiUtil.S3_URL.plus(item_data?.node?.file.toString())
+            Log.d("NSMA", "bind: $url, ${item_data.node!!.file}")
+            Timber.d("binnd user avatar= ${item_data.node?.user?.avatar}")
             /*if (item?.user?.avatarPhotos?.size!! > 0) {
                 Timber.d("binnd user avatar= ${item?.user?.avatarPhotos?.get(0)?.url}")
                 val avatarUrl = item?.user?.avatarPhotos?.get(0)?.url!!
@@ -248,19 +254,21 @@ class NearbySharedMomentAdapter(
                 }
             }
 
-            val avatarUrl = item_data.node.user?.avatar
+            val avatarUrl = item_data.node?.user?.avatar
             if (avatarUrl != null) {
                 avatarUrl.url?.replace(
                     "http://95.216.208.1:8000/media/",
                     "${BuildConfig.BASE_URL}media/"
-                )
-                    ?.let { viewBinding.imgNearbyUser.loadCircleImage(it) }
+                )?.let {
+                    Log.d("NSMA", "avatarUrl: $it")
+                    viewBinding.imgNearbyUser.loadCircleImage(it)
+                }
             } else {
                 viewBinding.imgNearbyUser.loadImage(R.drawable.ic_default_user)
             }
 
             val sb = StringBuilder()
-            item_data.node.momentDescriptionPaginated!!.forEach { sb.append(it) }
+            item_data.node?.momentDescriptionPaginated!!.forEach { sb.append(it) }
             val descstring = sb.toString().replace("", "")
 
             if (descstring.isNullOrEmpty()) {
@@ -269,7 +277,7 @@ class NearbySharedMomentAdapter(
                 viewBinding.txtMomentDescription.text = descstring
                 viewBinding.txtMomentDescription.visibility = View.VISIBLE
             }
-            var text = item_data.node.createdDate.toString()
+            var text = item_data.node?.createdDate.toString()
             text = text.replace("T", " ").substring(0, text.indexOf("."))
             val momentTime = formatter.parse(text)
 
@@ -279,7 +287,7 @@ class NearbySharedMomentAdapter(
                 DateUtils.MINUTE_IN_MILLIS
             )
 
-            var publishAt = item_data.node.publishAt.toString()
+            var publishAt = item_data.node?.publishAt.toString()
             Log.d("UMSDF", "setStory: $publishAt")
             var publishTimeInMillis = ""
             if (publishAt.isNotEmpty() && publishAt != "null") {

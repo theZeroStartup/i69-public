@@ -4,8 +4,9 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">เชื่อมต่อหัวใจ</string>
-
+    <string name="share_now">แบ่งปันตอนนี้</string>
     <string name="search">ค้นหา</string>
+    <string name="schedule_for_later">กำหนดเวลาในภายหลัง</string>
     <string name="search_drawer">ค้นหา</string>
     <string name="language_label">ภาษา</string>
     <string name="select_language">เลือกภาษา</string>

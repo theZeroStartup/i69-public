@@ -90,7 +90,7 @@ class AdapterUserPlanCoinPrice(
         } else if (selectedPlanName.contains(AppStringConstant1.gold, true)) {
 
             holder. constarinetPurchasePlan.setBackground(context.resources.getDrawable(R.drawable.ic_gold_plane_drawable))
-        } else if (selectedPlanName.contains(AppStringConstant1.platnium, true)) {
+        } else if (selectedPlanName.contains(AppStringConstant1.platinum, true)) {
 
             holder. constarinetPurchasePlan.setBackground(context.resources.getDrawable(R.drawable.ic_platinum_plane_drawable))
 

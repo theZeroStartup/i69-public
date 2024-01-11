@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Lidhja e Zemrave</string>
-
+    <string name="share_now">Ndaj tani</string>
+    <string name="schedule_for_later">Programi për më vonë</string>
     <string name="search">Kërko</string>
     <string name="search_drawer">KËRKONI</string>
     <string name="language_label">Gjuhe</string>

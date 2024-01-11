@@ -26,6 +26,7 @@ import com.i69.applocalization.AppStringConstant1
 import com.i69.data.models.User
 import com.i69.databinding.ItemAddNewNearbyThumbBinding
 import com.i69.databinding.ItemNearbyThumbBinding
+import com.i69.utils.ApiUtil
 import com.i69.utils.loadCircleImage
 import com.i69.utils.setViewGone
 import com.i69.utils.setViewVisible
@@ -172,14 +173,22 @@ class UserMultiStoriesAdapter(
             val node = item?.stories?.edges?.get(0)?.node
             val user = item?.user
             if (node?.fileType.equals("video")) {
-                storyImage = "${BuildConfig.BASE_URL}media/${node?.thumbnail}"
+                storyImage = if (!BuildConfig.USE_S3) {
+                    "${BuildConfig.BASE_URL}${node?.thumbnail}"
+                }
+                else if (node?.thumbnail.toString().startsWith(ApiUtil.S3_URL)) node?.thumbnail.toString()
+                else ApiUtil.S3_URL.plus(node?.thumbnail.toString())
                 viewBinding.ivPlay.setViewGone()
                 Log.e("thumbnail","thumbnail from node\n${Gson().toJson(node)}}")
             } else {
                 viewBinding.ivPlay.setViewGone()
                 Log.e("thumbnail","file from node \n" +
                         "${Gson().toJson(node)}")
-                storyImage = "${BuildConfig.BASE_URL}media/${node?.file}"
+                storyImage = if (!BuildConfig.USE_S3) {
+                    "${BuildConfig.BASE_URL}${node?.file}"
+                }
+                else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
+                else ApiUtil.S3_URL.plus(node?.file.toString())
             }
 
             Log.e("thumbnail",storyImage)

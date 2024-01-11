@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Relier les cœurs</string>
-
+    <string name="schedule_for_later">Horaire plus tard</string>
     <string name="search">Recherche</string>
     <string name="search_drawer">RECHERCHE</string>
     <string name="language_label">Langue</string>
     <string name="select_language">Choisir la langue</string>
     <string name="email_sent">E-mail envoyé avec succès</string>
     <string name="account_deleted_error">Connexion a échoué! Vous avez supprimé votre profil. Veuillez nous contacter pour vous réjouir.</string>
-    
+    <string name="share_now">Partage maintenant</string>
     <string name="profile_complete_title">PROFIL COMPLET</string>
     <string name="profile_edit_title">EDITER LE PROFIL</string>
     <string name="done">Fait</string>

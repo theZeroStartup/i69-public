@@ -9,6 +9,7 @@ import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +23,7 @@ import com.i69.GetUserMomentsQuery
 import com.i69.R
 import com.i69.applocalization.AppStringConstant1
 import com.i69.databinding.ItemSharedUserMomentBinding
+import com.i69.utils.ApiUtil
 import com.i69.utils.loadCircleImage
 import com.i69.utils.loadImage
 import java.text.SimpleDateFormat
@@ -75,17 +77,10 @@ class CurrentUserMomentAdapter(
             val title = item_data.node!!.user?.fullName
 
 
-            val s1 = SpannableString(AppStringConstant1.near_by_user)
-            val s2 = SpannableString(title)
+            val s2 = SpannableString(title.plus(" "))
             val s3 = SpannableString(AppStringConstant1.has_shared_moment)
 
 
-            s1.setSpan(
-                ForegroundColorSpan(Color.WHITE),
-                0,
-                s1.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
             s2.setSpan(
                 ForegroundColorSpan(ctx.resources.getColor(R.color.colorPrimary)),
                 0,
@@ -103,20 +98,19 @@ class CurrentUserMomentAdapter(
 
             // build the string
             val builder = SpannableStringBuilder()
-            builder.append(s1)
             builder.append(s2)
             builder.append(s3)
 
 
 
             viewBinding.lblItemNearbyName.text = builder
-            val url = "${BuildConfig.BASE_URL}media/${item_data?.node!!.file}"
-            //Timber.d("binnd user avatar= ${item?.user?.avatar}")
-            /*if (item?.user?.avatarPhotos?.size!! > 0) {
-                Timber.d("binnd user avatar= ${item?.user?.avatarPhotos?.get(0)?.url}")
-                val avatarUrl = item?.user?.avatarPhotos?.get(0)?.url!!
-                viewBinding.imgNearbyUser.loadCircleImage(avatarUrl)
-            }*/
+            val url = if (!BuildConfig.USE_S3) {
+                "${BuildConfig.BASE_URL}${item_data?.node!!.file}"
+            }
+            else if (item_data?.node!!.file.toString().startsWith(ApiUtil.S3_URL)) item_data?.node.file.toString()
+            else ApiUtil.S3_URL.plus(item_data?.node.file.toString())
+            Log.d("CUMA", "bind: $url")
+
             val avatarUrl = item_data?.node!!.user?.avatar
             if (avatarUrl != null) {
                 viewBinding.imgNearbyUser.loadCircleImage(avatarUrl.url!!)

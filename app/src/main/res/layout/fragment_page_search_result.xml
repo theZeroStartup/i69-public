@@ -277,7 +277,7 @@
                         android:layout_gravity="center"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:visibility="visible"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

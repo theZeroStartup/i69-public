@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Connecting Hearts</string>
-
+    <string name="schedule_for_later">Raspored za kasnije</string>
     <string name="search">Traži</string>
     <string name="search_drawer">TRAŽI</string>
     <string name="language_label">Jezik</string>
     <string name="select_language">Odaberite Jezik</string>
     <string name="email_sent">E-pošta je uspješno poslana</string>
     <string name="account_deleted_error">Prijavite se neuspjeli! Izbrisali ste svoj profil. Molimo kontaktirajte nas da se ponovo pridružite.</string>
-    
+    <string name="share_now">Podijelite sada</string>
     <string name="profile_complete_title">KOMPLETAN PROFIL</string>
     <string name="profile_edit_title">UREDI PROFIL</string>
     <string name="done">Gotovo</string>

@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Connectant Cors</string>
-
+    <string name="schedule_for_later">Programació per a més tard</string>
     <string name="search">Cerca</string>
     <string name="search_drawer">CERCA</string>
     <string name="language_label">Llenguatge</string>
     <string name="select_language">Seleccionar idioma</string>
     <string name="email_sent">Correu electrònic enviat amb èxit</string>
     <string name="account_deleted_error">Inicieu la sessió fallada! Heu suprimit el vostre perfil. Poseu-vos en contacte amb nosaltres per tornar-vos a unir.</string>
-    
+    <string name="share_now">Comparteix ara</string>
     <string name="profile_complete_title">PERFIL COMPLET</string>
     <string name="profile_edit_title">EDITA EL PERFIL</string>
     <string name="done">Fet</string>

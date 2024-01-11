@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Harten verbinden</string>
-
+    <string name="share_now">Deel nu</string>
+    <string name="schedule_for_later">Schema voor later</string>
     <string name="search">Zoekopdracht</string>
     <string name="search_drawer">ZOEKOPDRACHT</string>
     <string name="language_label">Taal</string>

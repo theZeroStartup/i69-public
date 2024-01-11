@@ -3,12 +3,7 @@ package com.i69.applocalization
 import android.content.Context
 import android.util.Log
 import com.i69.AttrTranslationQuery
-import com.i69.BuildConfig
 import com.i69.R
-import com.i69.billing.Security
-import com.i69.utils.Utils
-import com.i69.utils.getDecodedApiKey
-import com.i69.utils.getEncodedApiKey
 
 
 fun getLoalizations(
@@ -7104,7 +7099,7 @@ fun updateLoalizationsConstString(
     AppStringConstant1.buy_subscription = myList.buy_subscription
     AppStringConstant1.subscription = myList.subscription
 
-    AppStringConstant1.platnium = myList.platnium
+    AppStringConstant1.platinum = myList.platnium
     AppStringConstant1.silver = myList.silver
 
     AppStringConstant1.text_gold = myList.text_gold

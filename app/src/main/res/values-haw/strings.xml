@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Hookui Puuwai</string>
-
+    <string name="schedule_for_later">Papa kuhikuhi no hope</string>
     <string name="search">Huli</string>
     <string name="search_drawer">HULI</string>
     <string name="language_label">ʻŌlelo</string>
     <string name="select_language">E koho i ka ʻōlelo</string>
     <string name="email_sent">Ua hoʻouna maikaʻiʻia ka leka uila</string>
     <string name="account_deleted_error">Kākau inoaʻole! Ua hoʻopauʻoe i kāuʻaoʻao. Eʻoluʻolu e kelepona iā mākou e hui hou.</string>
-    
+    <string name="share_now">Kaʻana i kēia manawa</string>
     <string name="profile_complete_title">KULA PAHA</string>
     <string name="profile_edit_title">HOOLAHA</string>
     <string name="done">Pau</string>

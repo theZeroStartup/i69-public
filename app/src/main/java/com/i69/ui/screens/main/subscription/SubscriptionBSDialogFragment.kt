@@ -261,7 +261,7 @@ class SubscriptionBSDialogFragment : BottomSheetDialogFragment() {
                                 selectedPackageName,
                                 true
                             ) &&
-                            selectedPackageName.contains(AppStringConstant1.platnium, true)
+                            selectedPackageName.contains(AppStringConstant1.platinum, true)
                         ) {
                             Log.e("silver", "platinum")
                             upgradeSubsription(selectedPlanId)
@@ -295,7 +295,7 @@ class SubscriptionBSDialogFragment : BottomSheetDialogFragment() {
                                 selectedPackageName,
                                 true
                             ) &&
-                            selectedPackageName.contains(AppStringConstant1.platnium, true)
+                            selectedPackageName.contains(AppStringConstant1.platinum, true)
 //                            selectedPackageTitle.contains("platimum", true)
                         ) {
 
@@ -306,7 +306,7 @@ class SubscriptionBSDialogFragment : BottomSheetDialogFragment() {
                             purchaseSubsription(selectedPlanId)
                         }
                     } else if (response.data!!.userSubscription!!.`package`!!.name.contains(
-                            AppStringConstant1.platnium,
+                            AppStringConstant1.platinum,
                             true
                         )
                     ) {

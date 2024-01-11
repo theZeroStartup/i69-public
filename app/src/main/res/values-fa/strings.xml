@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">اتصال قلب ها</string>
-
+    <string name="schedule_for_later">برنامه برای بعداً</string>
     <string name="search">جستجو کردن</string>
     <string name="search_drawer">جستجو کردن</string>
     <string name="language_label">زبان</string>
     <string name="select_language">زبان را انتخاب کنید</string>
     <string name="email_sent">ایمیل با موفقیت ارسال شد</string>
     <string name="account_deleted_error">ورود به سیستم ناموفق! شما نمایه خود را حذف کرده اید. لطفا برای پیوستن به ما تماس بگیرید.</string>
-    
+    <string name="share_now">اکنون به اشتراک بگذارید</string>
     <string name="profile_complete_title">نمایه کامل</string>
     <string name="profile_edit_title">ویرایش نمایه</string>
     <string name="done">انجام شده</string>

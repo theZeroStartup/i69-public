@@ -3,6 +3,7 @@ package com.i69.ui.screens.main.messenger.chat
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,6 +31,7 @@ import com.i69.databinding.FragmentMessengerChatBinding
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.main.MainActivity
+import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment.Companion.ARGS_FROM_CHAT
 import com.i69.ui.viewModels.SearchViewModel
 import com.i69.ui.viewModels.UserViewModel
@@ -176,8 +178,13 @@ class MessengerChatFragment : BaseFragment<FragmentMessengerChatBinding>() {
             dialog.setContentView(R.layout.dialog_image_option)
             dialog.findViewById<TextView>(R.id.header_title).text=resources.getString(R.string.select_chat_image)
             dialog.findViewById<LinearLayoutCompat>(R.id.ll_camera).setOnClickListener {
-                val intent = Intent(requireActivity(), ImagePickerActivity::class.java)
-                intent.putExtra("video_duration_limit",60)
+                val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Intent(requireActivity(), CameraActivity::class.java)
+                }
+                else {
+                    Intent(requireActivity(), ImagePickerActivity::class.java)
+                }
+                intent.putExtra("video_duration_limit", 60)
                 intent.putExtra("withCrop", false)
                 photosLauncher.launch(intent)
                 dialog.dismiss()

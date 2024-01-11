@@ -88,6 +88,7 @@ android {
                        buildConfigField("String", "BASE_URL_REP", "\"http://95.216.208.1:8000/\"")
                        buildConfigField("String", "BASE_URL_WEB_SOCKET", "\"wss://api.chatadmin-mod.click/ws/graphql\"")
                 buildConfigField("String", "MAPS_API_KEY", "\"AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk\"")
+                buildConfigField("boolean", "USE_S3", "true")
 
              /*   buildConfigField("String ", "BASE_URL", "\"https://api.i69app.com\"")
                 buildConfigField("String", "BASE_URL_REP", "\"http://95.216.208.1:8000/\"")
@@ -110,6 +111,7 @@ android {
                 buildConfigField("String", "BASE_URL_REP", "\"http://95.216.208.1:8000/\"")
                 buildConfigField("String", "BASE_URL_WEB_SOCKET", "\"wss://api.i69app.com/ws/graphql\"")
                 buildConfigField("String", "MAPS_API_KEY", "\"AIzaSyBNDQFHOXjOH-AJH_tvgd7FM_IxLNClDRk\"")
+                buildConfigField("boolean", "USE_S3", "false")
             }
         }
     }
@@ -290,6 +292,9 @@ dependencies {
     implementation(Others.camera2)
     implementation(Others.cameraView)
     implementation(Others.cameraLifeCycle)
+    implementation(Others.cameraCore)
+    implementation(Others.cameraExtensions)
+    implementation(Others.cameraVideo)
 
     //PayPal
     implementation(Others.paypal)

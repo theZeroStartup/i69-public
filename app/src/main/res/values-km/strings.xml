@@ -4,7 +4,8 @@
     <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">ការភ្ជាប់បេះដូង</string>
-
+    <string name="share_now">ចែករំលែកឥឡូវនេះ</string>
+    <string name="schedule_for_later">កាលវិភាគសម្រាប់ពេលក្រោយ</string>
     <string name="search">ស្វែងរក</string>
     <string name="search_drawer">ស្វែងរក</string>
     <string name="account_deleted_error">ចូលបានបរាជ័យ! អ្នកបានលុបប្រវត្តិរូបរបស់អ្នកហើយ។ សូមទាក់ទងមកយើងខ្ញុំដើម្បីចូលរួមម្តងទៀត។</string>

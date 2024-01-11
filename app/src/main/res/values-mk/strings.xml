@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Поврзување срца</string>
-
+    <string name="share_now">Сподели сега</string>
+    <string name="schedule_for_later">Распоред за подоцна</string>
     <string name="search">Пребарување</string>
     <string name="search_drawer">ПРЕБАРУВАЊЕ</string>
     <string name="language_label">Јазик</string>

@@ -4,14 +4,14 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Свързване на сърца</string>
-
+    <string name="share_now">Споделете сега</string>
     <string name="account_deleted_error">Влезте в неуспех! Изтрили сте профила си. Моля, свържете се с нас, за да се присъединим отново.</string>
     <string name="search">Търсене</string>
     <string name="search_drawer">ТЪРСЕНЕ</string>
     <string name="language_label">език</string>
     <string name="select_language">Избери език</string>
     <string name="email_sent">Имейл изпрати успешно</string>
-    
+    <string name="schedule_for_later">График за по -късно</string>
     <string name="profile_complete_title">ПЪЛЕН ПРОФИЛ</string>
     <string name="profile_edit_title">РЕДАКТИРАЙ ПРОФИЛ</string>
     <string name="done">Свършен</string>

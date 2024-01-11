@@ -78,8 +78,6 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
         initSearch()
 
-        setupViewPagerData()
-
         mViewModel.getupdateSearchResultWithCoin()?.observe(viewLifecycleOwner) {
             Log.e("getUpdateListQuery", "getUpdateListQuery")
             callSearchPopularUserQuery()
@@ -90,7 +88,6 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
     override fun onStart() {
         super.onStart()
 
-//        mViewModel.clearDataOnStop()
         callSearchRandomPeopleQuery()
 //        callSearchPopularUserQuery()
 //        callSearchMostActiveUserQuery()
@@ -154,7 +151,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
 
     fun callSearchRandomPeopleQuery() {
-
+        showProgressView()
         val interestedIn = requireArguments().getInt("interestedIn")
         val searchKey = requireArguments().getString("searchKey")
         Log.e("interestedInRandom ", "$interestedIn")
@@ -203,6 +200,8 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             context = requireContext(),
             hasSkip = hasSkip,
         ) { error ->
+            hideProgressView()
+            setupViewPagerData()
             if (error == null) {
                 Log.e("calllUpdateQuery", "calllUpdateQuery")
                 mViewModel.setUpdateUserListQuery("")

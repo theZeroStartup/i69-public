@@ -387,7 +387,7 @@ object LocalStringConstants {
     const val buy_subscription = "Buy Subscription"
     const val subscription = "Subscription"
 
-    const val platnium = "platimum"
+    const val platnium = "platinum"
     const val silver = "silver"
 
 
@@ -476,7 +476,7 @@ object LocalStringConstants {
 
     const val silver_package = "Silver Package"
     const val gold_package = "GOLD Package"
-    const val platimum_package= "Platimum Package"
+    const val platimum_package= "Platinum Package"
 
     const val paypal = "Paypal"
     const val chat_new = "Chat"
