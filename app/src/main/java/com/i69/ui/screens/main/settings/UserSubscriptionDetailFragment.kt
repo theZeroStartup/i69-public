@@ -3,6 +3,7 @@ package com.i69.ui.screens.main.settings
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,12 +18,27 @@ import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 class UserSubscriptionDetailFragment : BaseFragment<FragmentUserSubscriptionDetailBinding>() {
 
     private val viewModel: UserViewModel by activityViewModels()
     private var userId: String = ""
     private var userToken: String = ""
+
+    private val formatterDateTimeUTC =
+        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ", Locale.getDefault()).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+
+    private val formatterDateOnly = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+        //timeZone = TimeZone.getTimeZone("UTC")
+        timeZone = TimeZone.getDefault()
+    }
 
     lateinit var sharedPref: SharedPref
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
@@ -103,6 +119,7 @@ class UserSubscriptionDetailFragment : BaseFragment<FragmentUserSubscriptionDeta
                 if (response.data!!.userSubscription!!.`package` != null) {
                     if (response.data?.userSubscription?.`package`?.id?.contains("1", true) == true
                         || response.data?.userSubscription?.`package`?.id?.contains("2", true) == true) {
+
                         binding.llActionsRoot.setViewVisible()
                         binding.llButtonSubscribe.setViewGone()
                         binding.llButtonUpgrade.setViewVisible()
@@ -113,16 +130,48 @@ class UserSubscriptionDetailFragment : BaseFragment<FragmentUserSubscriptionDeta
                                 navigatePlanPurchase("Silver")
                         }
                     }
+                    val userSubscription = response.data?.userSubscription
+
+                    binding.tvSubscriptionPrice.setViewVisible()
+                    binding.tvSubscriptionDescription.setViewVisible()
+                    binding.tvSubscriptionDate.setViewVisible()
+                    binding.tvSubscriptionLeft.setViewVisible()
+
+                    binding.tvSubscriptionPrice.text = requireContext().resources
+                        .getString(com.i69.R.string.coins).plus(": ").plus(userSubscription?.plan?.priceInCoins.toString())
+                    if (userSubscription?.plan?.isOnDiscount == true) {
+                        binding.tvSubscriptionDescription.text = userSubscription.plan.dicountedPriceInCoins.toString()
+                    } else {
+                        binding.tvSubscriptionDescription.setViewGone()
+                    }
+
+                    val startDate = formatterDateTimeUTC.parse(userSubscription?.startsAt.toString())
+                    val endDate = formatterDateTimeUTC.parse(userSubscription?.endsAt.toString())
+                    if (startDate != null && endDate != null) {
+                        binding.tvSubscriptionDate.text =
+                            formatterDateOnly.format(startDate).plus(" - ")
+                                .plus(formatterDateOnly.format(endDate))
+                    }
+                    else binding.tvSubscriptionDate.setViewGone()
+
+                    val diffInMillisec: Long = endDate.time - Date().time
+                    val diffInDays: Long = TimeUnit.MILLISECONDS.toDays(diffInMillisec)
+                    binding.tvSubscriptionLeft.text = String.format(getString(com.i69.R.string.days_left), diffInDays)
 
                     binding.tvSubScription.text =
                         requireContext().resources.getString(com.i69.R.string.your_subscription)
                             .plus(response.data!!.userSubscription!!.`package`!!.name).plus("(")
                             .plus(response.data!!.userSubscription!!.plan!!.title).plus(")")
                 }
+
                 if (response.data?.userSubscription?.isActive == false) {
+                    binding.tvSubscriptionPrice.setViewGone()
+                    binding.tvSubscriptionDescription.setViewGone()
+                    binding.tvSubscriptionDate.setViewGone()
+                    binding.tvSubscriptionLeft.setViewGone()
+                    binding.llButtonUpgrade.setViewGone()
                     binding.llActionsRoot.setViewVisible()
                     binding.llButtonSubscribe.setViewVisible()
-                    binding.llButtonUpgrade.setViewGone()
                     binding.llButtonSubscribe.setOnClickListener {
                         navigatePlanPurchase("")
                     }

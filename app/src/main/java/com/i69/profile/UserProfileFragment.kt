@@ -1466,7 +1466,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         val diffInMillisec: Long = endDate.time - Date().time
         val diffInDays: Long = TimeUnit.MILLISECONDS.toDays(diffInMillisec)
         tv_subscription_left.text = String.format(getString(com.i69.R.string.days_left), diffInDays)
-        //tv_subscription_date.text = userSubscription!!.startsAt.toString().plus(" - ").plus(userSubscription!!.endsAt.toString())
+
+        if (userSubscription.`package`?.name?.contains(AppStringConstant1.platinum, true) == true)
+            clUpGrade.setViewGone()
 
 
         clUpGrade.setOnClickListener {
