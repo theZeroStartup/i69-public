@@ -61,11 +61,14 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
         navController = findNavController()
         val interestedIngender = arguments?.getSerializable("interested_in_gender") as InterestedInGender
         val interestedIn = arguments?.getSerializable("interested_in") as InterestedInGender
+        var pos = arguments?.getInt("pos") ?: -1
         mViewModel.interestedIn.value = interestedIn
         mViewModel.interestedIngender.value = interestedIngender
         binding.model = mViewModel
         val lookingFor = AppStringConstant1.looking_for
 //        val lookingFor = getString(R.string.looking_for)
+
+        Log.d("SFF", "setupTheme: ${pos}")
 
         lifecycleScope.launch {
             userId = getCurrentUserId()!!
@@ -73,8 +76,16 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
 
             mViewModel.getDefaultPickers(userToken!!).observe(viewLifecycleOwner) {
                 it?.let { defaultPicker ->
-                    mViewModel.updateDefaultPicker(lookingFor, defaultPicker)
+
+                    if (pos != 0 && pos != 1) {
+                        pos = -1
+                    }
+                    else {
+                        pos += 1
+                    }
+                    mViewModel.updateDefaultPicker(lookingFor, defaultPicker, pos)
                     val agePicker = defaultPicker.agePicker
+
 
                     Log.e("MYrangePickerDataValues", "${agePicker[0].value.toFloat()}")
                     Log.e(

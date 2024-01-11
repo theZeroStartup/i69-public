@@ -32,7 +32,9 @@ class SearchGenderFragment : BaseSearchBackFragment() {
 
     override fun onAdapterItemClick(pos: Int) {
         val interestedIn = getInterestedIn(pos)
-        navController.navigate(R.id.action_searchGenderFragment_to_searchFiltersFragment, bundleOf("interested_in" to arguments?.getSerializable("interested_in"), "interested_in_gender" to interestedIn))
+        navController.navigate(R.id.action_searchGenderFragment_to_searchFiltersFragment,
+            bundleOf("interested_in" to arguments?.getSerializable("interested_in"),
+                "interested_in_gender" to interestedIn, "pos" to pos))
     }
 
     private fun getInterestedIn(pos: Int) = when (arguments?.getSerializable("interested_in") as com.i69.data.enums.InterestedInGender) {

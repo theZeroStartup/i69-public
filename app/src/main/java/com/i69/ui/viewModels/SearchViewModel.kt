@@ -421,8 +421,8 @@ class SearchViewModel @Inject constructor(
         else -> -1
     }
 
-    fun updateDefaultPicker(lookingFor: String, defaultPicker: DefaultPicker) {
-        genderPicker.update(lookingFor, defaultPicker.genderPicker)
+    fun updateDefaultPicker(lookingFor: String, defaultPicker: DefaultPicker, pos: Int) {
+        genderPicker.update(lookingFor, defaultPicker.genderPicker, pos)
         familyPlans.update(lookingFor, defaultPicker.familyPicker)
         politics.update(lookingFor, defaultPicker.politicsPicker)
         religious.update(lookingFor, defaultPicker.religiousPicker)

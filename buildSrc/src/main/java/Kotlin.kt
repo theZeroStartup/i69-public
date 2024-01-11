@@ -1,16 +1,9 @@
 object Kotlin {
-        const val version = "1.5.31"
-      // const val version = "1.6.0"
-//const val version = "1.6.0"
-//    const val version = "1.7.0"
-    //const val version = "1.8.0"
-   //private const val coreKtxVersion = "1.6.0"
-        private const val coreKtxVersion = "1.6.0"
+    const val version = "1.5.31"
+    private const val coreKtxVersion = "1.6.0"
 
     private const val coroutines = "1.5.2"
-//    private const val coroutines = "1.6.4"
     private const val roomVersion = "2.5.1"
-
 
     /// Kotlin
     const val coreKtx = "androidx.core:core-ktx:$coreKtxVersion"

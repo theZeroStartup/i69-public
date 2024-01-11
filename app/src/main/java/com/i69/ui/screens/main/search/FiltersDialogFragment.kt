@@ -179,7 +179,8 @@ class FiltersDialogFragment(
                                                 it?.let { defaultPicker ->
                                                     mViewModel.updateDefaultPicker(
                                                         lookingFor,
-                                                        defaultPicker
+                                                        defaultPicker,
+                                                        -1
                                                     )
                                                     val agePicker = defaultPicker.agePicker
                                                     binding.ageRangeSeekBar.setRange(
