@@ -1087,16 +1087,36 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 val newMomentToAdd = newMoment.data?.onNewMoment?.moment
                                 if (newMomentToAdd != null && !allUserMomentsNew.any { it.node!!.id == newMomentToAdd.id }) {
                                     val newMomentUser = newMoment.data?.onNewMoment?.moment?.user
+
+                                    val url = if (!BuildConfig.USE_S3) {
+                                        if (newMomentUser?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                            newMomentUser?.avatar?.url.toString()
+                                        else
+                                            "${BuildConfig.BASE_URL}${newMomentUser?.avatar?.url.toString()}"
+                                    }
+                                    else if (newMomentUser?.avatar?.url.toString().startsWith(ApiUtil.S3_URL)) newMomentUser?.avatar?.url.toString()
+                                    else ApiUtil.S3_URL.plus(newMomentUser?.avatar?.url.toString())
+
                                     val avatar = GetAllUserMomentsQuery.Avatar(
-                                        newMomentUser?.avatar?.url,
+                                        url,
                                         newMomentUser?.avatar?.id.toString(),
                                         newMomentUser?.avatar?.user
                                     )
-                                    val avatarPhotos = newMomentUser?.avatarPhotos?.map {
+                                    val avatarPhotos = newMomentUser?.avatarPhotos?.map {detail ->
+
+                                        val avatarUrl = if (!BuildConfig.USE_S3) {
+                                            if (detail?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                                detail?.url.toString()
+                                            else
+                                                "${BuildConfig.BASE_URL}${detail?.url.toString()}"
+                                        }
+                                        else if (detail?.url.toString().startsWith(ApiUtil.S3_URL)) detail?.url.toString()
+                                        else ApiUtil.S3_URL.plus(detail?.url.toString())
+
                                         GetAllUserMomentsQuery.AvatarPhoto(
-                                            it?.url,
-                                            it.id,
-                                            it.user
+                                            avatarUrl,
+                                            detail.id,
+                                            detail.user
                                         )
                                     }
                                     val user = GetAllUserMomentsQuery.User(
@@ -1460,13 +1480,25 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     val avatar = newStory.data?.onNewStory?.user?.avatar
                                     val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
                                     val storiesTemp = newStory.data?.onNewStory?.stories
+
+                                    val url = if (!BuildConfig.USE_S3) {
+                                        if (avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                            avatar?.url.toString()
+                                        else
+                                            "${BuildConfig.BASE_URL}${avatar?.url.toString()}"
+                                    }
+                                    else if (avatar?.url.toString().startsWith(ApiUtil.S3_URL)) avatar?.url.toString()
+                                    else ApiUtil.S3_URL.plus(avatar?.url.toString())
+
+                                    Log.d("UMF", "subscribeForNewStory: ${url}")
+
                                     val newStoryCollection =
                                         GetAllUserMultiStoriesQuery.AllUserMultiStory(
                                             GetAllUserMultiStoriesQuery.User(
                                                 newStoryUser?.id!!,
                                                 newStoryUser.fullName,
                                                 GetAllUserMultiStoriesQuery.Avatar(
-                                                    avatar?.url,
+                                                    url,
                                                     avatar?.id!!
                                                 ),
                                                 newStoryUser.avatarIndex,
@@ -2078,7 +2110,10 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
         val node = userStory.stories.edges.get(0)?.node
         val url = if (!BuildConfig.USE_S3) {
-            "${BuildConfig.BASE_URL}${node?.file}"
+            if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                node?.file.toString()
+            else
+                "${BuildConfig.BASE_URL}${node?.file.toString()}"
         }
         else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
         else ApiUtil.S3_URL.plus(node?.file.toString())

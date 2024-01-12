@@ -432,7 +432,10 @@ class NotificationDialogFragment(
                         }
                     Timber.d("filee ${userStory?.node!!.fileType} ${userStory.node.file}")
                     val url = if (!BuildConfig.USE_S3) {
-                        "${BuildConfig.BASE_URL}${userStory.node.file}"
+                        if (userStory.node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                            userStory.node?.file.toString()
+                        else
+                            "${BuildConfig.BASE_URL}${userStory.node?.file.toString()}"
                     }
                     else if (userStory.node.file.toString().startsWith(ApiUtil.S3_URL)) userStory.node.file.toString()
                     else ApiUtil.S3_URL.plus(userStory.node.file.toString())

@@ -1061,7 +1061,10 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
 
         val node = stories[pos]?.node
         val url = if (!BuildConfig.USE_S3) {
-            "${BuildConfig.BASE_URL}${node?.file}"
+            if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                node?.file.toString()
+            else
+                "${BuildConfig.BASE_URL}${node?.file.toString()}"
         }
         else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
         else ApiUtil.S3_URL.plus(node?.file.toString())

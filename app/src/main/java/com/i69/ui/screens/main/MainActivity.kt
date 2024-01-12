@@ -246,7 +246,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
         //updateNavItem(R.drawable.ic_default_user)
         updateFirebaseToken(userUpdateRepository)
 
-        lifecycleScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.IO) {
             userId = getCurrentUserId()!!
             userToken = getCurrentUserToken()!!
             Timber.d("UserId $userId!!")
@@ -264,13 +264,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
     }
 
     fun loadUser() {
-        mViewModel.getCurrentUser(userId!!, token = userToken!!, true)
-            .observe(this@MainActivity) { user ->
+        val user = mViewModel.getCurrentUser(userId!!, token = userToken!!, true)
+        lifecycleScope.launch(Dispatchers.Main) {
+            user.observe(this@MainActivity) { user ->
                 Timber.d("User $user")
                 user?.let {
                     try {
                         mUser = it
                         mUser?.id = "$userId"
+                        Log.d("MainAvatar", "loadUser: ")
                         updateNavItem(
                             mUser?.avatarIndex?.let { it1 ->
                                 mUser?.avatarPhotos?.get(it1)?.url?.replace(
@@ -293,27 +295,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
 
                 }
             }
-    }
-
-    fun loadUser(isFetched: (Boolean, String) -> Unit) {
-        mViewModel.getCurrentUser(userId!!, token = userToken!!, true)
-            .observe(this@MainActivity) { user ->
-                Timber.d("User $user")
-                user?.let {
-                    try {
-                        mUser = it
-                        mUser!!.id = "$userId"
-                        updateNavItem(
-                            mUser!!.avatarPhotos!!.get(mUser!!.avatarIndex!!).url?.replace(
-                                "${BuildConfig.BASE_URL}media/",
-                                "${BuildConfig.BASE_URL}media/"
-                            ).toString()
-                        )
-                    } catch (e: Exception) {
-                        Timber.e("${e.message}")
-                    }
-                }
-            }
+        }
     }
 
     fun handleNotificationClick() {
@@ -576,7 +558,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
                         }
                     Timber.d("filee ${userStory?.node!!.fileType} ${userStory.node.file}")
                     val url = if (!BuildConfig.USE_S3) {
-                        "${BuildConfig.BASE_URL}${userStory.node.file}"
+                        if (userStory.node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                            userStory.node?.file.toString()
+                        else
+                            "${BuildConfig.BASE_URL}${userStory.node?.file.toString()}"
                     }
                     else if (userStory.node.file.toString().startsWith(ApiUtil.S3_URL)) userStory.node.file.toString()
                     else ApiUtil.S3_URL.plus(userStory.node.file.toString())
@@ -1552,9 +1537,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
 
     private fun updateNavItem(userAvatar: Any?) {
         userprofile = userAvatar.toString()
-       //  binding.bottomNavigation.selectedItemId = R.id.nav_search_graph
+
+        val url = if (!BuildConfig.USE_S3) {
+            if (userprofile.startsWith(BuildConfig.BASE_URL))
+                userprofile
+            else
+                "${BuildConfig.BASE_URL}${userprofile}"
+        }
+        else if (userprofile.startsWith(ApiUtil.S3_URL)) userprofile
+        else ApiUtil.S3_URL.plus(userprofile)
+
+        Log.d("MainAvatar", "updateNavItem: ${userprofile}")
         binding.bottomNavigation.loadImage(
-            userprofile, R.id.nav_user_profile_graph, R.drawable.ic_default_user
+            url, R.id.nav_user_profile_graph, R.drawable.ic_default_user
         )
 
         /* binding.navView.setItems(

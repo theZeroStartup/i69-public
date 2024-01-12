@@ -105,15 +105,18 @@ class CurrentUserMomentAdapter(
 
             viewBinding.lblItemNearbyName.text = builder
             val url = if (!BuildConfig.USE_S3) {
-                "${BuildConfig.BASE_URL}${item_data?.node!!.file}"
+                if (item_data.node.file.toString().startsWith(BuildConfig.BASE_URL))
+                    item_data.node.file.toString()
+                else
+                    "${BuildConfig.BASE_URL}${item_data.node.file.toString()}"
             }
             else if (item_data?.node!!.file.toString().startsWith(ApiUtil.S3_URL)) item_data?.node.file.toString()
             else ApiUtil.S3_URL.plus(item_data?.node.file.toString())
             Log.d("CUMA", "bind: $url")
 
-            val avatarUrl = item_data?.node!!.user?.avatar
+            val avatarUrl = item_data?.node.user?.avatar
             if (avatarUrl != null) {
-                viewBinding.imgNearbyUser.loadCircleImage(avatarUrl.url!!)
+                viewBinding.imgNearbyUser.loadCircleImage(avatarUrl.url.toString())
             }
             else {
                 viewBinding.imgNearbyUser.loadImage(R.drawable.ic_default_user)

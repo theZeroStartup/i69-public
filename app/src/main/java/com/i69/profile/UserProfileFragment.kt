@@ -406,12 +406,19 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                                         var imageView =
                                             view.findViewById<ImageView>(com.i69.R.id.userIv)
                                         if (pos <= data.user!!.avatarPhotos!!.size) {
-                                            data.user?.avatarPhotos?.get(pos)?.let {
+                                            data.user?.avatarPhotos?.get(pos)?.let { avatar ->
+
+                                                val url = if (!BuildConfig.USE_S3) {
+                                                    if (avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                                        avatar?.url.toString()
+                                                    else
+                                                        "${BuildConfig.BASE_URL}${avatar?.url.toString()}"
+                                                }
+                                                else if (avatar?.url.toString().startsWith(ApiUtil.S3_URL)) avatar?.url.toString()
+                                                else ApiUtil.S3_URL.plus(avatar?.url.toString())
+
                                                 imageView.loadImage(
-                                                    it.url?.replace(
-                                                        "http://95.216.208.1:8000/media/",
-                                                        "${BuildConfig.BASE_URL}media/"
-                                                    )!!
+                                                    url
                                                 )
 
 //                                                val background: Drawable =

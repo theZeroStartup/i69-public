@@ -174,7 +174,10 @@ class UserMultiStoriesAdapter(
             val user = item?.user
             if (node?.fileType.equals("video")) {
                 storyImage = if (!BuildConfig.USE_S3) {
-                    "${BuildConfig.BASE_URL}${node?.thumbnail}"
+                    if (node?.thumbnail.toString().startsWith(BuildConfig.BASE_URL))
+                        node?.thumbnail.toString()
+                    else
+                        "${BuildConfig.BASE_URL}${node?.thumbnail}"
                 }
                 else if (node?.thumbnail.toString().startsWith(ApiUtil.S3_URL)) node?.thumbnail.toString()
                 else ApiUtil.S3_URL.plus(node?.thumbnail.toString())
@@ -185,7 +188,10 @@ class UserMultiStoriesAdapter(
                 Log.e("thumbnail","file from node \n" +
                         "${Gson().toJson(node)}")
                 storyImage = if (!BuildConfig.USE_S3) {
-                    "${BuildConfig.BASE_URL}${node?.file}"
+                    if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                        node?.file.toString()
+                    else
+                        "${BuildConfig.BASE_URL}${node?.file.toString()}"
                 }
                 else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
                 else ApiUtil.S3_URL.plus(node?.file.toString())
@@ -199,6 +205,7 @@ class UserMultiStoriesAdapter(
             if (user?.avatarPhotos != null && (user.avatarPhotos.isNotEmpty()) && (user.avatarIndex < user.avatarPhotos.size)) {
                 url = user.avatarPhotos[user.avatarIndex].url
             }
+            Log.d("UMSA", "bind: $url")
 
             /*    if ((node?.user?.avatarPhotos?.size!! > 0) && (node.user.avatarIndex < node.user.avatarPhotos.size)) {
                     url = node.user.avatarPhotos[node.user.avatarIndex].url

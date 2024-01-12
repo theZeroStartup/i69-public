@@ -478,8 +478,13 @@ class MomentAddCommentFragment : BaseFragment<FragmentMomentsAddcommentsBinding>
         }
 
 
-        val url = if (!BuildConfig.USE_S3)
-            "${BuildConfig.BASE_URL}${filesUrl}" else filesUrl.toString()
+        val url = if (!BuildConfig.USE_S3) {
+            if (filesUrl.toString().startsWith(BuildConfig.BASE_URL))
+                filesUrl.toString()
+            else
+                "${BuildConfig.BASE_URL}${filesUrl.toString()}"
+        }
+        else filesUrl.toString()
 
         Log.d("NSMA", "setupTheme: $url")
         if (url.endsWith(".jpg") || url.endsWith(".jpeg") ||

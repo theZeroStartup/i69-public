@@ -207,11 +207,14 @@ class NearbySharedMomentAdapter(
 
 
             val url = if (!BuildConfig.USE_S3) {
-                "${BuildConfig.BASE_URL}${item_data.node!!.file}"
+                if (item_data.node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                    item_data.node?.file.toString()
+                else
+                    "${BuildConfig.BASE_URL}${item_data.node?.file.toString()}"
             }
-            else if (item_data?.node?.file.toString().startsWith(ApiUtil.S3_URL)) item_data?.node?.file.toString()
+            else if (item_data.node?.file.toString().startsWith(ApiUtil.S3_URL)) item_data?.node?.file.toString()
             else ApiUtil.S3_URL.plus(item_data?.node?.file.toString())
-            Log.d("NSMA", "bind: $url, ${item_data.node!!.file}")
+            Log.d("NSMA", "bind: $url, ${item_data.node?.file.toString()}")
             Timber.d("binnd user avatar= ${item_data.node?.user?.avatar}")
             /*if (item?.user?.avatarPhotos?.size!! > 0) {
                 Timber.d("binnd user avatar= ${item?.user?.avatarPhotos?.get(0)?.url}")
