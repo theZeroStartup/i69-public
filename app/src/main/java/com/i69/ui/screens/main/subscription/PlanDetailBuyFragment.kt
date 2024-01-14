@@ -18,6 +18,7 @@ import com.i69.applocalization.AppStringConstant
 import com.i69.applocalization.AppStringConstant1
 import com.i69.applocalization.AppStringConstantViewModel
 import com.i69.data.models.PlanBnefits
+import com.i69.R
 import com.i69.databinding.FragmentPlanDetailBinding
 import com.i69.ui.adapters.*
 import com.i69.ui.base.BaseFragment

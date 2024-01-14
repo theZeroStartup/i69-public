@@ -1460,7 +1460,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 "UserMomentSubsc",
                                 " story realtime NewStoryData content ${tempStories?.contains(newStory)}"
                             )
-                            if (!tempStories?.contains(newStory)) {
+                            if (tempStories?.contains(newStory) == false) {
                                 tempStories?.add(newStory)
                                 Log.e(
                                     "UserMomentSubsc",

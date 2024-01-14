@@ -23,6 +23,7 @@ import com.i69.applocalization.AppStringConstant
 import com.i69.databinding.FragmentMessengerListBinding
 import com.i69.databinding.ItemRequestPreviewLongBinding
 import com.i69.applocalization.AppStringConstantViewModel
+import com.i69.R
 import com.i69.type.MessageMessageType
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.SplashActivity

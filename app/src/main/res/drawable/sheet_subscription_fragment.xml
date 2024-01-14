@@ -7,7 +7,6 @@
         <variable
             name="stringConstant"
             type="com.i69.applocalization.AppStringConstant" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

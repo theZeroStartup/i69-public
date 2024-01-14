@@ -19,6 +19,7 @@ import com.i69.*
 import com.i69.data.models.User
 import com.i69.databinding.FragmentFeedBinding
 import com.i69.di.modules.AppModule
+import com.i69.R
 import com.i69.ui.adapters.CurrentUserMomentAdapter
 import com.i69.ui.base.BaseFragment
 import com.i69.utils.EXTRA_USER_MODEL

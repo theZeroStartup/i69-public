@@ -1,6 +1,6 @@
 object Google {
     private const val locationVersion = "18.0.0"
-    private const val billingVersion = "5.0.0"
+    private const val billingVersion = "6.0.1"
    // private const val billingVersion = "5.2.1"
     private const val playCoreVersion = "1.8.1"
 

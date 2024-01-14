@@ -1,7 +1,6 @@
 package com.i69.profile
 
 //import androidx.lifecycle.ViewModelProviders
-import android.R
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -40,7 +39,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
-import com.i69.BuildConfig
 import com.i69.GetNotificationCountQuery
 import com.i69.GetUserMomentsQuery
 import com.i69.UpdateCoinMutation
@@ -53,10 +51,12 @@ import com.i69.data.config.Constants
 import com.i69.data.models.BlockedUser
 import com.i69.data.models.Photo
 import com.i69.data.models.User
-import com.i69.databinding.AlertFullImageBinding
-import com.i69.databinding.FragmentUserProfileBinding
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentSentGifts
+import com.i69.BuildConfig
+import com.i69.R
+import com.i69.databinding.AlertFullImageBinding
+import com.i69.databinding.FragmentUserProfileBinding
 import com.i69.profile.vm.VMProfile
 import com.i69.ui.adapters.ImageSliderAdapter
 import com.i69.ui.adapters.StoryLikesAdapter
@@ -103,8 +103,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
     var currentUserLikes: ArrayList<BlockedUser> = ArrayList()
 
     private val tabIcons = intArrayOf(
-        com.i69.R.drawable.pink_gift_noavb,
-        com.i69.R.drawable.pink_gift_noavb
+        R.drawable.pink_gift_noavb,
+        R.drawable.pink_gift_noavb
     )
     private val viewModel: VMProfile by activityViewModels()
     private val mViewModel: UserMomentsModelView by activityViewModels()
@@ -160,7 +160,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         bundle.putString("userFulNAme", userFulNAme)
 
         findNavController().navigate(
-            destinationId = com.i69.R.id.action_global__to_fragment_visitor,
+            destinationId = R.id.action_global__to_fragment_visitor,
             popUpFragId = null,
             animType = AnimationTypes.SLIDE_ANIM,
             inclusive = true,
@@ -176,7 +176,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         bundle.putString("userFulNAme", userFulNAme)
 
         findNavController().navigate(
-            destinationId = com.i69.R.id.action_global__to_fragment_follower,
+            destinationId = R.id.action_global__to_fragment_follower,
             popUpFragId = null,
             animType = AnimationTypes.SLIDE_ANIM,
             inclusive = true,
@@ -264,7 +264,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 //            Log.e("MydataBasesss", it.value!!.messages)
         }
 //        if (TempConstants.LanguageChanged) {
-//            navController.navigate(com.i69.R.id.action_userProfileFragment_to_userEditProfileFragment)
+//            navController.navigate(R.id.action_userProfileFragment_to_userEditProfileFragment)
 //        }
 
         binding.userBaseInfo.visibility = View.GONE
@@ -397,14 +397,14 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
 
                                     var view: View = layoutInflater.inflate(
-                                        com.i69.R.layout.custom_imageview,
+                                        R.layout.custom_imageview,
                                         null
                                     )
 
                                     try {
                                         var pos = it
                                         var imageView =
-                                            view.findViewById<ImageView>(com.i69.R.id.userIv)
+                                            view.findViewById<ImageView>(R.id.userIv)
                                         if (pos <= data.user!!.avatarPhotos!!.size) {
                                             data.user?.avatarPhotos?.get(pos)?.let { avatar ->
 
@@ -615,8 +615,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         binding.giftsTabs.setupWithViewPager(binding.giftsPager)
         setupViewPager(binding.giftsPager)
         binding.giftsTabs.tabIconTint = null
-        binding.giftsTabs.getTabAt(0)!!.setIcon(com.i69.R.drawable.pink_gift_noavb)
-        binding.giftsTabs.getTabAt(1)!!.setIcon(com.i69.R.drawable.pink_gift_noavb)
+        binding.giftsTabs.getTabAt(0)!!.setIcon(R.drawable.pink_gift_noavb)
+        binding.giftsTabs.getTabAt(1)!!.setIcon(R.drawable.pink_gift_noavb)
         binding.giftsTabs.addOnTabSelectedListener(
 //        binding.giftsTabs.setOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
@@ -736,10 +736,10 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
             bundle.putString("userId", it.uid)
             if (userId == it.uid) {
                 MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
-                    com.i69.R.id.nav_user_profile_graph
+                    R.id.nav_user_profile_graph
             } else {
                 findNavController().navigate(
-                    destinationId = com.i69.R.id.action_global_otherUserProfileFragment,
+                    destinationId = R.id.action_global_otherUserProfileFragment,
                     popUpFragId = null,
                     animType = AnimationTypes.SLIDE_ANIM,
                     inclusive = true,
@@ -993,7 +993,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
     private fun showImageDialog(imageUrl: String) {
 
         val dialog =
-            Dialog(requireContext(), R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+            Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
         val dialogBinding = AlertFullImageBinding.inflate(layoutInflater, null, false)
         dialogBinding.fullImg.loadImage(imageUrl) {
             dialogBinding.alertTitle.setViewGone()
@@ -1043,7 +1043,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                 binding.bell.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
-                        com.i69.R.drawable.notification1
+                        R.drawable.notification1
                     )
                 )
 
@@ -1058,7 +1058,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                 binding.bell.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
-                        com.i69.R.drawable.notification2
+                        R.drawable.notification2
                     )
                 )
             }
@@ -1225,7 +1225,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         viewModel.onDrawer = { (activity as MainActivity).drawerSwitchState() }
 
         viewModel.onEditProfile =
-            { navController.navigate(com.i69.R.id.action_userProfileFragment_to_userEditProfileFragment) }
+            { navController.navigate(R.id.action_userProfileFragment_to_userEditProfileFragment) }
         viewModel.onGift = {
             //Toast.makeText(activity,"User can't bought gift yourself", Toast.LENGTH_LONG).show()
             //Toast.makeText(activity,"User can't bought gift yourself", Toast.LENGTH_LONG).show()
@@ -1301,24 +1301,24 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         val bottomsheetDialog = BottomSheetDialog(requireContext())
 //        val customView = layoutInflater.inflate(R.layout.dialog_entermobilenumber, null, false)
         val customView =
-            layoutInflater.inflate(com.i69.R.layout.dialog_user_coin_option, null, false)
+            layoutInflater.inflate(R.layout.dialog_user_coin_option, null, false)
 
 //        val title = customView.findViewById<MaterialTextView>(com.i69app.R.id.description)
         val tvUserBalance =
-            customView.findViewById<MaterialTextView>(com.i69.R.id.tv_user_balance)
+            customView.findViewById<MaterialTextView>(R.id.tv_user_balance)
         val tvUserBalanceCoins =
-            customView.findViewById<MaterialTextView>(com.i69.R.id.tv_user_balance_coin)
+            customView.findViewById<MaterialTextView>(R.id.tv_user_balance_coin)
 
         val upgrade_button =
-            customView.findViewById<MaterialTextView>(com.i69.R.id.upgrade_button)
+            customView.findViewById<MaterialTextView>(R.id.upgrade_button)
 
 //        val cdUserBalance = customView.findViewById<ConstraintLayout>(com.i69app.R.id.cd_user_balance)
 
         val cdUpgradeBalance =
-            customView.findViewById<LinearLayout>(com.i69.R.id.cd_upgrade_balance)
+            customView.findViewById<LinearLayout>(R.id.cd_upgrade_balance)
 
         val imageCross =
-            customView.findViewById<ImageView>(com.i69.R.id.iv_cross)
+            customView.findViewById<ImageView>(R.id.iv_cross)
 
         val typeface_regular =
             Typeface.createFromAsset(activity?.assets, "fonts/poppins_semibold.ttf")
@@ -1355,24 +1355,24 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         val bottomsheetDialog = BottomSheetDialog(requireContext())
 //        val customView = layoutInflater.inflate(R.layout.dialog_entermobilenumber, null, false)
         val customView =
-            layoutInflater.inflate(com.i69.R.layout.dialog_user_coin_option, null, false)
+            layoutInflater.inflate(R.layout.dialog_user_coin_option, null, false)
 
-        val title = customView.findViewById<TextView>(com.i69.R.id.description)
-        val iv_gpay = customView.findViewById<ImageView>(com.i69.R.id.iv_gpay)
+        val title = customView.findViewById<TextView>(R.id.description)
+        val iv_gpay = customView.findViewById<ImageView>(R.id.iv_gpay)
         val tvUserBalance =
-            customView.findViewById<MaterialTextView>(com.i69.R.id.tv_user_balance)
+            customView.findViewById<MaterialTextView>(R.id.tv_user_balance)
 
         val upgrade_button =
-            customView.findViewById<MaterialTextView>(com.i69.R.id.upgrade_button)
+            customView.findViewById<MaterialTextView>(R.id.upgrade_button)
 
         val cdUserBalance =
-            customView.findViewById<ConstraintLayout>(com.i69.R.id.cd_user_balance)
+            customView.findViewById<ConstraintLayout>(R.id.cd_user_balance)
 
         val cdUpgradeBalance =
-            customView.findViewById<LinearLayout>(com.i69.R.id.cd_upgrade_balance)
+            customView.findViewById<LinearLayout>(R.id.cd_upgrade_balance)
 
         val imageCross =
-            customView.findViewById<ImageView>(com.i69.R.id.iv_cross)
+            customView.findViewById<ImageView>(R.id.iv_cross)
 
         val typeface_regular =
             Typeface.createFromAsset(activity?.assets, "fonts/poppins_semibold.ttf")
@@ -1386,7 +1386,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
 //        ball
 
-        iv_gpay.setImageResource(com.i69.R.drawable.subscription)
+        iv_gpay.setImageResource(R.drawable.subscription)
         title.visibility = View.GONE
         tvUserBalance.text = AppStringConstant1.no_active_subscription
         upgrade_button.text = AppStringConstant1.buy_subscription
@@ -1429,24 +1429,24 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
     private fun activeSubScriptionDetail(userSubscription: UserSubscriptionQuery.UserSubscription) {
         val bottomsheetDialog = BottomSheetDialog(requireContext())
         val customView =
-            layoutInflater.inflate(com.i69.R.layout.dialog_upgrage_subscription, null, false)
-        var iv_close = customView.findViewById<ImageView>(com.i69.R.id.iv_cross)
+            layoutInflater.inflate(R.layout.dialog_upgrage_subscription, null, false)
+        var iv_close = customView.findViewById<ImageView>(R.id.iv_cross)
 
         var tv_subscription_name =
-            customView.findViewById<TextView>(com.i69.R.id.tv_subscription_name)
+            customView.findViewById<TextView>(R.id.tv_subscription_name)
         var tv_subscription_price =
-            customView.findViewById<TextView>(com.i69.R.id.tv_subscription_price)
+            customView.findViewById<TextView>(R.id.tv_subscription_price)
         var tv_subscription_description =
-            customView.findViewById<TextView>(com.i69.R.id.tv_subscription_description)
+            customView.findViewById<TextView>(R.id.tv_subscription_description)
 
         var tv_subscription_date =
-            customView.findViewById<TextView>(com.i69.R.id.tv_subscription_date)
+            customView.findViewById<TextView>(R.id.tv_subscription_date)
         var tv_subscription_left =
-            customView.findViewById<TextView>(com.i69.R.id.tv_subscription_left)
+            customView.findViewById<TextView>(R.id.tv_subscription_left)
 
 
         var clUpGrade =
-            customView.findViewById<LinearLayout>(com.i69.R.id.cd_upgrade_subscription)
+            customView.findViewById<LinearLayout>(R.id.cd_upgrade_subscription)
 
         iv_close.setOnClickListener { bottomsheetDialog.dismiss() }
 
@@ -1472,7 +1472,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
             formatterDateOnly.format(startDate).plus(" - ").plus(formatterDateOnly.format(endDate))
         val diffInMillisec: Long = endDate.time - Date().time
         val diffInDays: Long = TimeUnit.MILLISECONDS.toDays(diffInMillisec)
-        tv_subscription_left.text = String.format(getString(com.i69.R.string.days_left), diffInDays)
+        tv_subscription_left.text = String.format(getString(R.string.days_left), diffInDays)
 
         if (userSubscription.`package`?.name?.contains(AppStringConstant1.platinum, true) == true)
             clUpGrade.setViewGone()
@@ -1489,11 +1489,11 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
 
 
     private fun navigateToPurchase() {
-        findNavController().navigate(com.i69.R.id.actionGoToPurchaseFragment)
+        findNavController().navigate(R.id.actionGoToPurchaseFragment)
     }
 
     private fun navigatePlanPurchase() {
-        findNavController().navigate(com.i69.R.id.action_global_plan)
+        findNavController().navigate(R.id.action_global_plan)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

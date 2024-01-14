@@ -16,10 +16,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textview.MaterialTextView
-import com.i69.BuildConfig
-import com.i69.R
 import com.i69.data.models.IdWithValue
 import com.i69.data.models.Photo
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.ui.views.InterestsView
 
 @BindingAdapter("profileImage", requireAll = false)

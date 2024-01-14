@@ -83,7 +83,7 @@ class FragmentSentGifts: BaseFragment<FragmentReceivedSentGiftsBinding>(),Adapte
                         //App.userPreferences.saveUserIdToken("","","")
                         val intent = Intent(activity, SplashActivity::class.java)
                         startActivity(intent)
-                        activity!!.finishAffinity()
+                        requireActivity().finishAffinity()
                     }                       }
             }
 

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.i69.GetAllPackagesQuery
 import com.i69.R
 
-
 class AdapterPlanBenefits(
     var context: Context
 ) :

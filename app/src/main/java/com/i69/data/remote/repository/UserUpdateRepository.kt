@@ -2,16 +2,16 @@ package com.i69.data.remote.repository
 
 import android.util.Log
 import com.google.gson.JsonObject
-import com.i69.BuildConfig
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import com.i69.R
 import com.i69.data.models.Id
 import com.i69.data.models.User
 import com.i69.data.remote.api.Api
 import com.i69.data.remote.api.GraphqlApi
 import com.i69.data.remote.requests.ReportRequest
 import com.i69.data.remote.responses.ResponseBody
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.singleton.App
 import com.i69.utils.Resource
 import com.i69.utils.getResponse

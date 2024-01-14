@@ -130,6 +130,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             val intent = Intent(this, ProgressBarActivity::class.java)
             startActivity(intent)
         }
+
+        Log.d("SplashActivity", "onCreate: $packageName")
     }
 
 

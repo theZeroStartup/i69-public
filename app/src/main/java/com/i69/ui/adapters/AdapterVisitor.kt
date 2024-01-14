@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.i69.GetUserQuery
-import com.i69.R
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.BaseUserVisitorModel
+import com.i69.R
 import com.i69.databinding.ItemVisitorBinding
 import com.i69.databinding.VisitorDateItemLayoutBinding
 import com.i69.utils.loadImageWithPlaceHolder

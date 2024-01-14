@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 //import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.i69.ui.viewModels.ReplysModel
 import com.i69.databinding.ItemCommentReplyBinding
+import com.i69.ui.viewModels.ReplysModel
 import com.i69.utils.loadCircleImage
 import java.text.SimpleDateFormat
 import java.util.*

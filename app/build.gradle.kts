@@ -1,18 +1,23 @@
 //import Others.exoplayer
 plugins {
     id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.onesignal.androidsdk.onesignal-gradle-plugin")
     id("com.apollographql.apollo3")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    kotlin("android")
+    kotlin("kapt")
+    id("androidx.navigation.safeargs.kotlin")
+}
+
+hilt {
+    enableAggregatingTask = true
 }
 
 android {
+    namespace = "com.i69"
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
@@ -125,22 +130,16 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
+    viewBinding {
+        enable = true
     }
 
-//    buildFeatures {
-//        dataBinding = true
-//        viewBinding = true
-//    }
+    dataBinding {
+        enable = true
+    }
 
     packagingOptions {
         resources.excludes += "META-INF/library_release.kotlin_module"
-    }
-
-    kapt {
-        correctErrorTypes = true
     }
 
     lint {
@@ -185,9 +184,10 @@ dependencies {
     implementation(Lifecycle.process)
 
     // Firebase
-    implementation(platform(Firebase.firebaseBom))
+//    implementation(platform(Firebase.firebaseBom))
     implementation(Firebase.analytics)
     implementation(Firebase.crashlytics)
+    implementation(Firebase.firebaseMessaging)
 
     // Login
     implementation(Login.google)
@@ -199,11 +199,6 @@ dependencies {
     implementation(Others.scalarsCibverter)
     implementation(Others.loggingInterceptor)
 
-//    // Firebase Cloud Messaging (Kotlin)
-    implementation(Others.firebasecrashanalytics)
-    implementation(Others.firebaseanalytic)
-    implementation(Others.firebasemsg)
-
     // Glide
     implementation(Others.glide)
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -212,7 +207,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 //    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    kapt(Others.glideCompiler)
+    annotationProcessor(Others.glideCompiler)
     implementation(Others.glideAnnotation)
     implementation(Others.glideHttp)
 //    {
@@ -235,8 +230,7 @@ dependencies {
     implementation(Hilt.android)
     kapt(Hilt.compiler)
 
-//    implementation ("com.google.dagger:dagger:2.44.2")
-//    kapt ("com.google.dagger:dagger-compiler:2.44.2")
+    kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
 
     // Google Libraries
     implementation(Google.location)
@@ -269,7 +263,6 @@ dependencies {
     testImplementation(Testing.truth)
     testImplementation(Testing.archCore)
     testImplementation(HiltTest.hiltAndroidTesting)
-    kaptTest(Hilt.compiler)
 
     // Instrumentation Tests
     androidTestImplementation(Testing.junitAndroid)
@@ -277,12 +270,11 @@ dependencies {
     androidTestImplementation(Testing.truth)
     androidTestImplementation(Testing.archCore)
     androidTestImplementation(HiltTest.hiltAndroidTesting)
-    kaptAndroidTest(Hilt.compiler)
 
     // Room
     implementation(Kotlin.room)
     implementation(Kotlin.roomCoroutines)
-    kapt(Kotlin.roomCompiler)
+    annotationProcessor(Kotlin.roomCompiler)
 
 //    implementation(exoplayer)
     implementation(Others.exoplayer)

@@ -56,6 +56,8 @@ import com.i69.di.modules.AppModule
 import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentVirtualGifts
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.ui.adapters.CommentListAdapter
 import com.i69.ui.adapters.CommentReplyListAdapter
 import com.i69.ui.adapters.StoryLikesAdapter

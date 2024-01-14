@@ -57,6 +57,8 @@ import com.i69.applocalization.*
 import com.i69.data.models.User
 import com.i69.data.remote.repository.UserDetailsRepository
 import com.i69.data.remote.repository.UserUpdateRepository
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.databinding.ActivityMainBinding
 import com.i69.profile.db.dao.UserDao
 import com.i69.singleton.App

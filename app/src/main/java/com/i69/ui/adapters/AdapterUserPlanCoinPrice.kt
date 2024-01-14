@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.i69.GetAllPackagesQuery
-import com.i69.R
 import com.i69.applocalization.AppStringConstant1
+import com.i69.R
 
 class AdapterUserPlanCoinPrice(
     var context: Context,

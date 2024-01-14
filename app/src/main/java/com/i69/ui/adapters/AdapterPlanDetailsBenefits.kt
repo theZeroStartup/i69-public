@@ -8,8 +8,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.i69.GetAllPackagesQuery
-import com.i69.R
 import com.i69.data.models.PlanBnefits
+import com.i69.R
 import com.i69.utils.setViewGone
 import com.i69.utils.setViewVisible
 
@@ -72,7 +72,7 @@ class AdapterPlanDetailsBenefits(
 //            holder.imgPlatnium.visibility = View.GONE
         }
 
-        if (coinPrice?.isGold) {
+        if (coinPrice?.isGold == true) {
 
 //            if(selectedPackageId.equals(coinPrice.selectedPackageId)){
 //            if (selectedPlanName.contains("gold", true)) {
@@ -95,7 +95,7 @@ class AdapterPlanDetailsBenefits(
             holder.imgGold.setImageResource(R.drawable.delete_round)
         }
 
-        if (coinPrice?.isSilver) {
+        if (coinPrice?.isSilver == true) {
 
 //            if(selectedPackageId.equals(coinPrice?.selectedPackageId)){
 //            if (selectedPlanName.contains("silver", true)) {

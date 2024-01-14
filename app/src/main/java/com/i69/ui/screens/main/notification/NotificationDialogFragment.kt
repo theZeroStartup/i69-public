@@ -26,6 +26,8 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.i69.*
 import com.i69.applocalization.AppStringConstant1
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.databinding.DialogNotificationsBinding
 import com.i69.singleton.App
 import com.i69.ui.adapters.NotificationsAdapter

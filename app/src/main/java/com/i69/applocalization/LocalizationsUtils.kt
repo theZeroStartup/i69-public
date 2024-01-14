@@ -167,7 +167,7 @@ fun getLoalizations(
         appStringConst.you_cant_share_moment = LocalStringConstants.you_cant_share_moment
         appStringConst.you_cant_delete_moment = LocalStringConstants.you_cant_delete_moment
         appStringConst.you_cant_add_empty_msg = LocalStringConstants.you_cant_add_empty_msg
-        appStringConst._or = LocalStringConstants._or
+//        appStringConst._or = LocalStringConstants._or
         appStringConst.feed = LocalStringConstants.feed
         appStringConst.story = LocalStringConstants.story
         appStringConst.post_comment = LocalStringConstants.post_comment
@@ -460,7 +460,7 @@ fun getLoalizations(
         appStringConst.following_count_follower_count = LocalStringConstants.following_count_follower_count
         appStringConst.i_am_gender = LocalStringConstants.i_am_gender
         appStringConst.prefer_not_to_say = LocalStringConstants.prefer_not_to_say
-        appStringConst._with_a_ = LocalStringConstants._with_a_
+//        appStringConst._with_a_ = LocalStringConstants._with_a_
         appStringConst.with = LocalStringConstants.with
         appStringConst.label_buy = LocalStringConstants.label_buy
         appStringConst.are_you_sure_you_want_to_delete_story = LocalStringConstants.are_you_sure_you_want_to_delete_story
@@ -1608,9 +1608,9 @@ fun getLoalizations(
                 }
                 if (name.equals(LocalStringConstants._or)) {
                     if (nameTranslated.isNullOrEmpty()) {
-                        appStringConst._or = context.getString(R.string._or)
+//                        appStringConst._or = context.getString(R.string._or)
                     } else {
-                        appStringConst._or = nameTranslated
+//                        appStringConst._or = nameTranslated
                     }
                 }
                 if (name.equals(LocalStringConstants.feed)) {
@@ -3840,12 +3840,12 @@ fun getLoalizations(
 
                 if (name.equals(LocalStringConstants._with_a_)) {
                     if (nameTranslated.isNullOrEmpty()) {
-                        appStringConst._with_a_ =
+//                        appStringConst._with_a_ =
                             context.getString(
                                 R.string._with_a_
                             )
                     } else {
-                        appStringConst._with_a_ = nameTranslated
+//                        appStringConst._with_a_ = nameTranslated
                     }
                 }
 
@@ -6913,7 +6913,7 @@ fun updateLoalizationsConstString(
     AppStringConstant1.you_cant_share_moment = myList.you_cant_share_moment
     AppStringConstant1.you_cant_delete_moment = myList.you_cant_delete_moment
     AppStringConstant1.you_cant_add_empty_msg = myList.you_cant_add_empty_msg
-    AppStringConstant1._or = myList._or
+//    AppStringConstant1._or = myList._or
     AppStringConstant1.feed = myList.feed
     AppStringConstant1.story = myList.story
     AppStringConstant1.post_comment = myList.post_comment
@@ -7208,7 +7208,7 @@ fun updateLoalizationsConstString(
     AppStringConstant1.following_count_follower_count = myList.following_count_follower_count
     AppStringConstant1.i_am_gender = myList.i_am_gender
     AppStringConstant1.prefer_not_to_say = myList.prefer_not_to_say
-    AppStringConstant1._with_a_ = myList._with_a_
+//    AppStringConstant1._with_a_ = myList._with_a_
     AppStringConstant1.label_buy = myList.label_buy
     AppStringConstant1.are_you_sure_you_want_to_delete_story = myList.are_you_sure_you_want_to_delete_story
     AppStringConstant1.are_you_sure_you_want_to_delete_moment = myList.are_you_sure_you_want_to_delete_moment

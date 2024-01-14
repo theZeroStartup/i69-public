@@ -9,6 +9,7 @@ buildscript {
     }
 
     dependencies {
+        classpath("com.android.tools:r8:8.2.42")
         classpath(Build.androidBuildTools)
         classpath(Build.kotlinPlugin)
         classpath(Build.googleGmsPlugin)
@@ -28,7 +29,7 @@ buildscript {
 
 plugins {
     id("com.apollographql.apollo3").version("3.2.2").apply(false)
-    id("org.jetbrains.kotlin.android") version "1.6.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
 //    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin").version("2.0.1").apply(false)
 }
 

@@ -22,6 +22,7 @@ import com.google.gson.Gson
 import com.i69.*
 import com.i69.applocalization.AppStringConstant1
 import com.i69.applocalization.AppStringConstantViewModel
+import com.i69.R
 import dagger.hilt.android.AndroidEntryPoint
 import com.i69.databinding.DialogSubscriptionFragmentBinding
 import com.i69.ui.adapters.AdapterPlanCoinPrice

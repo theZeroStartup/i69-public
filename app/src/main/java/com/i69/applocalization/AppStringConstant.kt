@@ -3,10 +3,8 @@ package com.i69.applocalization
 import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import com.i69.BR
-import com.i69.BuildConfig
 import com.i69.R
-import com.i69.utils.getDecodedApiKey
+import com.i69.BR
 import javax.inject.Inject
 
 class AppStringConstant @Inject constructor(context: Context) : BaseObservable() {
@@ -1245,13 +1243,14 @@ class AppStringConstant @Inject constructor(context: Context) : BaseObservable()
             notifyPropertyChanged(BR.you_cant_add_empty_msg)
         }
 
-    @get:Bindable
-    var _or: String =
-        context.resources.getString(R.string._or)
-        set(firstName) {
-            field = firstName
-            notifyPropertyChanged(BR._or)
-        }
+//    @get:Bindable
+//    var _or: String =
+//        context.resources.getString(R.string._or)
+//        set(firstName) {
+//            field = firstName
+//            notifyPropertyChanged(BR._or)
+
+//        }
 
     @get:Bindable
      var feed: String =
@@ -3182,13 +3181,13 @@ class AppStringConstant @Inject constructor(context: Context) : BaseObservable()
             notifyPropertyChanged(BR.prefer_not_to_say)
         }
 
-    @get:Bindable
-    var _with_a_: String =
-        context.resources.getString(R.string._with_a_)
-        set(firstName) {
-            field = firstName
-            notifyPropertyChanged(BR._with_a_)
-        }
+//    @get:Bindable
+//    var _with_a_: String =
+//        context.resources.getString(R.string._with_a_)
+//        set(firstName) {
+//            field = firstName
+//            notifyPropertyChanged(BR._with_a_)
+//        }
 
     @get:Bindable
     var with: String =

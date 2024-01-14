@@ -90,11 +90,10 @@ class MyBottomNavigation : BottomNavigationView {
             .optionalCircleCrop()
             //.placeholder(placeHolderResourceId)
             .listener(object : RequestListener<Drawable> {
-
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
-                    target: Target<Drawable>?,
+                    target: Target<Drawable>,
                     isFirstResource: Boolean
                 ): Boolean {
                     Log.e("SET_IMAGE",e!!.message.toString())
@@ -102,14 +101,13 @@ class MyBottomNavigation : BottomNavigationView {
                 }
 
                 override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
+                    resource: Drawable,
+                    model: Any,
                     target: Target<Drawable>?,
-                    dataSource: DataSource?,
+                    dataSource: DataSource,
                     isFirstResource: Boolean
                 ): Boolean {
-
-               isImageLoaded = true
+                    isImageLoaded = true
                     Log.e("SET_IMAGE","image loaded")
                     //imageView.setBackgroundColor(Color.YELLOW)
                     //handleImageItemSelected(imageView)

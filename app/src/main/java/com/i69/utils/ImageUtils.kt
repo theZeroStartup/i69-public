@@ -65,17 +65,26 @@ fun ImageView.loadBlurImage(imageSrc: Any, requestOptions: RequestOptions, callb
             .load(imageSrc)
             .apply(requestOptions)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            .addListener(object : RequestListener<Drawable>{
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
                     failure?.invoke(e)
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
                     callback?.invoke(resource)
-                    return false
-                }
+                    return false                }
             })
             .into(this)
 
@@ -95,12 +104,23 @@ fun ImageView.loadImage(imageSrc: Any, requestOptions: RequestOptions, callback:
             .apply(requestOptions)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
                     failure?.invoke(e)
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
                     callback?.invoke(resource)
                     return false
                 }
@@ -115,7 +135,7 @@ fun ImageView.loadImage(imageSrc: Any, requestOptions: RequestOptions, callback:
 fun loadImage(context: Context, imageSrc: String, callback: ((Bitmap?) -> Unit)? = null, failure: ((Drawable?) -> Unit)?) {
     try {
         val requestOptions = RequestOptions().placeholder(R.drawable.ic_default_user).error(R.drawable.ic_default_user)
-        GlideApp.with(context)
+        Glide.with(context)
             .asBitmap()
             .apply(requestOptions)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -154,12 +174,22 @@ fun ImageView.loadImage_byspecificsize(imageSrc: Any, requestOptions: RequestOpt
             .apply(requestOptions)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    failure?.invoke(e)
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {failure?.invoke(e)
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
                     callback?.invoke(resource)
                     return false
                 }

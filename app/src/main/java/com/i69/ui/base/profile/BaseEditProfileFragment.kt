@@ -883,7 +883,8 @@ abstract class BaseEditProfileFragment : BaseFragment<FragmentEditProfileBinding
         if (user?.interestedIn?.isNotEmpty() == true) {
 
             listOfInterestedIn.clear()
-            listOfInterestedIn.addAll(user?.interestedIn)
+            if (user?.interestedIn != null)
+                listOfInterestedIn.addAll(user?.interestedIn!!)
             lifecycleScope.launch(Dispatchers.Main) {
                 listOfInterestedIn.forEach {
                     val value = getLookingForNameFromId(it)

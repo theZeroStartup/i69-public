@@ -24,6 +24,8 @@ import com.google.gson.Gson
 import com.i69.*
 import com.i69.applocalization.AppStringConstant1
 import com.i69.data.models.User
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.databinding.ItemAddNewNearbyThumbBinding
 import com.i69.databinding.ItemNearbyThumbBinding
 import com.i69.utils.ApiUtil

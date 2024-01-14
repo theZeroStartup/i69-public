@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import com.i69.*
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.databinding.ItemReceivedSentGiftsBinding
 import com.i69.utils.loadCircleImage
 import com.i69.utils.loadImage

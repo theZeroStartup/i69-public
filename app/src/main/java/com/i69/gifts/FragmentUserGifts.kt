@@ -6,10 +6,10 @@ import androidx.lifecycle.lifecycleScope
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.i69.GiftPurchaseMutation
-import com.i69.R
 import com.i69.data.models.ModelGifts
-import com.i69.databinding.FragmentGiftsBinding
 import com.i69.di.modules.AppModule
+import com.i69.R
+import com.i69.databinding.FragmentGiftsBinding
 import com.i69.ui.base.profile.BaseUserGiftsFragment
 import com.i69.utils.apolloClient
 import com.i69.utils.getResponse
@@ -52,7 +52,8 @@ class FragmentUserGifts : BaseUserGiftsFragment() {
                             //return@launchWhenResumed
                         }
                         if (res?.hasErrors() == false) {
-                            binding.root.snackbar(context?.resources?.getString(R.string.you_bought)+" ${res.data?.giftPurchase?.giftPurchase?.gift?.giftName} "+context?.resources?.getString(R.string.successfully))
+                            binding.root.snackbar(context?.resources?.getString(R.string.you_bought)+" ${res.data?.giftPurchase?.giftPurchase?.gift?.giftName} "+context?.resources?.getString(
+                                R.string.successfully))
                           //  fireGiftBuyNotificationforreceiver(gift.id)
 
                         }

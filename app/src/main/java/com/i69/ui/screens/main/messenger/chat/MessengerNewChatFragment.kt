@@ -60,6 +60,7 @@ import com.i69.databinding.FragmentNewMessengerChatBinding
 import com.i69.di.modules.AppModule
 import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentVirtualGifts
+import com.i69.BuildConfig
 import com.i69.type.MessageMessageType
 import com.i69.ui.adapters.NewChatMessagesAdapter
 import com.i69.ui.adapters.UserItemsAdapter

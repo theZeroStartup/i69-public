@@ -88,6 +88,8 @@
 # Ignore annotation used for build tooling.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
+-dontwarn java.lang.invoke.StringConcatFactory
+
 # Ignore JSR 305 annotations for embedding nullability information.
 -dontwarn javax.annotation.**
 

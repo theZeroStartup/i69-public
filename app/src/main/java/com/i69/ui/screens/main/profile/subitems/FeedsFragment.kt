@@ -25,6 +25,7 @@ import com.i69.*
 import com.i69.applocalization.AppStringConstantViewModel
 import com.i69.databinding.FragmentFeedBinding
 import com.i69.di.modules.AppModule
+import com.i69.R
 import com.i69.ui.adapters.NearbySharedMomentAdapter
 import com.i69.ui.adapters.StoryLikesAdapter
 import com.i69.ui.base.BaseFragment

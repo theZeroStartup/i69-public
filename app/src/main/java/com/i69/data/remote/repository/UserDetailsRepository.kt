@@ -10,7 +10,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.i69.R
 import com.i69.data.models.Id
 import com.i69.data.models.ProfileVisit
 import com.i69.data.models.SelectedLanguageModel
@@ -22,6 +21,7 @@ import com.i69.data.remote.responses.CoinPrice
 import com.i69.data.remote.responses.GetCoinPrice
 import com.i69.data.remote.responses.ResponseBody
 import com.i69.db.DBResource
+import com.i69.R
 import com.i69.profile.db.dao.UserDao
 import com.i69.singleton.App
 import com.i69.utils.*

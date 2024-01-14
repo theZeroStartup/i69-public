@@ -2,7 +2,6 @@ package com.i69.di.modules
 
 import android.content.Context
 import androidx.room.Room
-import com.i69.BuildConfig
 import com.i69.applocalization.AppStringConstant
 import dagger.Module
 import dagger.Provides
@@ -19,6 +18,7 @@ import com.i69.data.remote.api.GraphqlApi
 import com.i69.data.remote.repository.*
 import com.i69.profile.db.dao.UserDao
 import com.i69.db.AppDatabase
+import com.i69.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton

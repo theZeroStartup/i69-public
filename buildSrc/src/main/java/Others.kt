@@ -1,9 +1,9 @@
 object Others {
-    private const val glideVersion = "4.13.1"
+    private const val glideVersion = "4.16.0"
     private const val retrofitVersion = "2.9.0"
-    private const val loggingInterceptorVersion = "4.9.1"
+    private const val loggingInterceptorVersion = "4.12.0"
     private const val timberVersion = "5.0.1"
-    private const val lottieVersion = "4.1.0"
+    private const val lottieVersion = "6.2.0"
     private const val oneSignalVersion = "4.6.0"
     private const val expandableLayoutVersion = "2.9.2"
 //    private const val chatKitVersion = "0.4.1"
@@ -14,26 +14,20 @@ object Others {
     private const val permissionsVersion = "3.8"
     private const val runtimeWorkerVersion = "2.7.1"
 
+    private const val bom = "32.7.0"
     private const val firebasecrashlytics = "18.2.9"
-    private const val firebaseanalytics = "20.1.2"
-    private const val firebasemessaging = "23.0.2"
+    private const val firebaseanalytics = "21.5.0"
+    private const val firebasemessaging = "23.4.0"
 
     //    private const val exoversion = "2.14.0"
-    private const val exoversion = "2.18.2"
+    private const val exoversion = "2.19.1"
     private const val paypalVersion = "0.8.7"
-    private const val googleMapVersion = "18.1.0"
+    private const val googleMapVersion = "18.2.0"
 
-    private const val camera2Version = "1.2.3"
+    private const val camera2Version = "1.3.1"
 
     //ExoPlayer
     const val exoplayer = "com.google.android.exoplayer:exoplayer:$exoversion"
-
-
-    // Firebase
-    const val firebasecrashanalytics =
-        "com.google.firebase:firebase-crashlytics-ktx:$firebasecrashlytics"
-    const val firebaseanalytic = "com.google.firebase:firebase-analytics-ktx:$firebaseanalytics"
-    const val firebasemsg = "com.google.firebase:firebase-messaging-ktx:$firebasemessaging"
 
     // Glider
     const val glide = "com.github.bumptech.glide:glide:$glideVersion"

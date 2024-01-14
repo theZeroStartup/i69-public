@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.i69.isyxtinine",
+  "applicationId": "com.i69",
   "variantName": "productionRelease",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 145,
-      "versionName": "64.6.8",
+      "versionCode": 146,
+      "versionName": "64.6.9",
       "outputFile": "app-production-release.apk"
     }
   ],

@@ -1,11 +1,8 @@
 object Build {
-//        private const val androidBuildToolsVersion = "7.2.1"
     private const val androidBuildToolsVersion = "7.4.1"
     private const val oneSignalPluginVersion = "0.13.4"
-//    private const val googleGmsVersion = "4.3.10"
     private const val googleGmsVersion = "4.3.15"
     private const val firebaseCrashlyticsVersion = "2.7.1"
-
 
     const val androidBuildTools = "com.android.tools.build:gradle:$androidBuildToolsVersion"
 

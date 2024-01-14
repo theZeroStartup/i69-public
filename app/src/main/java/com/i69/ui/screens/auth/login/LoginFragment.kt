@@ -35,6 +35,7 @@ import com.i69.data.remote.responses.LoginResponse
 import com.i69.data.remote.responses.ResponseBody
 import com.i69.databinding.FragmentLoginBinding
 import com.i69.firebasenotification.FCMHandler
+import com.i69.R
 import com.i69.singleton.App
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.base.profile.PUBLIC

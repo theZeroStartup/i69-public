@@ -14,6 +14,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.google.gson.Gson
 import com.i69.*
 import com.i69.applocalization.AppStringConstant1
+import com.i69.R
 import com.i69.databinding.FragmentFollowersBinding
 import com.i69.profile.vm.VMProfile
 import com.i69.ui.adapters.AdaptersFollowing

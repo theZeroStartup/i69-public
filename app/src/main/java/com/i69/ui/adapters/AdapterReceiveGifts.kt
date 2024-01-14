@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.i69.BuildConfig
 import com.i69.GetReceivedGiftsQuery
+import com.i69.BuildConfig
 import com.i69.R
 import com.i69.databinding.ItemReceivedSentGiftsBinding
 import com.i69.utils.loadCircleImage

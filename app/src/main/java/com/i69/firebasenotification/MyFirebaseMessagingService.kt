@@ -22,10 +22,10 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.i69.BuildConfig
-import com.i69.R
 import com.i69.data.config.Constants
 import com.i69.data.remote.repository.UserUpdateRepository
+import com.i69.BuildConfig
+import com.i69.R
 import com.i69.singleton.App
 import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.MainActivity.Companion.ACTION_NEW_NOTIFICATION

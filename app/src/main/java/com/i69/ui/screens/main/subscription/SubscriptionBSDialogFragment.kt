@@ -20,6 +20,7 @@ import com.i69.*
 import com.i69.applocalization.AppStringConstant1
 import com.i69.applocalization.AppStringConstantViewModel
 import com.i69.data.models.BaseAllPackageModel
+import com.i69.R
 import com.i69.databinding.SheetSubscriptionFragmentBinding
 import com.i69.ui.adapters.PurchasePlanMainAdapter
 import com.i69.ui.viewModels.SearchViewModel

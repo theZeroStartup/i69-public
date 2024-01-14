@@ -10,6 +10,9 @@ dependencyResolutionManagement {
             url = uri("https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/")
         }
         maven {
+            url = uri("https://storage.googleapis.com/r8-releases/raw")
+        }
+        maven {
             url = uri("https://cardinalcommerceprod.jfrog.io/artifactory/android")
             credentials {
                 // Be sure to add these non-sensitive credentials in order to retrieve dependencies from
