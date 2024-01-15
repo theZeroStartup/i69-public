@@ -14,7 +14,7 @@ data class User(
     @PrimaryKey
     @SerializedName("id")
     var id: String = "",
-    val username: String = "",
+    var username: String = "",
     var fullName: String = "",
     var country: String? = "",
     var state: String? = "",

@@ -142,6 +142,10 @@ android {
         resources.excludes += "META-INF/library_release.kotlin_module"
     }
 
+    kapt {
+        this.correctErrorTypes = false
+    }
+
     lint {
         //isAbortOnError = true
         abortOnError = false
@@ -203,7 +207,7 @@ dependencies {
     implementation(Others.glide)
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 //    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
@@ -274,7 +278,7 @@ dependencies {
     // Room
     implementation(Kotlin.room)
     implementation(Kotlin.roomCoroutines)
-    annotationProcessor(Kotlin.roomCompiler)
+    kapt(Kotlin.roomCompiler)
 
 //    implementation(exoplayer)
     implementation(Others.exoplayer)

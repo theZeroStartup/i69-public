@@ -11,21 +11,21 @@ data class DefaultPicker(
     @PrimaryKey(autoGenerate = false)
     var id: Int = 0,
     @TypeConverters(UserConverters::class)
-    val agePicker: List<IdWithValue> = emptyList(),
+    var agePicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val ethnicityPicker: List<IdWithValue> = emptyList(),
+    var ethnicityPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val familyPicker: List<IdWithValue> = emptyList(),
+    var familyPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val heightsPicker: List<IdWithValue> = emptyList(),
+    var heightsPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val politicsPicker: List<IdWithValue> = emptyList(),
+    var politicsPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val religiousPicker: List<IdWithValue> = emptyList(),
+    var religiousPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val tagsPicker: List<IdWithValue> = emptyList(),
+    var tagsPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val zodiacSignPicker: List<IdWithValue> = emptyList(),
+    var zodiacSignPicker: List<IdWithValue> = emptyList(),
     @TypeConverters(UserConverters::class)
-    val genderPicker: List<IdWithValue> = emptyList()
+    var genderPicker: List<IdWithValue> = emptyList()
 )

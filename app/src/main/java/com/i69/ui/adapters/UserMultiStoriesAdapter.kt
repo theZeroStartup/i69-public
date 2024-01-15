@@ -176,13 +176,13 @@ class UserMultiStoriesAdapter(
             val user = item?.user
             if (node?.fileType.equals("video")) {
                 storyImage = if (!BuildConfig.USE_S3) {
-                    if (node?.thumbnail.toString().startsWith(BuildConfig.BASE_URL))
-                        node?.thumbnail.toString()
+                    if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
+                        node?.file.toString()
                     else
-                        "${BuildConfig.BASE_URL}${node?.thumbnail}"
+                        "${BuildConfig.BASE_URL}${node?.file}"
                 }
-                else if (node?.thumbnail.toString().startsWith(ApiUtil.S3_URL)) node?.thumbnail.toString()
-                else ApiUtil.S3_URL.plus(node?.thumbnail.toString())
+                else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
+                else ApiUtil.S3_URL.plus(node?.file.toString())
                 viewBinding.ivPlay.setViewGone()
                 Log.e("thumbnail","thumbnail from node\n${Gson().toJson(node)}}")
             } else {

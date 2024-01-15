@@ -9,7 +9,7 @@
         <domain includeSubdomains="true">api.i69app.com</domain>
         <trust-anchors>
             <certificates src="@raw/prod_ssl"/>
-            <certificates src="@raw/api_chatadmin_ssl" />
+            <certificates src="@raw/cert" />
         </trust-anchors>
     </domain-config>
     <base-config cleartextTrafficPermitted="false">

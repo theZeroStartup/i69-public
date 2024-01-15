@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:223314224724:android:6b3b1232d91cbeee15afc1",
         "android_client_info": {
-          "package_name": "com.i69"
+          "package_name": "com.i69.isyxtinine"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "223314224724-v5guboslvqiq0gu118b3ssj0j6bg2gaq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.i69",
+            "package_name": "com.i69.isyxtinine",
             "certificate_hash": "b7303803d20a431daaf2ea2df934187e59c43179"
           }
         },

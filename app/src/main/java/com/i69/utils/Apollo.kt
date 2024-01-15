@@ -60,7 +60,7 @@ fun setSSlCert(okHttpClientBuilder:OkHttpClient.Builder,context: Context) {
     if (BuildConfig.BASE_URL == "https://api.i69app.com/") {
         okHttpClientBuilder.sslSocketFactory(SslUtils.getSslContextForCertificateFile(context, R.raw.prod_ssl).socketFactory,trustManager)
     } else {
-        okHttpClientBuilder.sslSocketFactory(SslUtils.getSslContextForCertificateFile(context, R.raw.api_chatadmin_ssl).socketFactory,trustManager)
+        okHttpClientBuilder.sslSocketFactory(SslUtils.getSslContextForCertificateFile(context, R.raw.cert).socketFactory,trustManager)
     }
 }
 
