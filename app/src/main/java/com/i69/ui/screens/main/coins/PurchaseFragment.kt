@@ -13,12 +13,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
-
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -34,14 +34,10 @@ import com.google.android.gms.wallet.PaymentData
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
-
-import androidx.activity.result.ActivityResult
-
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.i69.*
 import com.i69.R
@@ -66,7 +62,6 @@ import com.paypal.checkout.paymentbutton.PayPalButton
 import com.stripe.android.*
 import com.stripe.android.model.ConfirmPaymentIntentParams
 import com.stripe.android.model.PaymentIntent
-import com.stripe.android.payments.core.injection.IS_PAYMENT_INTENT
 import com.stripe.android.view.CardInputWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -214,7 +209,8 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
                 it,
                 object : AdapterCoinPrice.CoinPriceInterface {
                     override fun onClick(index: Int, coinPrice: CoinPrice) {
-                        Log.e("paymentCurrency", "${coinPrice.currency}")
+                        Log.e("paymentCurrency", "${coinPrice.currency} ${coinPrice.discountedPrice.toDouble()}" +
+                                "${coinPrice.coinsCount.toInt()}")
                         amount = coinPrice.discountedPrice.toDouble()
                         currentCurrency = coinPrice.currency
                         showBottomSheetForPaymentOptions(

@@ -34,14 +34,6 @@ class AdapterCoinPrice(
         val priceSmall =  viewBinding.priceSmall
         val salePrice =  viewBinding.salePrice
         //val priceGoldCircle =  viewBinding.priceGoldCircle
-
-
-        init {
-            itemView.setOnClickListener {
-                val coinPrice = itemList[adapterPosition]
-                coinPriceInterface.onClick(adapterPosition, coinPrice)
-            }
-        }
     }
 
     override fun onCreateViewHolder(
@@ -61,7 +53,7 @@ class AdapterCoinPrice(
 //    }
 
     override fun onBindViewHolder(holder: CoinPriceViewHolder, position: Int) {
-        val coinPrice = itemList[holder.adapterPosition]
+        val coinPrice = itemList[holder.bindingAdapterPosition]
         //val showDiscount = true
         holder.numberOfCoins.text = coinPrice.coinsCount
         //holder.priceGoldCircle.setVisibleOrInvisible(showDiscount)
@@ -72,6 +64,11 @@ class AdapterCoinPrice(
         val s = String.format("%.2f", value3)
         holder.price.text = "€$valueTruncated"
         holder.priceSmall.text = s.substring(1, s.length)
+
+        holder.itemView.setOnClickListener {
+            val coinPrice = itemList[holder.bindingAdapterPosition]
+            coinPriceInterface.onClick(holder.bindingAdapterPosition, coinPrice)
+        }
         /*if (!showDiscount) {
             holder.price.setTextColor(
                 ContextCompat.getColor(

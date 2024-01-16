@@ -369,6 +369,7 @@ class BillingDataSource @Inject constructor(
         //    getSkuDetails(sku)
         val skuDetails = skuDetailsMap[sku]?.value
         Timber.tag(TAG).d("Sku Details $skuDetails")
+        Log.d("BDS", "launchBillingFlow: $sku")
 
         skuDetails?.let {
             val flowParams = BillingFlowParams.newBuilder()
