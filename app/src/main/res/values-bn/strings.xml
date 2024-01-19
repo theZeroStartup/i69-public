@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">সংযোগকারী হৃদয়</string>
     <string name="account_deleted_error">প্রবেশ চেষ্টা ব্যার্থ! আপনি আপনার প্রোফাইল মুছে ফেলেছেন। পুনরায় যোগদানের জন্য আমাদের সাথে যোগাযোগ করুন।</string>
-    <string name="schedule_for_later">পরে সময়সূচী</string>
+    <string name="schedule_for_later">পরে ভাগ করুন</string>
+    <string name="share_options">ভাগ বিকল্প</string>
     <string name="search">অনুসন্ধান করুন</string>
     <string name="search_drawer">অনুসন্ধান করুন</string>
     <string name="language_label">ভাষা</string>

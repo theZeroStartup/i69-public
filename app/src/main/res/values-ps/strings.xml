@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">د زړونو نښلول</string>
     <string name="share_now">اوس یې شریک کړه</string>
-    <string name="schedule_for_later">د وروسته لپاره مهالویش</string>
+    <string name="schedule_for_later">وروسته یې شریک کړه</string>
+    <string name="share_options">د شریکولو اختیارونه</string>
     <string name="search">لټون</string>
     <string name="search_drawer">لټون</string>
     <string name="language_label">ژبه</string>

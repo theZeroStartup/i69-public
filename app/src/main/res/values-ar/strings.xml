@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">ربط القلوب</string>
     <string name="share_now">شارك الآن</string>
-    <string name="schedule_for_later">الجدول الزمني في وقت لاحق</string>
+    <string name="schedule_for_later">شارك لاحقًا</string>
+    <string name="share_options">مشاركة الخيارات</string>
     <string name="search">يبحث</string>
     <string name="search_drawer">بحث</string>
     <string name="email_sent">أرسل البريد الإلكتروني بنجاح</string>

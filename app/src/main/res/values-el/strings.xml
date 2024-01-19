@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Συνδέοντας Καρδιές</string>
-    <string name="schedule_for_later">Πρόγραμμα για αργότερα</string>
+    <string name="schedule_for_later">Μοιραστείτε αργότερα</string>
+    <string name="share_options">Επιλογές κοινής χρήσης</string>
     <string name="search">Αναζήτηση</string>
     <string name="search_drawer">ΑΝΑΖΗΤΗΣΗ</string>
     <string name="language_label">Γλώσσα</string>

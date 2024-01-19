@@ -821,12 +821,8 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
             } else {
                 binding.includeAttached.clAttachments.visibility = View.VISIBLE
                 binding.includeAttached.llCamera.setOnClickListener {
-                    val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val intent =
                         Intent(requireActivity(), CameraActivity::class.java)
-                    }
-                    else {
-                        Intent(requireActivity(), ImagePickerActivity::class.java)
-                    }
                     intent.putExtra("video_duration_limit", 60)
                     intent.putExtra("withCrop", false)
                     photosLauncher.launch(intent)

@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Südamete ühendamine</string>
-    <string name="schedule_for_later">Ajakava hilisemaks</string>
+    <string name="schedule_for_later">Jagage hiljem</string>
+    <string name="share_options">Jagage võimalusi</string>
     <string name="search">Otsing</string>
     <string name="search_drawer">OTSING</string>
     <string name="language_label">Keel</string>

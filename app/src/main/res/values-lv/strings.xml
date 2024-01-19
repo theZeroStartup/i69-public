@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Siržu savienošana</string>
     <string name="share_now">Dalīties tagad</string>
-    <string name="schedule_for_later">Grafiks vēlākai</string>
+    <string name="schedule_for_later">Dalīties vēlāk</string>
+    <string name="share_options">Kopīgot opcijas</string>
     <string name="search">Meklēt</string>
     <string name="search_drawer">MEKLĒT</string>
     <string name="language_label">Valoda</string>

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.roundToInt
 
-class MomentsFragment(private val onAllMomentsDeleted: (Boolean) -> Unit) : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAdapter.CurrentUserMomentListener {
+class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAdapter.CurrentUserMomentListener {
 
     private var userToken: String? = null
     private lateinit var currentUserMomentAdapter: CurrentUserMomentAdapter
@@ -48,6 +48,12 @@ class MomentsFragment(private val onAllMomentsDeleted: (Boolean) -> Unit) : Base
     var hasNextPage: Boolean= false
     var allUserMoments: ArrayList<GetUserMomentsQuery.Edge> = ArrayList()
     var layoutManager: LinearLayoutManager? = null
+
+    private lateinit var onAllMomentsDeleted: (Boolean) -> Unit
+
+    fun setOnAllMomentsDeleted(onAllMomentsDeleted: (Boolean) -> Unit) {
+        this.onAllMomentsDeleted = onAllMomentsDeleted
+    }
 
     override fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentFeedBinding.inflate(inflater, container, false)

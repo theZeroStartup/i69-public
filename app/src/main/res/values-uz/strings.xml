@@ -13,7 +13,8 @@
     <string name="account_deleted_error">Kirish amalga oshmadi! Siz profilingizni o\'chirib tashladingiz. Qayta qo\'shilish uchun biz bilan bog\'laning.</string>
     <string name="share_now">Hozir baham ko\'ring</string>
     <string name="do_you_want_to_leave_this_page">Bu sahifani tark etmoqchimisiz?</string>
-    <string name="schedule_for_later">Keyinchalik rejalashtirish jadvali</string>
+    <string name="schedule_for_later">Keyinroq baham ko\'ring</string>
+    <string name="share_options">Ulashish variantlari</string>
     <string name="profile_complete_title">TO‘LIQ PROFIL</string>
     <string name="profile_edit_title">PROFILNI TAHRIRLASH</string>
     <string name="done">Bajarildi</string>

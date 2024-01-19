@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Зүрх сэтгэлийг холбох</string>
     <string name="share_now">Одоо бол S азтай</string>
-    <string name="schedule_for_later">Хэдэн цагийн хуваарь</string>
+    <string name="schedule_for_later">Хэдэнээ хуваалц</string>
+    <string name="share_options">Хуваалцах сонголт</string>
     <string name="search">Хайх</string>
     <string name="search_drawer">ХАЙХ</string>
     <string name="language_label">Хэл</string>

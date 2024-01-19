@@ -494,7 +494,7 @@
 
     <string name="account_deleted_error">Sign In Failed! You have deleted your profile. Please contact us to re-join.</string>
     <string name="share_now">Share now</string>
-    <string name="schedule_for_later">Schedule for later</string>
+    <string name="schedule_for_later">Share later</string>
     <string name="set">Set</string>
     <string name="share_options">Share Options</string>
     <string name="please_select_a_future_date">Please select a future date</string>

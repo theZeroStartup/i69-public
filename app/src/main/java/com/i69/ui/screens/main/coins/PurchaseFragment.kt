@@ -1605,7 +1605,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
 
                         val successMsg = String.format(AppStringConstant1.congrats_purchase, selectedCoins)
                         binding.root.autoSnackbarOnTop(successMsg, Snackbar.LENGTH_LONG) {
-                            moveToSubscriptionDetailScreen()
+                            moveToProfileScreen()
                         }
                     } else {
                         Log.e("myPurchaseCoinResponce", Gson().toJson(response))
@@ -1626,8 +1626,8 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
         }
     }
 
-    fun moveToSubscriptionDetailScreen() {
-        navController.navigate(com.i69.R.id.action_global_subscription_detail)
+    private fun moveToProfileScreen() {
+        navController.navigate(com.i69.R.id.action_purchaseFragment_to_userProfileFragment)
     }
 
     public fun onGooglePaymentSuccess(method: String, paymentId: String) {

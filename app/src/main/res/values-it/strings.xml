@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Unire i cuori</string>
     <string name="share_now">Condividi ora</string>
-    <string name="schedule_for_later">Programma per dopo</string>
+    <string name="schedule_for_later">Condividere più tardi</string>
+    <string name="share_options">Share Options</string>
     <string name="search">Ricerca</string>
     <string name="search_drawer">RICERCA</string>
     <string name="language_label">Lingua</string>

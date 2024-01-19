@@ -90,7 +90,6 @@ import com.i69.ui.adapters.StoryLikesAdapter
 import com.i69.ui.adapters.UserItemsAdapter
 import com.i69.ui.adapters.UserMultiStoriesAdapter
 import com.i69.ui.base.BaseFragment
-import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.SplashActivity
 import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.camera.CameraActivity
@@ -1536,13 +1535,25 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                     val avatar = newStory.data?.onNewStory?.user?.avatar
                                     val listOfAvatar = newStory.data?.onNewStory?.user?.avatarPhotos
                                     val storiesTemp = newStory.data?.onNewStory?.stories
+
+                                    val url = if (!BuildConfig.USE_S3) {
+                                        if (avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                            avatar?.url.toString()
+                                        else
+                                            "${BuildConfig.BASE_URL}${avatar?.url.toString()}"
+                                    }
+                                    else if (avatar?.url.toString().startsWith(ApiUtil.S3_URL)) avatar?.url.toString()
+                                    else ApiUtil.S3_URL.plus(avatar?.url.toString())
+
+                                    Log.d("UMF", "subscribeForNewStory: ${url}")
+
                                     val newStoryCollection =
                                         GetAllUserMultiStoriesQuery.AllUserMultiStory(
                                             GetAllUserMultiStoriesQuery.User(
                                                 newStoryUser?.id!!,
                                                 newStoryUser.fullName,
                                                 GetAllUserMultiStoriesQuery.Avatar(
-                                                    avatar?.url,
+                                                    url,
                                                     avatar?.id!!
                                                 ),
                                                 newStoryUser.avatarIndex,
@@ -2118,15 +2129,23 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
         else ApiUtil.S3_URL.plus(node?.file.toString())
 
-        var userurl = if (node!!.user!!.avatar != null && node.user!!.avatar!!.url != null) {
-            node.user.avatar!!.url!!
+        val avatarUrl = if (node?.user?.avatar?.url != null) {
+            if (!BuildConfig.USE_S3) {
+                if (node.user.avatar.url.toString().startsWith(BuildConfig.BASE_URL))
+                    node.user.avatar.url.toString()
+                else
+                    "${BuildConfig.BASE_URL}${node.user.avatar.url}"
+            }
+            else if (node.user.avatar.url.toString().startsWith(ApiUtil.S3_URL)) node.user.avatar.url.toString()
+            else ApiUtil.S3_URL.plus(node.user.avatar.url.toString())
+
         } else {
             ""
         }
-        val username = node.user!!.fullName
+        val username = node?.user!!.fullName
         val UserID = userId
-        val objectId = node.pk
-        var text = node.createdDate.toString()
+        val objectId = node?.pk
+        var text = node?.createdDate.toString()
         text = text.replace("T", " ").substring(0, text.indexOf("."))
         val momentTime = formatter.parse(text)
         val times = DateUtils.getRelativeTimeSpanString(
@@ -2135,35 +2154,34 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             DateUtils.MINUTE_IN_MILLIS
         )
 
-        val dialog = UserMultiStoryDetailFragment(
-            object : UserMultiStoryDetailFragment.DeleteCallback {
-                override fun deleteCallback(objectId: Int) {
-                    // call api for delete
-                    showProgressView()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        lifecycleScope.launch {
-                            try {
-                                apolloClient(requireContext(), userToken!!)
-                                    .mutation(
-                                        DeleteStoryMutation("$objectId")
-                                    ).execute()
-                            } catch (e: ApolloException) {
-                                Timber.d("apolloResponse Exception ${e.message}")
-                                binding.root.snackbar(" ${e.message}")
-                                hideProgressView()
-                                return@launch
-                            }
+        val dialog = UserMultiStoryDetailFragment()
+        dialog.setListener(object : UserMultiStoryDetailFragment.DeleteCallback {
+            override fun deleteCallback(objectId: Int) {
+                // call api for delete
+                showProgressView()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    lifecycleScope.launch {
+                        try {
+                            apolloClient(requireContext(), userToken!!)
+                                .mutation(
+                                    DeleteStoryMutation("$objectId")
+                                ).execute()
+                        } catch (e: ApolloException) {
+                            Timber.d("apolloResponse Exception ${e.message}")
+                            binding.root.snackbar(" ${e.message}")
+                            hideProgressView()
+                            return@launch
                         }
-                        hideProgressView()
-                        getAllUserMultiStories()
-                    }, 1000)
-                }
+                    }
+                    hideProgressView()
+                    getAllUserMultiStories()
+                }, 1000)
             }
-        )
+        })
         val b = Bundle()
         b.putString("Uid", UserID)
         b.putString("url", url)
-        b.putString("userurl", userurl)
+        b.putString("userurl", avatarUrl)
         b.putString("username", username)
         b.putString("times", times.toString())
         b.putString("token", userToken)
@@ -2185,12 +2203,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
 
     override fun onAddNewUserStoryClick(isCamera: Boolean) {
         if (isCamera) {
-            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Intent(requireActivity(), CameraActivity::class.java)
-            }
-            else {
-                Intent(requireActivity(), ImagePickerActivity::class.java)
-            }
+            val intent = Intent(requireActivity(), CameraActivity::class.java)
             intent.putExtra("video_duration_limit", 60)
             intent.putExtra("withCrop", false)
             photosLauncher.launch(intent)

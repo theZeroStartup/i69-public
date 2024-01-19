@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Forbinder hjerter</string>
     <string name="share_now">Del nå</string>
-    <string name="schedule_for_later">Plan for senere</string>
+    <string name="schedule_for_later">Del senere</string>
+    <string name="share_options">Aksjeopsjoner</string>
     <string name="search">Søk</string>
     <string name="search_drawer">SØK</string>
     <string name="language_label">Språk</string>

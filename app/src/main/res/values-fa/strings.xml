@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">اتصال قلب ها</string>
-    <string name="schedule_for_later">برنامه برای بعداً</string>
+    <string name="schedule_for_later">بعداً به اشتراک بگذارید</string>
+    <string name="share_options">گزینه های به اشتراک گذاشتن</string>
     <string name="search">جستجو کردن</string>
     <string name="search_drawer">جستجو کردن</string>
     <string name="language_label">زبان</string>

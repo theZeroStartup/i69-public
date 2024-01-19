@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Kuunganisha Mioyo</string>
     <string name="share_now">Shiriki sasa</string>
-    <string name="schedule_for_later">Ratiba ya baadaye</string>
+    <string name="schedule_for_later">Shiriki baadaye</string>
+    <string name="share_options">Shiriki chaguzi</string>
     <string name="search">Tafuta</string>
     <string name="search_drawer">TAFUTA</string>
     <string name="language_label">Lugha</string>

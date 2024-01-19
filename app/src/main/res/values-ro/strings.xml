@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Inimi de conectare</string>
     <string name="share_now">Împărtășește acum</string>
-    <string name="schedule_for_later">Programe pentru mai târziu</string>
+    <string name="schedule_for_later">Împărtășește mai târziu</string>
+    <string name="share_options">Opțiuni de partajare</string>
     <string name="search">Căutare</string>
     <string name="search_drawer">CĂUTARE</string>
     <string name="language_label">Limba</string>

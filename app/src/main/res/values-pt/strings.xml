@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Connecting Hearts</string>
     <string name="share_now">Compartilhe agora</string>
-    <string name="schedule_for_later">Cronograma para mais tarde</string>
+    <string name="schedule_for_later">Compartilhe mais tarde</string>
+    <string name="share_options">Compartilhar opções</string>
     <string name="search">Search</string>
     <string name="search_drawer">SEARCH</string>
     <string name="language_label">Language</string>

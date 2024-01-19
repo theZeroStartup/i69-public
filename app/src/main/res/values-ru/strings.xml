@@ -6,7 +6,8 @@
     <string name="sign_in_app_description">Підключення серця</string>
     <string name="share_now">Поделись сейчас</string>
     <string name="search">Пошук</string>
-    <string name="schedule_for_later">Расписание на потом</string>
+    <string name="schedule_for_later">Поделиться позже</string>
+    <string name="share_options">Поделиться опциями</string>
     <string name="search_drawer">ПОШУК</string>
     <string name="language_label">Мова</string>
     <string name="select_language">Оберіть мову</string>

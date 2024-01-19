@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Menghubungkan Hati</string>
     <string name="share_now">Bagikan sekarang</string>
-    <string name="schedule_for_later">Jadwal untuk nanti</string>
+    <string name="schedule_for_later">Bagikan nanti</string>
+    <string name="share_options">Berbagi opsi</string>
     <string name="search">Mencari</string>
     <string name="search_drawer">MENCARI</string>
     <string name="language_label">Bahasa</string>

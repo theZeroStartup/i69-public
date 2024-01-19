@@ -178,12 +178,8 @@ class MessengerChatFragment : BaseFragment<FragmentMessengerChatBinding>() {
             dialog.setContentView(R.layout.dialog_image_option)
             dialog.findViewById<TextView>(R.id.header_title).text=resources.getString(R.string.select_chat_image)
             dialog.findViewById<LinearLayoutCompat>(R.id.ll_camera).setOnClickListener {
-                val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val intent =
                     Intent(requireActivity(), CameraActivity::class.java)
-                }
-                else {
-                    Intent(requireActivity(), ImagePickerActivity::class.java)
-                }
                 intent.putExtra("video_duration_limit", 60)
                 intent.putExtra("withCrop", false)
                 photosLauncher.launch(intent)

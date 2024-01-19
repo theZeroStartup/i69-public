@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Kalpleri Birleştirmek</string>
     <string name="share_now">Şimdi paylaş</string>
-    <string name="schedule_for_later">Daha sonra program</string>
+    <string name="schedule_for_later">Daha sonra paylaşın</string>
+    <string name="share_options">Paylaş seçenekleri</string>
     <string name="search">Aramak</string>
     <string name="search_drawer">ARAMAK</string>
     <string name="language_label">Dil</string>

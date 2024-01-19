@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Conectando Corazóns</string>
-    <string name="schedule_for_later">Programación para máis tarde</string>
+    <string name="schedule_for_later">Compartir máis tarde</string>
+    <string name="share_options">Opcións de compartir</string>
     <string name="search">Busca</string>
     <string name="search_drawer">BUSCAR</string>
     <string name="language_label">Lingua</string>

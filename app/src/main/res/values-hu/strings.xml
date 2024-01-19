@@ -11,7 +11,8 @@
     <string name="select_language">Válasszon nyelvet</string>
     <string name="email_sent">Az e-mail sikeresen elküldve</string>
     <string name="account_deleted_error">Jelentkezzen be a sikertelen! Törölte a profilját. Kérjük, vegye fel velünk a kapcsolatot, hogy újra csatlakozzon.</string>
-    <string name="schedule_for_later">Ütemterv később</string>
+    <string name="schedule_for_later">Ossza meg később</string>
+    <string name="share_options">Megosztási lehetőségek</string>
     <string name="profile_complete_title">TELJES PROFIL</string>
     <string name="profile_edit_title">PROFIL SZERKESZTÉSE</string>
     <string name="done">Kész</string>

@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">마음을 잇다</string>
     <string name="share_now">지금 공유하십시오</string>
-    <string name="schedule_for_later">나중에 일정</string>
+    <string name="schedule_for_later">나중에 공유하십시오</string>
+    <string name="share_options">공유 옵션</string>
     <string name="search">찾다</string>
     <string name="search_drawer">찾다</string>
     <string name="language_label">언어</string>

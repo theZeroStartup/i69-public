@@ -176,19 +176,16 @@ class UserMultiStoriesAdapter(
             val user = item?.user
             if (node?.fileType.equals("video")) {
                 storyImage = if (!BuildConfig.USE_S3) {
-                    if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
-                        node?.file.toString()
+                    if (node?.thumbnail.toString().startsWith(BuildConfig.BASE_URL))
+                        node?.thumbnail.toString()
                     else
-                        "${BuildConfig.BASE_URL}${node?.file}"
+                        "${BuildConfig.BASE_URL}${node?.thumbnail}"
                 }
-                else if (node?.file.toString().startsWith(ApiUtil.S3_URL)) node?.file.toString()
-                else ApiUtil.S3_URL.plus(node?.file.toString())
+                else if (node?.thumbnail.toString().startsWith(ApiUtil.S3_URL)) node?.thumbnail.toString()
+                else ApiUtil.S3_URL.plus(node?.thumbnail.toString())
                 viewBinding.ivPlay.setViewGone()
-                Log.e("thumbnail","thumbnail from node\n${Gson().toJson(node)}}")
             } else {
                 viewBinding.ivPlay.setViewGone()
-                Log.e("thumbnail","file from node \n" +
-                        "${Gson().toJson(node)}")
                 storyImage = if (!BuildConfig.USE_S3) {
                     if (node?.file.toString().startsWith(BuildConfig.BASE_URL))
                         node?.file.toString()
@@ -199,14 +196,20 @@ class UserMultiStoriesAdapter(
                 else ApiUtil.S3_URL.plus(node?.file.toString())
             }
 
-            Log.e("thumbnail",storyImage)
+            Log.e("UMSA thumbnail",storyImage)
             viewBinding.imgUserStory.loadCircleImage(storyImage)
 
-            var url: String? = ""
-
-            if (user?.avatarPhotos != null && (user.avatarPhotos.isNotEmpty()) && (user.avatarIndex < user.avatarPhotos.size)) {
-                url = user.avatarPhotos[user.avatarIndex].url
+            val url: String = if (user?.avatarPhotos != null && (user.avatarPhotos.isNotEmpty()) && (user.avatarIndex < user.avatarPhotos.size)) {
+                if (!BuildConfig.USE_S3) {
+                    if (user.avatarPhotos[user.avatarIndex].url.toString().startsWith(BuildConfig.BASE_URL))
+                        user.avatarPhotos[user.avatarIndex].url.toString()
+                    else
+                        "${BuildConfig.BASE_URL}${user.avatarPhotos[user.avatarIndex].url}"
+                }
+                else if (user.avatarPhotos[user.avatarIndex].url.toString().startsWith(ApiUtil.S3_URL)) user.avatarPhotos[user.avatarIndex].url.toString()
+                else ApiUtil.S3_URL.plus(user.avatarPhotos[user.avatarIndex].url.toString())
             }
+            else ""
             Log.d("UMSA", "bind: $url")
 
             /*    if ((node?.user?.avatarPhotos?.size!! > 0) && (node.user.avatarIndex < node.user.avatarPhotos.size)) {

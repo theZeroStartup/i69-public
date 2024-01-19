@@ -177,20 +177,18 @@ class UserMomentsRepository  @Inject constructor(
                 }
             }
 
-            Log.e("TAG", "getUserMoments: "+res.data!!.toString() )
-            val allmoments = res.data?.allUserMoments!!.edges
+            val allmoments = res.data?.allUserMoments?.edges
             var endCursor: String=""
             var hasNextPage: Boolean= false
             endCursor = res.data?.allUserMoments!!.pageInfo.endCursor!!
             hasNextPage = res.data?.allUserMoments!!.pageInfo.hasNextPage
-            if(allmoments.size!=0)
-            {
+            if(allmoments?.size!=0) {
 
                 val allUserMomentsFirst: ArrayList<GetAllUserMomentsQuery.Edge> = ArrayList()
 
 
-                allmoments.indices.forEach { i ->
-                    allUserMomentsFirst.add(allmoments[i]!!)
+                allmoments?.indices?.forEach { i ->
+                    allmoments[i]?.let { allUserMomentsFirst.add(it) }
                 }
                callback(allUserMomentsFirst,endCursor,hasNextPage,null)
             }

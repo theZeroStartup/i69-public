@@ -275,7 +275,8 @@ class VMProfile @Inject constructor(
         val about = UserProfileAboutFragment()
         //val interests = UserProfileInterestsFragment()
         val feed = FeedsFragment()
-        val moment = MomentsFragment {
+        val moment = MomentsFragment()
+        moment.setOnAllMomentsDeleted {
             if (it) updateViewPagerTabs()
         }
         val useriddata = Bundle()

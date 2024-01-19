@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">दिलों को जोड़ना</string>
-    <string name="schedule_for_later">बाद के लिए अनुसूची</string>
+    <string name="schedule_for_later">बाद में साझा करें</string>
+    <string name="share_options">विकल्प साझा करें</string>
     <string name="search">खोज</string>
     <string name="search_drawer">खोज</string>
     <string name="language_label">भाषा</string>

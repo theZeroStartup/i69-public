@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Connectant Cors</string>
-    <string name="schedule_for_later">Programació per a més tard</string>
+    <string name="schedule_for_later">Compartir més endavant</string>
+    <string name="share_options">Comparteix opcions</string>
     <string name="search">Cerca</string>
     <string name="search_drawer">CERCA</string>
     <string name="language_label">Llenguatge</string>

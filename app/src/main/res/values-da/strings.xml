@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Forbindende hjerter</string>
-    <string name="schedule_for_later">Planlæg til senere</string>
+    <string name="schedule_for_later">Del senere</string>
+    <string name="share_options">Delindstillinger</string>
     <string name="search">Søg</string>
     <string name="search_drawer">SØG</string>
     <string name="language_label">Sprog</string>

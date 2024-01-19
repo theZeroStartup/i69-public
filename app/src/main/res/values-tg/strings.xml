@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Пайваст кардани дилҳо</string>
     <string name="share_now">Ҳозир мубодила кунед</string>
-    <string name="schedule_for_later">Ҷадвал барои дер</string>
+    <string name="schedule_for_later">Баъдтар мубодила кунед</string>
+    <string name="share_options">Имконот мубодила</string>
     <string name="search">Ҷустуҷӯ</string>
     <string name="search_drawer">Ҷустуҷӯ</string>
     <string name="language_label">Забон</string>

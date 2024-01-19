@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Nascadh Croí</string>
-    <string name="schedule_for_later">Sceideal níos déanaí</string>
+    <string name="schedule_for_later">Comhroinn níos déanaí</string>
+    <string name="share_options">Roinn Roghanna</string>
     <string name="search">Cuardach</string>
     <string name="search_drawer">CUARDACH</string>
     <string name="language_label">Teanga</string>

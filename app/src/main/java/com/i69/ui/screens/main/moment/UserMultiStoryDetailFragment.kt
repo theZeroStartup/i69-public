@@ -15,10 +15,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TableLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -29,28 +35,57 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
-import com.i69.*
 import com.i69.BuildConfig
+import com.i69.CommentDeleteMutation
+import com.i69.CommentOnStoryMutation
+import com.i69.GetAllUserMultiStoriesQuery
+import com.i69.GetAllUserStoriesQuery
+import com.i69.GetUserDataQuery
+import com.i69.GiftPurchaseMutation
+import com.i69.LikeOnStoryMutation
+import com.i69.OnUpdateStorySubscription
 import com.i69.R
+import com.i69.ReportCommentMutation
+import com.i69.ReportStoryMutation
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.ModelGifts
 import com.i69.di.modules.AppModule
 import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentVirtualGifts
-import com.i69.ui.adapters.*
+import com.i69.ui.adapters.CommentReplyListAdapter
+import com.i69.ui.adapters.MultiStoryCommentListAdapter
+import com.i69.ui.adapters.StoryLikesAdapter
+import com.i69.ui.adapters.UserItemsAdapter
+import com.i69.ui.adapters.VideoMultiStoryCommentListAdapter
 import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.search.userProfile.SearchUserProfileFragment
 import com.i69.ui.viewModels.CommentsModel
 import com.i69.ui.viewModels.ReplysModel
-import com.i69.utils.*
+import com.i69.utils.AnimationTypes
+import com.i69.utils.ApiUtil
+import com.i69.utils.CountDownTimerExt
+import com.i69.utils.LogUtil
+import com.i69.utils.apolloClient
+import com.i69.utils.apolloClientSubscription
+import com.i69.utils.createLoadingDialog
+import com.i69.utils.getResponse
+import com.i69.utils.loadCircleImage
+import com.i69.utils.loadImage
+import com.i69.utils.navigate
+import com.i69.utils.setViewGone
+import com.i69.utils.smoothProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -58,10 +93,11 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
-
-class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragment(),
+class UserMultiStoryDetailFragment : DialogFragment(),
     MultiStoryCommentListAdapter.ClickPerformListener, CommentReplyListAdapter.ClickonListener {
 
     companion object {
@@ -71,6 +107,8 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
     interface DeleteCallback {
         fun deleteCallback(objectId: Int)
     }
+
+    private var listener: DeleteCallback? = null
 
     private var showDelete: Boolean = false
     private var tickTime: Long = 3000
@@ -125,6 +163,10 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
     var adapter: MultiStoryCommentListAdapter? = null
     var adapter2: VideoMultiStoryCommentListAdapter? = null
     var adapters: StoryLikesAdapter? = null
+
+    fun setListener(listener: DeleteCallback?) {
+        this.listener = listener
+    }
 
     override fun getTheme(): Int {
         return R.style.DialogTheme
@@ -785,25 +827,21 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 return@launchWhenResumed
             }
             hideProgressView()
-            val UserData = res.data?.user
+            val userData = res.data?.user
             try {
-                if (UserData!!.avatar!! != null) {
-                    try {
-                        thumbnail.loadCircleImage(
-                            UserData.avatar!!.url!!.replace(
-                                "http://95.216.208.1:8000/media/",
-                                "${BuildConfig.BASE_URL}media/"
-                            )
-                        )
-                        Timber.d(
-                            "URL " + UserData.avatar.url!!.replace(
-                                "http://95.216.208.1:8000/media/",
-                                "${BuildConfig.BASE_URL}media/"
-                            )
-                        )
-                    } catch (e: Exception) {
-                        e.stackTrace
+                try {
+                    val avatarUrl = if (!BuildConfig.USE_S3) {
+                        if (userData?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                            userData?.avatar?.url.toString()
+                        else
+                            "${BuildConfig.BASE_URL}${userData?.avatar?.url}"
                     }
+                    else if (userData?.avatar?.url.toString().startsWith(ApiUtil.S3_URL)) userData?.avatar?.url.toString()
+                    else ApiUtil.S3_URL.plus(userData?.avatar?.url.toString())
+
+                    thumbnail.loadCircleImage(avatarUrl)
+                } catch (e: Exception) {
+                    e.stackTrace
                 }
             } catch (e: Exception) {
             }
@@ -1098,16 +1136,23 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 "UserStoryDeFragmt",
                 "Position $pos Progreessbar ${progressBar1!!.progress} $ node $node"
             )
-            userurl = if (node!!.user!!.avatar != null && node.user!!.avatar!!.url != null) {
-                node.user.avatar!!.url!!
+            userurl = if (node?.user?.avatar?.url != null) {
+                if (!BuildConfig.USE_S3) {
+                    if (node.user.avatar.url.toString().startsWith(BuildConfig.BASE_URL))
+                        node.user.avatar.url.toString()
+                    else
+                        "${BuildConfig.BASE_URL}${node.user.avatar.url}"
+                }
+                else if (node.user.avatar.url.toString().startsWith(ApiUtil.S3_URL)) node.user.avatar.url.toString()
+                else ApiUtil.S3_URL.plus(node.user.avatar.url.toString())
             } else {
                 ""
             }
-            username = node.user!!.fullName
+            username = node?.user?.fullName.toString()
 
-            setOtherData(node, node.user)
+            setOtherData(node, node?.user)
 
-            var text = node.createdDate.toString()
+            var text = node?.createdDate.toString()
             text = text.replace("T", " ").substring(0, text.indexOf("."))
             val momentTime = formatter.parse(text)
             val times = DateUtils.getRelativeTimeSpanString(
@@ -1116,7 +1161,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 DateUtils.MINUTE_IN_MILLIS
             )
 
-            var publishAt = node.publishAt.toString()
+            var publishAt = node?.publishAt.toString()
             Log.d("UMSDF", "setStory: $publishAt")
             var publishTimeInMillis = ""
             if (publishAt.isNotEmpty() && publishAt != "null") {
@@ -1131,7 +1176,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
 
             Log.d("UMSDF", "setStory: $times $publishTimeInMillis")
 
-            objectID = node.pk
+            objectID = node?.pk
 //            RefreshStories()
 //            getStories()
             txtTimeAgo.text = publishTimeInMillis.ifEmpty { times }
@@ -1150,13 +1195,20 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 "UserStoryDetaFragmt",
                 "Position $pos Progreessbar ${progressBar1!!.progress} $ node $node"
             )
-            userurl = if (node.user!!.avatar != null && node.user.avatar!!.url != null) {
-                node.user.avatar.url!!
+            userurl = if (node.user?.avatar?.url != null) {
+                if (!BuildConfig.USE_S3) {
+                    if (node.user.avatar.url.toString().startsWith(BuildConfig.BASE_URL))
+                        node.user.avatar.url.toString()
+                    else
+                        "${BuildConfig.BASE_URL}${node.user.avatar.url}"
+                }
+                else if (node.user.avatar.url.toString().startsWith(ApiUtil.S3_URL)) node.user.avatar.url.toString()
+                else ApiUtil.S3_URL.plus(node.user.avatar.url.toString())
             } else {
                 ""
             }
-            username = node.user.fullName
-            setOtherDataForVideo(node, node.user)
+            username = node.user?.fullName.toString()
+            node.user?.let { setOtherDataForVideo(node, it) }
             var text = node.createdDate.toString()
             text = text.replace("T", " ").substring(0, text.indexOf("."))
             val momentTime = formatter.parse(text)
@@ -1354,7 +1406,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 giftUserid = allUserStories.get(0)!!.node!!.user!!.id.toString()
 
 
-                val Likedata = allUserStories.get(0)!!.node!!.likes!!.edges
+                val likeData = allUserStories.get(0)!!.node!!.likes!!.edges
 
 
                 if (rvLikes!!.itemDecorationCount == 0) {
@@ -1369,8 +1421,8 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                         }
                     })
                 }
-                if (Likedata.size > 0) {
-                    Timber.d("apolloResponse: ${Likedata[0]!!.node!!.id}")
+                if (likeData.size > 0) {
+                    Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
                     no_data!!.visibility = View.GONE
                     rvLikes!!.visibility = View.VISIBLE
 
@@ -1378,20 +1430,25 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                     val items1: ArrayList<CommentsModel> = ArrayList()
 
 
-                    Likedata.indices.forEach { i ->
-
-
+                    likeData.indices.forEach { i ->
                         val models = CommentsModel()
 
-                        models.commenttext = Likedata[i]!!.node!!.user.fullName
-                        if (Likedata[i]!!.node!!.user.avatar != null && !Likedata[i]!!.node!!.user.avatar!!.url.isNullOrEmpty()) {
-                            models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
+                        models.commenttext = likeData[i]!!.node!!.user.fullName
+                        models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                            if (!BuildConfig.USE_S3) {
+                                if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                    likeData[i]?.node?.user?.avatar?.url.toString()
+                                else
+                                    "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                            }
+                            else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                                likeData[i]?.node?.user?.avatar?.url.toString()
+                            else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
                         } else {
-                            models.userurl = ""
+                            ""
                         }
-//                        models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
 
-                        models.uid = Likedata[i]!!.node!!.user.id
+                        models.uid = likeData[i]!!.node!!.user.id
 
                         items1.add(models)
 
@@ -1432,7 +1489,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
 
                 }
 
-                val Commentdata = allUserStories.get(0)!!.node!!.comments!!.edges
+                val commentData = allUserStories.get(0)!!.node!!.comments!!.edges
 
                 if (rvSharedMoments!!.itemDecorationCount == 0) {
                     rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -1446,8 +1503,8 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                         }
                     })
                 }
-                if (Commentdata.size > 0) {
-                    Timber.d("apolloResponse: ${Commentdata.get(0)?.node!!.commentDescription}")
+                if (commentData.size > 0) {
+                    Timber.d("apolloResponse: ${commentData.get(0)?.node!!.commentDescription}")
                     nodata!!.visibility = View.GONE
                     rvSharedMoments!!.visibility = View.VISIBLE
 
@@ -1455,45 +1512,53 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                     items = ArrayList()
 
 
-                    Commentdata.indices.forEach { i ->
+                    commentData.indices.forEach { i ->
                         val hm: MutableList<ReplysModel> = ArrayList()
 
 
                         val models = CommentsModel()
 
-                        models.commenttext = Commentdata[i]!!.node!!.commentDescription
+                        models.commenttext = commentData[i]!!.node!!.commentDescription
 
 //                        if (Commentdata[i]!!.node!!.user.avatarPhotos!!.size > 0) {
-                        if (Commentdata[i]!!.node!!.user.avatar != null && Commentdata[i]!!.node!!.user.avatar!!.url!!.isNotEmpty()) {
-                            models.userurl = Commentdata[i]!!.node!!.user.avatar!!.url
-
+                        models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                            if (!BuildConfig.USE_S3) {
+                                if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                    commentData[i]?.node?.user?.avatar?.url.toString()
+                                else
+                                    "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                            }
+                            else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                                commentData[i]?.node?.user?.avatar?.url.toString()
+                            else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
                         } else {
-                            models.userurl = ""
+                            ""
                         }
-                        models.username = Commentdata[i]!!.node!!.user.fullName
-                        models.timeago = Commentdata[i]!!.node!!.createdDate.toString()
-                        models.cmtID = Commentdata[i]!!.node!!.pk.toString()
-                        models.momentID = objectID?.toString()
-                        models.uid = Commentdata[i]!!.node!!.user.id.toString()
-                        models.cmtlikes = Commentdata[i]!!.node!!.likesCount.toString()
 
-                        for (f in 0 until Commentdata[i]!!.node!!.replys!!.edges.size) {
+                        models.username = commentData[i]!!.node!!.user.fullName
+                        models.timeago = commentData[i]!!.node!!.createdDate.toString()
+                        models.cmtID = commentData[i]!!.node!!.pk.toString()
+                        models.momentID = objectID?.toString()
+                        models.uid = commentData[i]!!.node!!.user.id.toString()
+                        models.cmtlikes = commentData[i]!!.node!!.likesCount.toString()
+
+                        for (f in 0 until commentData[i]!!.node!!.replys!!.edges.size) {
 
 
                             val md = ReplysModel()
 
                             md.replytext =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.commentDescription
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.commentDescription
                             md.userurl =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.avatarPhotos?.get(
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.avatarPhotos?.get(
                                     0
                                 )?.url
                             md.usernames =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.fullName
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.fullName
                             md.timeago =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.createdDate.toString()
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.createdDate.toString()
                             md.uid =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.id.toString()
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.id.toString()
 
 
                             hm.add(f, md)
@@ -1605,26 +1670,35 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 Likes.forEach {
                     Log.i(TAG, "RefreshStories: Likes:  " + Likes)
                 }
-                val Likedata = allUserStories.get(0)!!.node!!.likes!!.edges
-                if (Likedata.size > 0) {
-                    Timber.d("apolloResponse: ${Likedata[0]!!.node!!.id}")
+                val likeData = allUserStories.get(0)!!.node!!.likes!!.edges
+                if (likeData.size > 0) {
+                    Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
                     no_data!!.visibility = View.GONE
                     rvLikes!!.visibility = View.VISIBLE
 
                     val items1: java.util.ArrayList<CommentsModel> = java.util.ArrayList()
 
-                    Likedata.indices.forEach { i ->
+                    likeData.indices.forEach { i ->
 
                         val models = CommentsModel()
 
-                        models.commenttext = Likedata[i]!!.node!!.user.fullName
+                        models.commenttext = likeData[i]!!.node!!.user.fullName
 
 //                        models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
-                        if (Likedata[i]!!.node!!.user.avatar != null && !Likedata[i]!!.node!!.user.avatar!!.url.isNullOrEmpty()) {
-                            models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
+                        models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                            if (!BuildConfig.USE_S3) {
+                                if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                    likeData[i]?.node?.user?.avatar?.url.toString()
+                                else
+                                    "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                            }
+                            else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                                likeData[i]?.node?.user?.avatar?.url.toString()
+                            else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
                         } else {
-                            models.userurl = ""
+                            ""
                         }
+
 
                         items1.add(models)
 
@@ -1663,7 +1737,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                     rvLikes!!.visibility = View.GONE
                 }
 
-                val Commentdata = allUserStories.get(0)!!.node!!.comments!!.edges
+                val commentData = allUserStories.get(0)!!.node!!.comments!!.edges
 
                 if (rvSharedMoments!!.itemDecorationCount == 0) {
                     rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -1678,18 +1752,30 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                     })
                 }
 
-                if (Commentdata.size > 0) {
-                    Timber.d("apolloResponse: ${Commentdata.get(0)?.node!!.commentDescription}")
+                if (commentData.size > 0) {
+                    Timber.d("apolloResponse: ${commentData.get(0)?.node!!.commentDescription}")
                     nodata!!.visibility = View.GONE
                     rvSharedMoments!!.visibility = View.VISIBLE
                     val items1: ArrayList<CommentsModel> = ArrayList()
-                    Commentdata.indices.forEach { i ->
+                    commentData.indices.forEach { i ->
                         val hm: MutableList<ReplysModel> = ArrayList()
                         val models = CommentsModel()
-                        models.commenttext = Commentdata[i]!!.node!!.commentDescription
-                        if (Commentdata[i]!!.node!!.user.avatarPhotos!!.isNotEmpty()) {
+                        models.commenttext = commentData[i]!!.node!!.commentDescription
+                        if (commentData[i]!!.node!!.user.avatarPhotos!!.isNotEmpty()) {
                             try {
-                                models.userurl = Commentdata[i]!!.node!!.user.avatar!!.url
+                                models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                                    if (!BuildConfig.USE_S3) {
+                                        if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                            commentData[i]?.node?.user?.avatar?.url.toString()
+                                        else
+                                            "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                                    }
+                                    else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                                        commentData[i]?.node?.user?.avatar?.url.toString()
+                                    else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
+                                } else {
+                                    ""
+                                }
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 models.userurl = ""
@@ -1697,31 +1783,31 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                         } else {
                             models.userurl = ""
                         }
-                        models.username = Commentdata[i]!!.node!!.user.fullName
-                        models.timeago = Commentdata[i]!!.node!!.createdDate.toString()
-                        models.cmtID = Commentdata[i]!!.node!!.pk.toString()
+                        models.username = commentData[i]!!.node!!.user.fullName
+                        models.timeago = commentData[i]!!.node!!.createdDate.toString()
+                        models.cmtID = commentData[i]!!.node!!.pk.toString()
                         models.momentID = objectID?.toString()
-                        models.cmtlikes = Commentdata[i]!!.node!!.likesCount.toString()
+                        models.cmtlikes = commentData[i]!!.node!!.likesCount.toString()
 
-                        models.uid = Commentdata[i]!!.node!!.user.id.toString()
+                        models.uid = commentData[i]!!.node!!.user.id.toString()
 
-                        for (f in 0 until Commentdata[i]!!.node!!.replys!!.edges.size) {
+                        for (f in 0 until commentData[i]!!.node!!.replys!!.edges.size) {
 
 
                             val md = ReplysModel()
 
                             md.replytext =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.commentDescription
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.commentDescription
                             md.userurl =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.avatarPhotos?.get(
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.avatarPhotos?.get(
                                     0
                                 )?.url
                             md.usernames =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.fullName
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.fullName
                             md.timeago =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.createdDate.toString()
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.createdDate.toString()
                             md.uid =
-                                Commentdata[i]!!.node!!.replys!!.edges[f]!!.node!!.user.id.toString()
+                                commentData[i]!!.node!!.replys!!.edges[f]!!.node!!.user.id.toString()
 
                             hm.add(f, md)
 
@@ -1771,7 +1857,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
 //    user: GetAllUserMultiStoriesQuery.User4
 //) {
         txtNearbyUserLikeCount!!.text = node.likesCount.toString()
-        txtNearbyUserLike!!.text = "${requireActivity().resources.getString(R.string.like)}"
+        txtNearbyUserLike!!.text = resources.getString(R.string.like)
         txtMomentRecentComment!!.text =
             node.commentsCount.toString() + " ${requireActivity().resources.getString(R.string.comments)}"
         lblItemNearbyCommentCount!!.text = node.commentsCount.toString()
@@ -1780,7 +1866,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
         txtheaderlike!!.text =
             node.likesCount.toString() + " ${requireActivity().resources.getString(R.string.like)}"
         giftUserid = node.user!!.id.toString()
-        val Likedata = node.likes!!.edges
+        val likeData = node.likes!!.edges
         if (rvLikes!!.itemDecorationCount == 0) {
             rvLikes!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -1793,16 +1879,26 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 }
             })
         }
-        if (Likedata.isNotEmpty()) {
-            Timber.d("apolloResponse: ${Likedata[0]!!.node!!.id}")
+        if (likeData.isNotEmpty()) {
+            Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
             no_data!!.visibility = View.GONE
             rvLikes!!.visibility = View.VISIBLE
             val items1: ArrayList<CommentsModel> = ArrayList()
-            Likedata.indices.forEach { i ->
+            likeData.indices.forEach { i ->
                 val models = CommentsModel()
-                models.commenttext = Likedata[i]!!.node!!.user.fullName
-                if (Likedata[i]!!.node!!.user.avatar != null && !Likedata[i]!!.node!!.user.avatar!!.url.isNullOrEmpty()) {
-                    models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
+                models.commenttext = likeData[i]!!.node!!.user.fullName
+                models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                    if (!BuildConfig.USE_S3) {
+                        if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                            likeData[i]?.node?.user?.avatar?.url.toString()
+                        else
+                            "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                    }
+                    else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                        likeData[i]?.node?.user?.avatar?.url.toString()
+                    else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
+                } else {
+                    ""
                 }
                 items1.add(models)
 
@@ -1833,7 +1929,7 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
             no_data!!.visibility = View.VISIBLE
             rvLikes!!.visibility = View.GONE
         }
-        val Commentdata = node.comments!!.edges
+        val commentData = node.comments!!.edges
         if (rvSharedMoments!!.itemDecorationCount == 0) {
             rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -1846,28 +1942,35 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
                 }
             })
         }
-        if (Commentdata.isNotEmpty()) {
-            Timber.d("apolloResponse: ${Commentdata[0]?.node!!.commentDescription}")
+        if (commentData.isNotEmpty()) {
+            Timber.d("apolloResponse: ${commentData[0]?.node!!.commentDescription}")
             nodata!!.visibility = View.GONE
             rvSharedMoments!!.visibility = View.VISIBLE
             items = ArrayList()
-            Commentdata.indices.forEach { i ->
+            commentData.indices.forEach { i ->
                 val hm: MutableList<ReplysModel> = ArrayList()
                 val models = CommentsModel()
-                models.commenttext = Commentdata[i]!!.node!!.commentDescription
+                models.commenttext = commentData[i]!!.node!!.commentDescription
 //                if (Commentdata[i]!!.node!!.user.avatarPhotos!!.isNotEmpty()) {
-                if (Commentdata[i]!!.node!!.user.avatar != null && Commentdata[i]!!.node!!.user.avatar!!.url!!.isNotEmpty()) {
-
-                    models.userurl = Commentdata[i]!!.node!!.user.avatar!!.url
+                models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                    if (!BuildConfig.USE_S3) {
+                        if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                            commentData[i]?.node?.user?.avatar?.url.toString()
+                        else
+                            "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                    }
+                    else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                        commentData[i]?.node?.user?.avatar?.url.toString()
+                    else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
                 } else {
-                    models.userurl = ""
+                    ""
                 }
-                models.username = Commentdata[i]!!.node!!.user.fullName
-                models.timeago = Commentdata[i]!!.node!!.createdDate.toString()
-                models.cmtID = Commentdata[i]!!.node!!.pk.toString()
+                models.username = commentData[i]!!.node!!.user.fullName
+                models.timeago = commentData[i]!!.node!!.createdDate.toString()
+                models.cmtID = commentData[i]!!.node!!.pk.toString()
                 models.momentID = objectID?.toString()
 
-                models.uid = Commentdata[i]!!.node!!.user.id.toString()
+                models.uid = commentData[i]!!.node!!.user.id.toString()
 
                 models.replylist = hm
                 models.isExpanded = true
@@ -1889,167 +1992,173 @@ class UserMultiStoryDetailFragment(val listener: DeleteCallback?) : DialogFragme
     }
 
     private fun setOtherData(
-        node: GetAllUserMultiStoriesQuery.Node,
-        user: GetAllUserMultiStoriesQuery.User3
+        node: GetAllUserMultiStoriesQuery.Node?,
+        user: GetAllUserMultiStoriesQuery.User3?
     ) {
+        if (node != null && user != null) {
+            if (activity == null)
+                return
 
-//    private fun setOtherData(
-//        node: GetAllUserMultiStoriesQuery.Node,
-//        user: GetAllUserMultiStoriesQuery.User4
-//    ) {
-        if (activity == null)
-            return
-        txtNearbyUserLikeCount!!.text = node.likesCount.toString()
-        txtNearbyUserLike!!.text = "${requireActivity().resources.getString(R.string.like)}"
-        txtMomentRecentComment!!.text =
-            node.commentsCount.toString() + " ${requireActivity().resources.getString(R.string.comments)}"
-        lblItemNearbyCommentCount!!.text = node.commentsCount.toString()
-        lblItemNearbyUserCommentCount!!.text =
-            "${requireActivity().resources.getString(R.string.comments)}"
-        txtheaderlike!!.text =
-            node.likesCount.toString() + " ${requireActivity().resources.getString(R.string.like)}"
-        giftUserid = user.id.toString()
+            txtNearbyUserLikeCount!!.text = node.likesCount.toString()
+            txtNearbyUserLike!!.text = "${requireActivity().resources.getString(R.string.like)}"
+            txtMomentRecentComment!!.text =
+                node.commentsCount.toString() + " ${requireActivity().resources.getString(R.string.comments)}"
+            lblItemNearbyCommentCount!!.text = node.commentsCount.toString()
+            lblItemNearbyUserCommentCount!!.text =
+                "${requireActivity().resources.getString(R.string.comments)}"
+            txtheaderlike!!.text =
+                node.likesCount.toString() + " ${requireActivity().resources.getString(R.string.like)}"
+            giftUserid = user.id.toString()
 
-        if (rvLikes!!.itemDecorationCount == 0) {
-            rvLikes!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    outRect.top = 25
-                }
-            })
-        }
-
-        val Likedata = node.likes!!.edges
-
-        if (Likedata.size > 0) {
-            Timber.d("apolloResponse: ${Likedata[0]!!.node!!.id}")
-            no_data!!.visibility = View.GONE
-            rvLikes!!.visibility = View.VISIBLE
-            val items1: ArrayList<CommentsModel> = ArrayList()
-            Likedata.indices.forEach { i ->
-                val models = CommentsModel()
-                models.commenttext = Likedata[i]!!.node!!.user.fullName
-                if (Likedata[i]!!.node!!.user.avatar != null && !Likedata[i]!!.node!!.user.avatar!!.url.isNullOrEmpty()) {
-                    models.userurl = Likedata[i]!!.node!!.user.avatar!!.url
-                } else {
-                    models.userurl = ""
-                }
-                models.uid = Likedata[i]!!.node!!.user.id
-                items1.add(models)
-            }
-
-            if (requireActivity() != null) {
-                adapters =
-                    StoryLikesAdapter(
-                        requireActivity(),
-                        items1,
-                        glide
-                    )
-            }
-            adapters?.userProfileClicked {
-                Log.d("UserStoryDetailsfragmt", "$it")
-                var bundle = Bundle()
-                bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
-                bundle.putString("userId", it.uid)
-                if (Uid == it.uid) {
-                    MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
-                        R.id.nav_user_profile_graph
-                } else {
-                    findNavController().navigate(
-                        destinationId = R.id.action_global_otherUserProfileFragment,
-                        popUpFragId = null,
-                        animType = AnimationTypes.SLIDE_ANIM,
-                        inclusive = true,
-                        args = bundle
-                    )
-                }
-            }
-            rvLikes!!.adapter = adapters
-            rvLikes!!.layoutManager = LinearLayoutManager(activity)
-        } else {
-            no_data!!.visibility = View.VISIBLE
-            rvLikes!!.visibility = View.GONE
-        }
-
-        val Commentdata = node.comments!!.edges
-
-        if (rvSharedMoments!!.itemDecorationCount == 0) {
-            rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    outRect.top = 25
-                }
-            })
-        }
-        if (Commentdata.isNotEmpty()) {
-            Timber.d("apolloResponse: ${Commentdata[0]?.node!!.commentDescription}")
-            Log.d(TAG, "setOtherData: apolloResponse: ${Commentdata[0]?.node!!.commentDescription}")
-            nodata!!.visibility = View.GONE
-            rvSharedMoments!!.visibility = View.VISIBLE
-            items = ArrayList()
-            Commentdata.indices.forEach { i ->
-                try {
-                    Log.i(TAG, "setOtherData: apolloResponse: ${Commentdata[i]}}")
-                    val hm: MutableList<ReplysModel> = ArrayList()
-                    val models = CommentsModel()
-                    models.commenttext = Commentdata[i]!!.node!!.commentDescription
-//                    if (Commentdata[i]!!.node!!.user.avatarPhotos!!.isNotEmpty()) {
-                    if (Commentdata[i]!!.node!!.user.avatar != null && Commentdata[i]!!.node!!.user.avatar!!.url!!.isNotEmpty()) {
-                        try {
-                            models.userurl = Commentdata[i]!!.node!!.user.avatar!!.url
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            models.userurl = ""
-                        }
-                    } else {
-                        models.userurl = ""
+            if (rvLikes!!.itemDecorationCount == 0) {
+                rvLikes!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        outRect.top = 25
                     }
-                    models.username = Commentdata[i]!!.node!!.user.fullName
-                    models.timeago = Commentdata[i]!!.node!!.createdDate.toString()
-                    models.cmtID = Commentdata[i]!!.node!!.pk.toString()
-                    models.momentID = objectID?.toString()
-                    models.uid = Commentdata[i]!!.node!!.user.id.toString()
-
-
-                    models.replylist = hm
-                    models.isExpanded = true
-
-                    items.add(models)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                })
             }
+
+            val likeData = node.likes!!.edges
+
+            if (likeData.size > 0) {
+                Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
+                no_data!!.visibility = View.GONE
+                rvLikes!!.visibility = View.VISIBLE
+                val items1: ArrayList<CommentsModel> = ArrayList()
+                likeData.indices.forEach { i ->
+                    val models = CommentsModel()
+                    models.commenttext = likeData[i]!!.node!!.user.fullName
+                    models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                        if (!BuildConfig.USE_S3) {
+                            if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                likeData[i]?.node?.user?.avatar?.url.toString()
+                            else
+                                "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                        }
+                        else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                            likeData[i]?.node?.user?.avatar?.url.toString()
+                        else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
+                    } else {
+                        ""
+                    }
+                    models.uid = likeData[i]!!.node!!.user.id
+                    items1.add(models)
+                }
+
+                if (requireActivity() != null) {
+                    adapters =
+                        StoryLikesAdapter(
+                            requireActivity(),
+                            items1,
+                            glide
+                        )
+                }
+                adapters?.userProfileClicked {
+                    Log.d("UserStoryDetailsfragmt", "$it")
+                    var bundle = Bundle()
+                    bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
+                    bundle.putString("userId", it.uid)
+                    if (Uid == it.uid) {
+                        MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
+                            R.id.nav_user_profile_graph
+                    } else {
+                        findNavController().navigate(
+                            destinationId = R.id.action_global_otherUserProfileFragment,
+                            popUpFragId = null,
+                            animType = AnimationTypes.SLIDE_ANIM,
+                            inclusive = true,
+                            args = bundle
+                        )
+                    }
+                }
+                rvLikes!!.adapter = adapters
+                rvLikes!!.layoutManager = LinearLayoutManager(activity)
+            } else {
+                no_data!!.visibility = View.VISIBLE
+                rvLikes!!.visibility = View.GONE
+            }
+
+            val commentData = node.comments!!.edges
+
+            if (rvSharedMoments!!.itemDecorationCount == 0) {
+                rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        outRect.top = 25
+                    }
+                })
+            }
+            if (commentData.isNotEmpty()) {
+                Timber.d("apolloResponse: ${commentData[0]?.node!!.commentDescription}")
+                Log.d(TAG, "setOtherData: apolloResponse: ${commentData[0]?.node!!.commentDescription}")
+                nodata!!.visibility = View.GONE
+                rvSharedMoments!!.visibility = View.VISIBLE
+                items = ArrayList()
+                commentData.indices.forEach { i ->
+                    try {
+                        Log.i(TAG, "setOtherData: apolloResponse: ${commentData[i]}}")
+                        val hm: MutableList<ReplysModel> = ArrayList()
+                        val models = CommentsModel()
+                        models.commenttext = commentData[i]!!.node!!.commentDescription
+                        models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                            if (!BuildConfig.USE_S3) {
+                                if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                    commentData[i]?.node?.user?.avatar?.url.toString()
+                                else
+                                    "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                            }
+                            else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
+                                commentData[i]?.node?.user?.avatar?.url.toString()
+                            else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
+                        } else {
+                            ""
+                        }
+                        models.username = commentData[i]!!.node!!.user.fullName
+                        models.timeago = commentData[i]!!.node!!.createdDate.toString()
+                        models.cmtID = commentData[i]!!.node!!.pk.toString()
+                        models.momentID = objectID?.toString()
+                        models.uid = commentData[i]!!.node!!.user.id.toString()
+
+
+                        models.replylist = hm
+                        models.isExpanded = true
+
+                        items.add(models)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 //            Activity activity = Main getActivity();
-            var activities = MainActivity.getMainActivity()
+                var activities = MainActivity.getMainActivity()
 //            if(activity != null && isAdded())
 
-            if (activities != null) {
-                adapter = MultiStoryCommentListAdapter(
-                    activities,
-                    this@UserMultiStoryDetailFragment,
-                    items,
-                    this@UserMultiStoryDetailFragment,
-                    showDelete,
-                    Uid!!
-                )
+                if (activities != null) {
+                    adapter = MultiStoryCommentListAdapter(
+                        activities,
+                        this@UserMultiStoryDetailFragment,
+                        items,
+                        this@UserMultiStoryDetailFragment,
+                        showDelete,
+                        Uid!!
+                    )
 
-                rvSharedMoments!!.adapter = adapter
-                rvSharedMoments!!.layoutManager = LinearLayoutManager(activity)
+                    rvSharedMoments!!.adapter = adapter
+                    rvSharedMoments!!.layoutManager = LinearLayoutManager(activity)
+                }
+            } else {
+                nodata!!.visibility = View.VISIBLE
+                rvSharedMoments!!.visibility = View.GONE
             }
-        } else {
-            nodata!!.visibility = View.VISIBLE
-            rvSharedMoments!!.visibility = View.GONE
         }
-        //  RefreshStories()
-
     }
 
     private fun playView(mediaItem: MediaItem) {

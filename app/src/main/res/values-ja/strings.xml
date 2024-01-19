@@ -6,7 +6,8 @@
     <string name="sign_in_app_description">心をつなぐ</string>
     <string name="share_now">今すぐ共有してください</string>
     <string name="search">検索</string>
-    <string name="schedule_for_later">後でスケジュールします</string>
+    <string name="schedule_for_later">後で共有します</string>
+    <string name="share_options">株式オプション</string>
     <string name="search_drawer">検索</string>
     <string name="language_label">言語</string>
     <string name="select_language">言語を選択する</string>

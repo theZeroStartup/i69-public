@@ -6,7 +6,8 @@
     <string name="sign_in_app_description">जोड्ने हृदयहरू</string>
     <string name="share_now">अब साझा गर</string>
     <string name="search">खोज्नुहोस्</string>
-    <string name="schedule_for_later">पछि तालिका</string>
+    <string name="schedule_for_later">पछि साझा गर्नु</string>
+    <string name="share_options">साझेदारी विकल्पहरू</string>
     <string name="search_drawer">खोज्नुहोस्</string>
     <string name="language_label">भाषा</string>
     <string name="select_language">भाषा छनोट गर्नुस</string>

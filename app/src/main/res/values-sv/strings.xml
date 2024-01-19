@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Förbindande hjärtan</string>
     <string name="share_now">Dela nu</string>
-    <string name="schedule_for_later">Schema för senare</string>
+    <string name="schedule_for_later">Dela senare</string>
+    <string name="share_options">Aktieoptioner</string>
     <string name="search">Sök</string>
     <string name="search_drawer">SÖK</string>
     <string name="language_label">Språk</string>

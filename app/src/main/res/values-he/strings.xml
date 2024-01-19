@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">חיבור לבבות</string>
-    <string name="schedule_for_later">לוח הזמנים למועד מאוחר יותר</string>
+    <string name="schedule_for_later">שתף מאוחר יותר</string>
+    <string name="share_options">שתף אפשרויות</string>
     <string name="search">לחפש</string>
     <string name="search_drawer">לחפש</string>
     <string name="language_label">שפה</string>

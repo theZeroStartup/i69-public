@@ -5,7 +5,8 @@
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Spájanie sŕdc</string>
     <string name="share_now">Zdieľať</string>
-    <string name="schedule_for_later">Rozvrh na neskoršie</string>
+    <string name="schedule_for_later">Podeliť sa neskôr</string>
+    <string name="share_options">Zdieľať možnosti</string>
     <string name="search">Vyhľadávanie</string>
     <string name="search_drawer">VYHĽADÁVANIE</string>
     <string name="language_label">Jazyk</string>

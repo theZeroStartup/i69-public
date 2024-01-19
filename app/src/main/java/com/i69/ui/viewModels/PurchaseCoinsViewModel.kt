@@ -53,6 +53,7 @@ class PurchaseCoinsViewModel @Inject constructor(
     fun getCoinPrices(token: String, callback: (String?) -> Unit) {
         userDetailsRepository.getCoinPrice(viewModelScope, token = token) {
                 coinPrices ->
+            Log.d("PCVM", "getCoinPrices: $coinPrices")
 
             this.coinPrice.clear()
             this.coinPrice.addAll(coinPrices)

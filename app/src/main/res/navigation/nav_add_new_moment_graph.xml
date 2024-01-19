@@ -71,7 +71,20 @@
         android:id="@+id/purchaseFragment"
         android:name="com.i69.ui.screens.main.coins.PurchaseFragment"
         android:label="@string/buy_coins"
-        tools:layout="@layout/fragment_purchase" />
+        tools:layout="@layout/fragment_purchase" >
+
+        <action
+            android:id="@+id/action_purchaseFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.i69.profile.UserProfileFragment"
+        android:label="@string/my_profile"
+        tools:layout="@layout/fragment_user_profile"/>
     <action
         android:id="@+id/action_global_setting"
         app:destination="@id/settingsFragment"

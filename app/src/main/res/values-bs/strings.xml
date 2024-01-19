@@ -4,7 +4,8 @@
 <string name="app_name" translatable="false">i69</string>
     <string name="sign_in_app_name" translatable="false">iSixtyNine</string>
     <string name="sign_in_app_description">Connecting Hearts</string>
-    <string name="schedule_for_later">Raspored za kasnije</string>
+    <string name="schedule_for_later">Podijelite kasnije</string>
+    <string name="share_options">Opcije dijeljenja</string>
     <string name="search">Traži</string>
     <string name="search_drawer">TRAŽI</string>
     <string name="language_label">Jezik</string>
