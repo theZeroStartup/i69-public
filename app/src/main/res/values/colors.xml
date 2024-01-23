@@ -45,6 +45,8 @@
     <!--Search Unlock-->
     <color name="search_unlock_text">#373a3e</color>
 
+    <color name="black_translucent">#40424239</color>
+
     <!--Edit Profile-->
     <color name="edit_profile_photo_list_background">#2c2f32</color>
     <color name="edit_profile_text_hint_gray">#FFFFFF</color>

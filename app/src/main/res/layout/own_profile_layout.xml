@@ -323,12 +323,15 @@
 
                             <LinearLayout
                                 android:id="@+id/walletIcon"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:layout_marginHorizontal="@dimen/_5sdp"
+                                android:background="@drawable/bg_black_translucent"
                                 android:orientation="vertical"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:layout_weight="1.3">
+                                android:layout_weight="1">
 
                                 <androidx.appcompat.widget.AppCompatImageView
 
@@ -386,19 +389,16 @@
 
                             </LinearLayout>
 
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="3px"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="6dp"
-                                android:background="@color/white" />
-
                             <LinearLayout
                                 android:id="@+id/llCoinDetailsRoot"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:layout_marginHorizontal="@dimen/_5sdp"
+                                android:background="@drawable/bg_black_translucent"
                                 android:onClick="@{() -> vm.onCoinsClick()}"
                                 android:orientation="vertical"
-                                android:layout_weight=".7">
+                                android:layout_weight="1">
 
 
                                 <androidx.appcompat.widget.AppCompatImageView
@@ -508,6 +508,7 @@
                                     tools:text="456" />
 
                             </LinearLayout>
+
 
                             <LinearLayout
                                 android:id="@+id/action_gifts"

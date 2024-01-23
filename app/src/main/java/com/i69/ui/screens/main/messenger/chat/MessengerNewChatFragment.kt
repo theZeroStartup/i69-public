@@ -122,12 +122,12 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     } else {
                         mediaType = "video"
                     }
-                    Log.d("MessengerNewChatFragment", "UserToken $userToken")
+                    Log.d("MNCF", "UserToken $userToken")
                     UploadUtility(this@MessengerNewChatFragment).uploadFile(
                         result,
                         authorization = userToken, upload_type = mediaType
                     ) { url ->
-                        Log.d("MessengerNewChatFragment", "ReponseUrl $url")
+                        Log.d("MNCF", "ReponseUrl $url")
                         Timber.d("responseurll $url")
                         if (url.equals("url")) {
 
@@ -145,7 +145,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                         )
                                 })
                         } else {
-                            Log.d("MessengerNewChatFragment", "ReponseUrl $url")
+                            Log.d("MNCF", "ReponseUrl $url")
                             var input = url
                             if (url?.startsWith("/media/chat_files/") == true) {
                                 input = "${BuildConfig.BASE_URL}$url"
@@ -1080,7 +1080,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
         edges2: ArrayList<GetChatMessagesByRoomIdQuery.Edge?>?,
         isUpdateNewMessage: Boolean = false
     ) {
-        Log.d("MainActivitySubscription", "Adapter created")
+        Log.d("MNCF", "Adapter created")
         if (binding.rvChatMessages.adapter == null) {
             adapter = NewChatMessagesAdapter(
                 requireActivity(),
@@ -1151,8 +1151,8 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 }
             })
 
-            Log.d("MessengerNewChatFragment", "otheruserAvtar $otherUserId")
-            Log.d("MessengerNewChatFragment", "edges2 $edges2")
+            Log.d("MNCF", "otheruserAvtar $otherUserId")
+            Log.d("MNCF", "edges2 $edges2")
 
             if (!ChatType.equals("001")
                 && !ChatType.equals("000")
@@ -1217,7 +1217,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
         if (isProgressShow) {
             //showProgressView()
         }
-        Log.e("calllGetFirstMessageListQuery", "GetFirstMessageListQuery");
+        Log.e("MNCF", "GetFirstMessageListQuery");
         lifecycleScope.launchWhenCreated {
             try {
 
@@ -1269,7 +1269,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     Timber.d("apolloResponse error ${res.errors?.get(0)?.message}")
                 }
             } catch (e: ApolloException) {
-                Log.e("ExceptionInGetFirstMessages", "${e.message}")
+                Log.e("MNCF", "${e.message}")
                 Timber.d("apolloResponse ${e.message}")
                 //binding.root.snackbar("Exception all moments $GetAllMomentsQuery")
                 return@launchWhenCreated
@@ -1290,7 +1290,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 ).execute()
 
                 val datas = res.data!!.broadcastMsgs!!.edges
-                Log.e("MessengerNewChatFragment", "res $res")
+                Log.e("MNCF", "res $res")
 
                 datas.forEach { Edge ->
 
@@ -1424,7 +1424,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
 //                    }
 
                 } else {
-                    Log.d("MainActivitySubscription", "updateLastSeen ")
+                    Log.d("MNCF", "updateLastSeen ")
                 }
 
             } catch (e: ApolloException) {
@@ -1458,7 +1458,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                             adapter.notifyItemChanged(edges.indexOf(edge[0]))
                         }
                     }
-                    Log.d("MainActivitySubscription", "updateLastSeen $edge")
+                    Log.d("MNCF", "updateLastSeen $edge")
                 }
 
             } catch (e: ApolloException) {
@@ -1493,7 +1493,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
         // if (isProgressShow) {
         //showProgressView()
         //}
-        Log.d("MessengerNewChatFragment", "calling")
+        Log.d("MNCF", "calling")
         Timber.d("GetChatMessages calling")
         val activity: Activity? = activity
         if (activity != null) {
@@ -1501,7 +1501,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 try {
                     val roomId = arguments?.getInt("chatId")
                     Timber.d("apolloResponse roomId $roomId")
-                    Log.d("MessengerNewChatFragment", "apolloResponse roomId $roomId")
+                    Log.d("MNCF", "apolloResponse roomId $roomId")
                     /*
                                         val queryLastSeenMessageRes = apolloClient(requireContext(),userToken!!).mutation(
                                             GetLastSeenMessageMutation(
@@ -1514,7 +1514,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                         }else{
                                             lastSeenMessageId = queryLastSeenMessageRes.data?.lastseenMessages?.messageId.toString()
 
-                                            Log.d("MessengerNewChatFragment","Lastseen $lastSeenMessageId")
+                                            Log.d("MNCF","Lastseen $lastSeenMessageId")
                                         }*/
 
 //room message query removed last param
@@ -1558,7 +1558,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     val res = apolloClient(requireActivity(), userToken!!).query(
                         query
                     ).execute()
-                    Log.d("MessengerNewChatFragment", "res $res")
+                    Log.d("MNCF", "res $res")
                     /*edges?.forEach {
                        Timber.d("apolloResponse getChatMessages ${it?.node?.text}")
                        }*/
@@ -1580,7 +1580,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                         notifyAdapter(edges as ArrayList<GetChatMessagesByRoomIdQuery.Edge?>?, updateMessage)
                     } else {
                         Log.d(
-                            "MessengerNewChatFragment",
+                            "MNCF",
                             "apolloResponse error  ${res.errors?.get(0)?.message}"
                         )
                         Timber.d("apolloResponse error ${res.errors?.get(0)?.message}")
@@ -1588,7 +1588,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
 
 
                 } catch (e: ApolloException) {
-                    Log.d("MessengerNewChatFragment", "apolloResponse ${e.message}")
+                    Log.d("MNCF", "apolloResponse ${e.message}")
                     Timber.d("apolloResponse ${e.message}")
                     //binding.root.snackbar("Exception all moments $GetAllMomentsQuery")
                     return@launchWhenStarted
@@ -1864,7 +1864,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     .retryWhen { cause, attempt ->
                         Timber.d("reealltime retry $attempt ${cause.message}")
                         Log.d(
-                            "MainActivitySubscription",
+                            "MNCF",
                             "realtime retry  $attempt ${cause.message}"
                         )
                         delay(attempt * 1000)
@@ -1872,7 +1872,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     }.collect { newMessage ->
                         if (newMessage.hasErrors()) {
                             Log.d(
-                                "MainActivitySubscription",
+                                "MNCF",
                                 "realtime response error = ${newMessage.errors?.get(0)?.message}"
                             )
                             Timber.d("reealltime response error = ${newMessage.errors?.get(0)?.message}")
@@ -1887,11 +1887,11 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                 "reealltime ${newMessage.data}"
                             )
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime messageData content ${newMessage.data?.onNewMessage?.message?.content}"
                             )
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime messageData ${newMessage.data}"
                             )
 
@@ -1958,7 +1958,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                             Handler().postDelayed(Runnable {
                                                 binding.rvChatMessages.layoutManager?.scrollToPosition(0)
                                             },100)
-                                            //  Log.d("MainActivitySubscription","ScrollToPosition itemCount > 0")
+                                            //  Log.d("MAS","ScrollToPosition itemCount > 0")
                                         }
 
                                     }
@@ -1978,9 +1978,9 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     }
                 Timber.d("reealltime 2")
             } catch (e2: Exception) {
-                e2!!.message?.let { Log.e("exceptionFoundInScroll==>", it) }
+                e2!!.message?.let { Log.e("MNCF==>", it) }
                 e2.printStackTrace()
-                Log.d("MainActivitySubscription", "realtime exception= ${e2.message}")
+                Log.d("MAS", "realtime exception= ${e2.message}")
                 Timber.d("reealltime exception= ${e2.message}")
             }
         }
@@ -1999,7 +1999,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     .retryWhen { cause, attempt ->
                         Timber.d("reealltime retry $attempt ${cause.message}")
                         Log.d(
-                            "MainActivitySubscription",
+                            "MAS",
                             "realtime retry  $attempt ${cause.message}"
                         )
                         delay(attempt * 1000)
@@ -2007,7 +2007,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     }.collect { newMessage ->
                         if (newMessage.hasErrors()) {
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime response error = ${newMessage.errors?.get(0)?.message}"
                             )
                             Timber.d("reealltime response error = ${newMessage.errors?.get(0)?.message}")
@@ -2022,11 +2022,11 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                 "reealltime ${newMessage.data}"
                             )
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime DeleteMessage Id  ${newMessage.data?.onDeleteMessage?.id}"
                             )
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime  DeleteMessage Id  ${newMessage.data}"
                             )
                             val edge =
@@ -2047,7 +2047,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                     true
                                 )
                                 if (adapter.itemCount > 0) {
-                                    //  Log.d("MainActivitySubscription","ScrollToPosition itemCount > 0")
+                                    //  Log.d("MAS","ScrollToPosition itemCount > 0")
                                     binding.rvChatMessages.layoutManager?.scrollToPosition(0)
                                 }
 //                                adapter.notifyItemChanged(edges.indexOf(edge))
@@ -2059,7 +2059,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 Timber.d("reealltime 2")
             } catch (e2: Exception) {
                 e2.printStackTrace()
-                Log.d("MainActivitySubscription", "realtime exception= ${e2.message}")
+                Log.d("MAS", "realtime exception= ${e2.message}")
                 Timber.d("reealltime exception= ${e2.message}")
             }
         }
@@ -2078,7 +2078,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     .retryWhen { cause, attempt ->
                         Timber.d("reealltime retry $attempt ${cause.message}")
                         Log.d(
-                            "MainActivitySubscription",
+                            "MAS",
                             "realtime retry  $attempt ${cause.message}"
                         )
                         delay(attempt * 1000)
@@ -2087,18 +2087,18 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                         if (newMessage.hasErrors()) {
 
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "Lastseen realtime response error = ${newMessage.errors?.get(0)?.message}"
                             )
 
                         } else {
-                            Log.e("realetimeLastSeenException", "realetimeLastSeenException")
+                            Log.e("MNCF", "realetimeLastSeenException")
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime Last seen Id  ${newMessage.data?.onSeenLastMessageByReceiver?.message}"
                             )
                             Log.d(
-                                "MainActivitySubscription",
+                                "MAS",
                                 "realtime  Last seen Id  ${newMessage.data}"
                             )
                             val edge =
@@ -2130,7 +2130,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                             /*     CoroutineScope(Dispatchers.Main).launch {
                                      adapter.updateList(edges as ArrayList<GetChatMessagesByRoomIdQuery.Edge?>?)
                                      if (adapter.itemCount > 0) {
-                                         //  Log.d("MainActivitySubscription","ScrollToPosition itemCount > 0")
+                                         //  Log.d("MAS","ScrollToPosition itemCount > 0")
                                          binding.rvChatMessages.layoutManager?.scrollToPosition(0)
                                      }
                                  }*/
@@ -2140,7 +2140,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 Timber.d("reealltime 2")
             } catch (e2: Exception) {
                 e2.printStackTrace()
-                Log.d("MainActivitySubscription", "lastseen realtime exception= ${e2.message}")
+                Log.d("MAS", "lastseen realtime exception= ${e2.message}")
                 Timber.d("reealltime exception= ${e2.message}")
             }
         }
@@ -2451,7 +2451,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     .retryWhen { cause, attempt ->
                         Timber.d("reealltime retry $attempt ${cause.message}")
                         Log.d(
-                            "nUpdatePrivatePhotoRequest",
+                            "nUpdatePrivatePhoto",
                             "realtime retry  $attempt ${cause.message}"
                         )
                         delay(attempt * 1000)
@@ -2459,7 +2459,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                     }.collect { newMessage ->
                         if (newMessage.hasErrors()) {
                             Log.e(
-                                "nUpdatePrivatePhotoRequest",
+                                "nUpdatePrivatePhoto",
                                 "realtime response error = ${newMessage.errors?.get(0)?.message}"
                             )
                             Timber.d("reealltime response error = ${newMessage.errors?.get(0)?.message}")
@@ -2474,11 +2474,11 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                                 "reealltime ${newMessage.data}"
                             )
                             Log.e(
-                                "nUpdatePrivatePhotoRequest",
+                                "nUpdatePrivatePhoto",
                                 "realtime DeleteMessage Id  ${newMessage.data?.onUpdatePrivateRequest?.requestedUser}"
                             )
                             Log.e(
-                                "nUpdatePrivatePhotoRequest",
+                                "nUpdatePrivatePhoto",
                                 "realtime  DeleteMessage Id  ${newMessage.data}"
                             )
 
@@ -2494,7 +2494,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
                 Timber.d("reealltime 2")
             } catch (e2: Exception) {
                 e2.printStackTrace()
-                Log.d("nUpdatePrivatePhotoRequest", "realtime exception= ${e2.message}")
+                Log.d("nUpdatePrivatePhoto", "realtime exception= ${e2.message}")
                 Timber.d("reealltime exception= ${e2.message}")
             }
         }
