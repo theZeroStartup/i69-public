@@ -355,8 +355,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     Timber.e("${getString(R.string.sign_in_failed)} ${response.message}")
 
                     if (response.message.toString().contains("contact us", true)){
-                        binding.root.snackbar(getString(R.string.account_deleted_error)) {
-                            Log.d("LoginFragment", "Api response")
+                        requireActivity().showDialogWithBackground(getString(R.string.account_deleted_error)) {
                             moveTo(LoginFragmentDirections.actionLoginFragmentToContactFragment())
                         }
                     }

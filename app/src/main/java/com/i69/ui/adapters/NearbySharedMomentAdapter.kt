@@ -15,16 +15,18 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.OptIn
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.ViewDataBinding
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.MimeTypes
 import com.i69.BuildConfig
 import com.i69.GetAllUserMomentsQuery
 import com.i69.R
@@ -501,7 +503,7 @@ class NearbySharedMomentAdapter(
                     itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
         }
 
-        private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
+        @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
             val exoPlayer = listener.playVideo(mediaItem, playWhenReady)
             viewBinding.playerView.player = exoPlayer
             viewBinding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM

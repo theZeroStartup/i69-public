@@ -393,8 +393,10 @@
                                 android:background="@color/white" />
 
                             <LinearLayout
+                                android:id="@+id/llCoinDetailsRoot"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:onClick="@{() -> vm.onCoinsClick()}"
                                 android:orientation="vertical"
                                 android:layout_weight=".7">
 
@@ -402,7 +404,6 @@
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:layout_width="54dp"
                                     android:layout_height="38dp"
-                                    android:onClick="@{() -> vm.onCoinsClick()}"
                                     app:srcCompat="@drawable/coin1"
                                     android:layout_gravity="center" />
 

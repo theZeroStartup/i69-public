@@ -28,6 +28,8 @@ object Others {
 
     //ExoPlayer
     const val exoplayer = "com.google.android.exoplayer:exoplayer:$exoversion"
+    const val media3 = "androidx.media3:media3-session:1.2.1"
+
 
     // Glider
     const val glide = "com.github.bumptech.glide:glide:$glideVersion"

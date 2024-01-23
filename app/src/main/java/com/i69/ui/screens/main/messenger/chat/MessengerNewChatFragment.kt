@@ -28,16 +28,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -89,7 +88,7 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
     var isUpdatesChatView: Boolean = false
 
     private lateinit var deferred: Deferred<Unit>
-    var exoPlayer: SimpleExoPlayer? = null
+    var exoPlayer: ExoPlayer? = null
     private var timer1: CountDownTimerExt? = null
     private var userId: String? = null
     private var userToken: String? = null
@@ -2508,12 +2507,12 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
         // showProgressView()
         binding.progressBar.visibility=View.VISIBLE
 
-        exoPlayer = SimpleExoPlayer.Builder(requireActivity()).build()
+        exoPlayer = ExoPlayer.Builder(requireActivity()).build()
         binding.videoview.player = exoPlayer
         val mediaItem = MediaItem.fromUri(videouri!!)
-        exoPlayer!!.setMediaItem(mediaItem)
-        exoPlayer!!.prepare()
-        exoPlayer!!.play()
+        exoPlayer?.setMediaItem(mediaItem)
+        exoPlayer?.prepare()
+        exoPlayer?.play()
 
         val durationSet = false
 

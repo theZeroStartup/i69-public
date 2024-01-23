@@ -2,9 +2,12 @@ package com.i69.utils
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.text.Spanned
 import android.util.TypedValue
@@ -98,6 +101,32 @@ fun Activity.showDialog(message: String) {
 
     snackOk.setOnClickListener {
         dialog?.dismiss()
+    }
+
+    dialog?.show()
+}
+
+fun Activity.showDialogWithBackground(message: String, callback: (() -> Unit)? = null) {
+    val builder = AlertDialog.Builder(this)
+    val inflater = LayoutInflater.from(this)
+    val dialogView: View = inflater.inflate(R.layout.dialog_snackbar, null)
+    builder.setView(dialogView)
+    builder.setCancelable(false)
+
+    val snackMsg = dialogView.findViewById<TextView>(R.id.snackMsg)
+    val snackOk = dialogView.findViewById<TextView>(R.id.snackOk)
+    snackMsg.text = message
+
+    dialog = builder.create()
+    dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+    Handler(Looper.getMainLooper()).postDelayed({
+        if (dialog?.isShowing == true) dialog?.dismiss()
+    }, 15000)
+
+    snackOk.setOnClickListener {
+        dialog?.dismiss()
+        callback?.invoke()
     }
 
     dialog?.show()

@@ -2,7 +2,7 @@ package com.i69.utils
 
 import android.app.Activity
 import android.content.Intent
-import com.google.android.exoplayer2.util.Log
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.i69.R

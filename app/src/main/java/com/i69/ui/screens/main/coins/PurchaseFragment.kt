@@ -172,7 +172,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
         getStripePublishableKey()
 
         getPaymentMethods()
-        OnPaymentMethodChange()
+        onPaymentMethodChange()
 
         lifecycleScope.launch(Dispatchers.Main) {
             val token = getCurrentUserToken()!!
@@ -239,7 +239,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
 //    }
 
 
-    fun OnPaymentMethodChange() {
+    fun onPaymentMethodChange() {
 
         Log.e("OnPaymentMethodChange", "OnPaymentMethodChange")
 //        onPaymentSuccess()

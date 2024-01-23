@@ -12,11 +12,10 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.DialogFragment
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.textview.MaterialTextView
@@ -35,7 +34,7 @@ class PicViewerFragment : DialogFragment() {
 
     private var timer1: CountDownTimerExt? = null
 
-    var exoPlayer: SimpleExoPlayer? = null
+    var exoPlayer: ExoPlayer? = null
     var videoDisable: View? = null
     var videoview: PlayerView? = null
     var videoLayout: RelativeLayout? = null
@@ -152,7 +151,7 @@ class PicViewerFragment : DialogFragment() {
         // showProgressView()
         progress_bar.visibility=View.VISIBLE
 
-        exoPlayer = SimpleExoPlayer.Builder(requireActivity()).build()
+        exoPlayer = ExoPlayer.Builder(requireActivity()).build()
         videoview!!.setPlayer(exoPlayer)
         val mediaItem = MediaItem.fromUri(videouri!!)
         exoPlayer!!.setMediaItem(mediaItem)

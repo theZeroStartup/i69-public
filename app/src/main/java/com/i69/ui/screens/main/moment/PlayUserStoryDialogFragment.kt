@@ -15,9 +15,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.OptIn
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,12 +34,6 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textview.MaterialTextView
@@ -75,8 +77,8 @@ class PlayUserStoryDialogFragment(val listener: UserStoryDetailFragment.DeleteCa
     var progressBar1: ProgressBar? = null
 
 
-    private lateinit var exoPlayer: SimpleExoPlayer
-    private lateinit var dataSourceFactory: DataSource.Factory
+    private lateinit var exoPlayer: ExoPlayer
+//    private lateinit var dataSourceFactory: DataSource.Factory
 
 
     var player_view: PlayerView? = null
@@ -208,9 +210,9 @@ class PlayUserStoryDialogFragment(val listener: UserStoryDetailFragment.DeleteCa
         rvSharedMoments = views.findViewById<RecyclerView>(R.id.rvSharedMoments)
         nodata = views.findViewById<MaterialTextView>(R.id.no_data)
         player_view = views.findViewById<PlayerView>(com.i69.R.id.player_view)
-        player_view!!.setShutterBackgroundColor(Color.TRANSPARENT);
-        player_view!!.setKeepContentOnPlayerReset(true)
-        dataSourceFactory = DefaultDataSourceFactory(requireActivity(), Util.getUserAgent(requireActivity(), "i69"))
+//        player_view!!.setShutterBackgroundColor(Color.TRANSPARENT);
+//        player_view!!.setKeepContentOnPlayerReset(true)
+//        dataSourceFactory = DefaultDataSourceFactory(requireActivity(), Util.getUserAgent(requireActivity(), "i69"))
 
         rvLikes = views.findViewById<RecyclerView>(R.id.rvLikes)
         no_data = views.findViewById<MaterialTextView>(R.id.no_datas)
@@ -1438,7 +1440,7 @@ class PlayUserStoryDialogFragment(val listener: UserStoryDetailFragment.DeleteCa
             .setUri("")
             .setMimeType(MimeTypes.VIDEO_MP4)
             .build()
-        exoPlayer = SimpleExoPlayer.Builder(requireActivity()).build().apply {
+        exoPlayer = ExoPlayer.Builder(requireActivity()).build().apply {
             playWhenReady = isPlayerPlaying
             seekTo(currentWindow, playbackPosition)
             setMediaItem(mediaItem, false)
@@ -1460,11 +1462,11 @@ class PlayUserStoryDialogFragment(val listener: UserStoryDetailFragment.DeleteCa
         exoPlayer.release()
     }
 
-    private fun playView(mediaItem: MediaItem) {
+    @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem) {
 
         showProgressView()
 
-        exoPlayer = SimpleExoPlayer.Builder(requireActivity()).build().apply {
+        exoPlayer = ExoPlayer.Builder(requireActivity()).build().apply {
             playWhenReady = isPlayerPlaying
             seekTo(currentWindow, playbackPosition)
             setMediaItem(mediaItem, false)

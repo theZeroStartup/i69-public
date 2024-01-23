@@ -1,5 +1,6 @@
 package com.i69.ui.screens.main.search
 
+import android.Manifest
 import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -31,9 +32,11 @@ import com.i69.data.remote.requests.SearchRequest
 import com.i69.databinding.DialogFilterBinding
 import com.i69.permissions.PermissionHandler
 import com.i69.permissions.Permissions
+import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.viewModels.SearchViewModel
 import com.i69.ui.views.ToggleImageView
 import com.i69.utils.createLoadingDialog
+import com.i69.utils.hasLocationPermission
 import com.i69.utils.isCurrentLanguageFrench
 import com.i69.utils.snackbar
 import java.util.*
@@ -138,86 +141,74 @@ class FiltersDialogFragment(
         }
 
         mViewModel.searchBtnClickListener = View.OnClickListener {
-              showProgressView()
+            if (!hasLocationPermission(requireContext(), locPermissions)) {
+                (requireActivity() as MainActivity).permissionReqLauncher.launch(locPermissions)
+            }
+            else {
+                showProgressView()
+                val locationService =
+                    LocationServices.getFusedLocationProviderClient(requireActivity())
 
-            Permissions.check(
-                requireActivity(),
-                permission.ACCESS_COARSE_LOCATION,
-                null,
-                object : PermissionHandler() {
-                    @SuppressLint("MissingPermission")
-                    override fun onGranted() {
-                        val locationService =
-                            LocationServices.getFusedLocationProviderClient(activity!!)
-
-                        locationService.lastLocation.addOnSuccessListener { location: Location? ->
-                            val searchKey: String = "" //binding.keyInput.text.toString()
-                            var lat: Double? = null
-                            var lon: Double? = null
-                            if (searchKey.isEmpty()) {
-                                lat = location?.latitude
-                                lon = location?.longitude
-                            }
-                            val searchRequest = SearchRequest(
-                                //   interestedIn = interestedIn.id,
-                                id = userId!!,
-                                searchKey = searchKey,
-                                lat = lat,
-                                long = lon
-                            )
-                            Log.d("TAG", Gson().toJson(searchRequest))
-                            Log.d("ExtraSearchCalls", "onGranted: ")
-                            mViewModel.getSearchUsers(
-                                _searchRequest = searchRequest,
-                                token = userToken!!,
-                                context = requireContext()
-                            ) { error ->
-                                if (error == null) {
-                                    lifecycleScope.launch {
-                                        mViewModel.getDefaultPickers(userToken!!)
-                                            .observe(viewLifecycleOwner) {
-                                                it?.let { defaultPicker ->
-                                                    mViewModel.updateDefaultPicker(
-                                                        lookingFor,
-                                                        defaultPicker,
-                                                        -1
-                                                    )
-                                                    val agePicker = defaultPicker.agePicker
-                                                    binding.ageRangeSeekBar.setRange(
-                                                        agePicker[0].value.toFloat(),
-                                                        agePicker[agePicker.size - 1].value.toFloat()
-                                                    )
-                                                    mViewModel.updateFilteredData.value = true
-                                                    hideProgressView()
-                                                    dismiss()
-                                                }
-                                            }
+                locationService.lastLocation.addOnSuccessListener { location: Location? ->
+                    val searchKey: String = ""
+                    var lat: Double? = null
+                    var lon: Double? = null
+                    if (searchKey.isEmpty()) {
+                        lat = location?.latitude
+                        lon = location?.longitude
+                    }
+                    val searchRequest = SearchRequest(
+                        //   interestedIn = interestedIn.id,
+                        id = userId!!,
+                        searchKey = searchKey,
+                        lat = lat,
+                        long = lon
+                    )
+                    Log.d("TAG", Gson().toJson(searchRequest))
+                    Log.d("ExtraSearchCalls", "onGranted: ")
+                    mViewModel.getSearchUsers(
+                        _searchRequest = searchRequest,
+                        token = userToken!!,
+                        context = requireContext()
+                    ) { error ->
+                        if (error == null) {
+                            lifecycleScope.launch {
+                                mViewModel.getDefaultPickers(userToken!!)
+                                    .observe(viewLifecycleOwner) {
+                                        it?.let { defaultPicker ->
+                                            mViewModel.updateDefaultPicker(
+                                                lookingFor,
+                                                defaultPicker,
+                                                -1
+                                            )
+                                            val agePicker = defaultPicker.agePicker
+                                            binding.ageRangeSeekBar.setRange(
+                                                agePicker[0].value.toFloat(),
+                                                agePicker[agePicker.size - 1].value.toFloat()
+                                            )
+                                            mViewModel.updateFilteredData.value = true
+                                            hideProgressView()
+                                            dismiss()
+                                        }
                                     }
-                                } else {
-                                       hideProgressView()
-                                    binding.root.snackbar(error)
-
-                                }
-
                             }
+                        } else {
+                            hideProgressView()
+                            binding.root.snackbar(error)
+
                         }
+
                     }
-
-                    override fun onDenied(
-                        context: Context?,
-                        deniedPermissions: ArrayList<String>?
-                    ) {
-
-
-                        binding.root.snackbar(AppStringConstant1.search_permission)
-//                        binding.root.snackbar(getString(R.string.search_permission))
-                        // hideProgressView()
-                    }
-                })
+                }
+            }
         }
         initGroups()
     }
 
+    private val locPermissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
     private fun updateTags() {
         binding.tagsBtn.setInterests(mViewModel.tags.map { if (isCurrentLanguageFrench()) it.valueFr else it.value })

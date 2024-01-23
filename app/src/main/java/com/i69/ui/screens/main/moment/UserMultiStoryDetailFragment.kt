@@ -23,10 +23,19 @@ import android.widget.RelativeLayout
 import android.widget.TableLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,13 +44,6 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textview.MaterialTextView
@@ -123,7 +125,7 @@ class UserMultiStoryDetailFragment : DialogFragment(),
     lateinit var userurl: String
     lateinit var username: String
     var progressBar1: ProgressBar? = null
-    private lateinit var exoPlayer: SimpleExoPlayer
+    private lateinit var exoPlayer: ExoPlayer
     var positionForStory: Int = 0
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var GiftbottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -367,17 +369,33 @@ class UserMultiStoryDetailFragment : DialogFragment(),
             if (positionForStory > 0) {
                 if (curStoryType != "video") {
                     tickTime = 3000
+                    positionForStory -= 1
+                    progressBar1!!.smoothProgress(0)
+                    curProgressBar!!.smoothProgress(0)
+                    timer1?.pause()
+                    setStory(positionForStory)
                 } else {
                     if (this::exoPlayer.isInitialized) {
-                        exoPlayer.playWhenReady = false
+
+                        if(exoPlayer.isPlaying) {
+                            exoPlayer.pause()
+                            exoPlayer.stop()
+                        }
+
+                        positionForStory -= 1
+                        progressBar1!!.smoothProgress(0)
+                        curProgressBar!!.smoothProgress(0)
+                        timer1?.pause()
+                        setStory(positionForStory)
+                    }
+                    else {
+                        positionForStory -= 1
+                        progressBar1!!.smoothProgress(0)
+                        curProgressBar!!.smoothProgress(0)
+                        timer1?.pause()
+                        setStory(positionForStory)
                     }
                 }
-                positionForStory -= 1
-                progressBar1!!.smoothProgress(0)
-                curProgressBar!!.smoothProgress(0)
-                timer1?.pause()
-                Log.e("timer__","set story 337")
-                setStory(positionForStory)
             }
         }
         val relativeLayoutRight = views.findViewById<RelativeLayout>(R.id.relativeLayoutRight)
@@ -390,11 +408,20 @@ class UserMultiStoryDetailFragment : DialogFragment(),
                     timer1?.finish()
                 } else {
                     if (this::exoPlayer.isInitialized) {
-                        exoPlayer.playWhenReady = false
+                        if(exoPlayer.isPlaying) {
+                            exoPlayer.pause()
+                            exoPlayer.stop()
+                        }
+
+                        progressBar1!!.smoothProgress(realDurationMillis - 200)
+                        curProgressBar!!.smoothProgress(realDurationMillis - 200)
+                        timer1?.finish()
                     }
-                    progressBar1!!.smoothProgress(realDurationMillis - 200)
-                    curProgressBar!!.smoothProgress(realDurationMillis - 200)
-                    timer1?.finish()
+                    else {
+                        progressBar1!!.smoothProgress(realDurationMillis - 200)
+                        curProgressBar!!.smoothProgress(realDurationMillis - 200)
+                        timer1?.finish()
+                    }
                 }
             } else {
                 dismiss()
@@ -680,7 +707,8 @@ class UserMultiStoryDetailFragment : DialogFragment(),
 //                                views.snackbar("You bought ${res.data?.giftPurchase?.giftPurchase?.gift?.giftName} successfully!")
                             Toast.makeText(
                                 requireContext(),
-                                context?.resources?.getString(R.string.you_bought) + " ${res.data?.giftPurchase?.giftPurchase?.gift?.giftName} " + context?.resources?.getString(
+                                context?.resources?.getString(R.string.you_bought) + " ${res.data?.giftPurchase?.giftPurchase?.gift?.giftName} "
+                                        + context?.resources?.getString(
                                     R.string.successfully
                                 ),
                                 Toast.LENGTH_LONG
@@ -1091,6 +1119,22 @@ class UserMultiStoryDetailFragment : DialogFragment(),
         }
 
         dialog.show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if(exoPlayer.isPlaying) {
+            exoPlayer.pause()
+            exoPlayer.stop()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        if (this::exoPlayer.isInitialized)
+            exoPlayer.release()
     }
 
 
@@ -1848,146 +1892,148 @@ class UserMultiStoryDetailFragment : DialogFragment(),
         }
     }
 
+    fun getMyContext(): Context {
+        return context ?: throw IllegalStateException("Fragment $this not attached to a context.")
+    }
+
     private fun setOtherDataForVideo(
         node: GetAllUserMultiStoriesQuery.Node,
         user: GetAllUserMultiStoriesQuery.User3
     ) {
-//private fun setOtherDataForVideo(
-//    node: GetAllUserMultiStoriesQuery.Node,
-//    user: GetAllUserMultiStoriesQuery.User4
-//) {
-        txtNearbyUserLikeCount!!.text = node.likesCount.toString()
-        txtNearbyUserLike!!.text = resources.getString(R.string.like)
-        txtMomentRecentComment!!.text =
-            node.commentsCount.toString() + " ${requireActivity().resources.getString(R.string.comments)}"
-        lblItemNearbyCommentCount!!.text = node.commentsCount.toString()
-        lblItemNearbyUserCommentCount!!.text =
-            "${requireActivity().resources.getString(R.string.comments)}"
-        txtheaderlike!!.text =
-            node.likesCount.toString() + " ${requireActivity().resources.getString(R.string.like)}"
-        giftUserid = node.user!!.id.toString()
-        val likeData = node.likes!!.edges
-        if (rvLikes!!.itemDecorationCount == 0) {
-            rvLikes!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    outRect.top = 25
-                }
-            })
-        }
-        if (likeData.isNotEmpty()) {
-            Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
-            no_data!!.visibility = View.GONE
-            rvLikes!!.visibility = View.VISIBLE
-            val items1: ArrayList<CommentsModel> = ArrayList()
-            likeData.indices.forEach { i ->
-                val models = CommentsModel()
-                models.commenttext = likeData[i]!!.node!!.user.fullName
-                models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
-                    if (!BuildConfig.USE_S3) {
-                        if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+        if (context != null && isAdded) {
+            txtNearbyUserLikeCount?.text = node.likesCount.toString()
+            txtNearbyUserLike?.text = getMyContext().resources.getString(R.string.like)
+            txtMomentRecentComment!!.text =
+                node.commentsCount.toString() + " ${getMyContext().resources.getString(R.string.comments)}"
+            lblItemNearbyCommentCount!!.text = node.commentsCount.toString()
+            lblItemNearbyUserCommentCount!!.text =
+                "${getMyContext().resources.getString(R.string.comments)}"
+            txtheaderlike!!.text =
+                node.likesCount.toString() + " ${getMyContext().resources.getString(R.string.like)}"
+            giftUserid = node.user!!.id.toString()
+            val likeData = node.likes!!.edges
+            if (rvLikes!!.itemDecorationCount == 0) {
+                rvLikes!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        outRect.top = 25
+                    }
+                })
+            }
+            if (likeData.isNotEmpty()) {
+                Timber.d("apolloResponse: ${likeData[0]!!.node!!.id}")
+                no_data!!.visibility = View.GONE
+                rvLikes!!.visibility = View.VISIBLE
+                val items1: ArrayList<CommentsModel> = ArrayList()
+                likeData.indices.forEach { i ->
+                    val models = CommentsModel()
+                    models.commenttext = likeData[i]!!.node!!.user.fullName
+                    models.userurl = if (likeData[i]?.node?.user?.avatar != null && !likeData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                        if (!BuildConfig.USE_S3) {
+                            if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                likeData[i]?.node?.user?.avatar?.url.toString()
+                            else
+                                "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                        }
+                        else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
                             likeData[i]?.node?.user?.avatar?.url.toString()
-                        else
-                            "${BuildConfig.BASE_URL}${likeData[i]?.node?.user?.avatar?.url}"
+                        else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
+                    } else {
+                        ""
                     }
-                    else if (likeData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
-                        likeData[i]?.node?.user?.avatar?.url.toString()
-                    else ApiUtil.S3_URL.plus(likeData[i]?.node?.user?.avatar?.url.toString())
-                } else {
-                    ""
-                }
-                items1.add(models)
+                    items1.add(models)
 
-            }
-            adapters = StoryLikesAdapter(requireActivity(), items1, glide)
-            adapters?.userProfileClicked {
-                Log.d("UserStoryDetailsfragmt", "$it")
-                var bundle = Bundle()
-                bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
-                bundle.putString("userId", it.uid)
-                if (Uid == it.uid) {
-                    MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
-                        R.id.nav_user_profile_graph
-                } else {
-                    findNavController().navigate(
-                        destinationId = R.id.action_global_otherUserProfileFragment,
-                        popUpFragId = null,
-                        animType = AnimationTypes.SLIDE_ANIM,
-                        inclusive = true,
-                        args = bundle
-                    )
                 }
-            }
+                adapters = StoryLikesAdapter(requireActivity(), items1, glide)
+                adapters?.userProfileClicked {
+                    Log.d("UserStoryDetailsfragmt", "$it")
+                    var bundle = Bundle()
+                    bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
+                    bundle.putString("userId", it.uid)
+                    if (Uid == it.uid) {
+                        MainActivity.getMainActivity()?.binding?.bottomNavigation?.selectedItemId =
+                            R.id.nav_user_profile_graph
+                    } else {
+                        findNavController().navigate(
+                            destinationId = R.id.action_global_otherUserProfileFragment,
+                            popUpFragId = null,
+                            animType = AnimationTypes.SLIDE_ANIM,
+                            inclusive = true,
+                            args = bundle
+                        )
+                    }
+                }
 
-            rvLikes!!.adapter = adapters
-            rvLikes!!.layoutManager = LinearLayoutManager(activity)
-        } else {
-            no_data!!.visibility = View.VISIBLE
-            rvLikes!!.visibility = View.GONE
-        }
-        val commentData = node.comments!!.edges
-        if (rvSharedMoments!!.itemDecorationCount == 0) {
-            rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    outRect.top = 25
-                }
-            })
-        }
-        if (commentData.isNotEmpty()) {
-            Timber.d("apolloResponse: ${commentData[0]?.node!!.commentDescription}")
-            nodata!!.visibility = View.GONE
-            rvSharedMoments!!.visibility = View.VISIBLE
-            items = ArrayList()
-            commentData.indices.forEach { i ->
-                val hm: MutableList<ReplysModel> = ArrayList()
-                val models = CommentsModel()
-                models.commenttext = commentData[i]!!.node!!.commentDescription
+                rvLikes!!.adapter = adapters
+                rvLikes!!.layoutManager = LinearLayoutManager(activity)
+            } else {
+                no_data!!.visibility = View.VISIBLE
+                rvLikes!!.visibility = View.GONE
+            }
+            val commentData = node.comments!!.edges
+            if (rvSharedMoments!!.itemDecorationCount == 0) {
+                rvSharedMoments!!.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        outRect.top = 25
+                    }
+                })
+            }
+            if (commentData.isNotEmpty()) {
+                Timber.d("apolloResponse: ${commentData[0]?.node!!.commentDescription}")
+                nodata!!.visibility = View.GONE
+                rvSharedMoments!!.visibility = View.VISIBLE
+                items = ArrayList()
+                commentData.indices.forEach { i ->
+                    val hm: MutableList<ReplysModel> = ArrayList()
+                    val models = CommentsModel()
+                    models.commenttext = commentData[i]!!.node!!.commentDescription
 //                if (Commentdata[i]!!.node!!.user.avatarPhotos!!.isNotEmpty()) {
-                models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
-                    if (!BuildConfig.USE_S3) {
-                        if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                    models.userurl = if (commentData[i]?.node?.user?.avatar != null && !commentData[i]?.node?.user?.avatar?.url.isNullOrEmpty()) {
+                        if (!BuildConfig.USE_S3) {
+                            if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(BuildConfig.BASE_URL))
+                                commentData[i]?.node?.user?.avatar?.url.toString()
+                            else
+                                "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                        }
+                        else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
                             commentData[i]?.node?.user?.avatar?.url.toString()
-                        else
-                            "${BuildConfig.BASE_URL}${commentData[i]?.node?.user?.avatar?.url}"
+                        else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
+                    } else {
+                        ""
                     }
-                    else if (commentData[i]?.node?.user?.avatar?.url.toString().startsWith(ApiUtil.S3_URL))
-                        commentData[i]?.node?.user?.avatar?.url.toString()
-                    else ApiUtil.S3_URL.plus(commentData[i]?.node?.user?.avatar?.url.toString())
-                } else {
-                    ""
+                    models.username = commentData[i]!!.node!!.user.fullName
+                    models.timeago = commentData[i]!!.node!!.createdDate.toString()
+                    models.cmtID = commentData[i]!!.node!!.pk.toString()
+                    models.momentID = objectID?.toString()
+
+                    models.uid = commentData[i]!!.node!!.user.id.toString()
+
+                    models.replylist = hm
+                    models.isExpanded = true
+                    items.add(models)
                 }
-                models.username = commentData[i]!!.node!!.user.fullName
-                models.timeago = commentData[i]!!.node!!.createdDate.toString()
-                models.cmtID = commentData[i]!!.node!!.pk.toString()
-                models.momentID = objectID?.toString()
-
-                models.uid = commentData[i]!!.node!!.user.id.toString()
-
-                models.replylist = hm
-                models.isExpanded = true
-                items.add(models)
+                adapter2 =
+                    VideoMultiStoryCommentListAdapter(
+                        requireActivity(),
+                        this,
+                        items,
+                        this
+                    )
+                rvSharedMoments!!.adapter = adapter2
+                rvSharedMoments!!.layoutManager = LinearLayoutManager(activity)
+            } else {
+                nodata!!.visibility = View.VISIBLE
+                rvSharedMoments!!.visibility = View.GONE
             }
-            adapter2 =
-                VideoMultiStoryCommentListAdapter(
-                    requireActivity(),
-                    this,
-                    items,
-                    this
-                )
-            rvSharedMoments!!.adapter = adapter2
-            rvSharedMoments!!.layoutManager = LinearLayoutManager(activity)
-        } else {
-            nodata!!.visibility = View.VISIBLE
-            rvSharedMoments!!.visibility = View.GONE
         }
     }
 
@@ -1996,7 +2042,7 @@ class UserMultiStoryDetailFragment : DialogFragment(),
         user: GetAllUserMultiStoriesQuery.User3?
     ) {
         if (node != null && user != null) {
-            if (activity == null)
+            if (activity == null || !isAdded)
                 return
 
             txtNearbyUserLikeCount!!.text = node.likesCount.toString()
@@ -2161,18 +2207,17 @@ class UserMultiStoryDetailFragment : DialogFragment(),
         }
     }
 
-    private fun playView(mediaItem: MediaItem) {
+    @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem) {
         showProgressView()
         if (MainActivity.getMainActivity() != null) {
-
-
-            exoPlayer = SimpleExoPlayer.Builder(MainActivity.getMainActivity()!!).build().apply {
+            exoPlayer = ExoPlayer.Builder(MainActivity.getMainActivity()!!).build().apply {
                 playWhenReady = isPlayerPlaying
                 seekTo(currentWindow, playbackPosition)
                 setMediaItem(mediaItem, false)
                 prepare()
             }
-            player_view!!.player = exoPlayer
+
+            player_view?.player = exoPlayer
             var durationSet = false
             exoPlayer.addListener(object : Player.Listener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -2320,11 +2365,11 @@ class UserMultiStoryDetailFragment : DialogFragment(),
     }
 
     protected fun showProgressView() {
-        loadingDialog.show()
+//        loadingDialog.show()
     }
 
     protected fun hideProgressView() {
-        loadingDialog.dismiss()
+//        loadingDialog.dismiss()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {

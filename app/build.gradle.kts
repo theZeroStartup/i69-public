@@ -281,7 +281,11 @@ dependencies {
     kapt(Kotlin.roomCompiler)
 
 //    implementation(exoplayer)
-    implementation(Others.exoplayer)
+//    implementation(Others.exoplayer)
+    implementation(Others.media3)
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
 
 
     //Camera2

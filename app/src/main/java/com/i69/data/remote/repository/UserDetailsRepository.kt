@@ -237,6 +237,7 @@ class UserDetailsRepository @Inject constructor(
                     val result = api.callApi(token = "Token $token", body = query.getGraphqlApiBody())
                     val jsonObject = Gson().fromJson(result.body(), JsonObject::class.java)
                     Timber.i("Query: $query")
+                    Log.d("UDR", "getCoinPrice: ${result.body()}")
                     Timber.w("Result: ${result.body()}")
 
                     when {

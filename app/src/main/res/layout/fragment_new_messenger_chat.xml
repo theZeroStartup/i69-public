@@ -576,7 +576,7 @@
                         android:visibility="visible"
                         tools:visibility="gone">
 
-                        <com.google.android.exoplayer2.ui.PlayerView
+                        <androidx.media3.ui.PlayerView
                             android:id="@+id/videoview"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
