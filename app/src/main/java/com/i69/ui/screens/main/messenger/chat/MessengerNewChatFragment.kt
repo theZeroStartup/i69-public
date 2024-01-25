@@ -76,7 +76,6 @@ import kotlinx.coroutines.flow.retryWhen
 import timber.log.Timber
 import java.io.File
 
-
 public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBinding>(),
     NewChatMessagesAdapter.ChatMessageListener {
 

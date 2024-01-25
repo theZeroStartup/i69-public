@@ -1124,9 +1124,11 @@ class UserMultiStoryDetailFragment : DialogFragment(),
     override fun onStop() {
         super.onStop()
 
-        if(exoPlayer.isPlaying) {
-            exoPlayer.pause()
-            exoPlayer.stop()
+        if (this::exoPlayer.isInitialized) {
+            if (exoPlayer.isPlaying) {
+                exoPlayer.pause()
+                exoPlayer.stop()
+            }
         }
     }
 

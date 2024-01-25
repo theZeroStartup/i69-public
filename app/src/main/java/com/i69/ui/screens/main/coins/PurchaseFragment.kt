@@ -250,7 +250,7 @@ class PurchaseFragment : BaseFragment<FragmentPurchaseNewBinding>() {
                     OnPaymentMethodChangeSubscription()
                 ).execute()
             } catch (e: ApolloException) {
-                Log.e("Exception paymentChange", "${e.message}")
+                Log.e("Exception paymentChange", "${e.localizedMessage}")
 
                 Timber.d("apolloResponse ${e.message}")
 
