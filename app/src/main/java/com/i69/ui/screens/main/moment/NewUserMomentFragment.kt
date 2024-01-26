@@ -7,7 +7,6 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,6 +27,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.ReturnCode
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.i69.BuildConfig
@@ -41,15 +42,18 @@ import com.i69.databinding.DialogBuySubscriptionOrCoinsBinding
 import com.i69.databinding.DialogPreviewImageBinding
 import com.i69.databinding.FragmentNewUserMomentBinding
 import com.i69.ui.base.BaseFragment
-import com.i69.ui.screens.ImagePickerActivity
 import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.camera.CameraActivity
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
 import com.i69.utils.KeyboardUtils.SoftKeyboardToggleListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import java.lang.Compiler.command
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -73,12 +77,23 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             val data = activityResult.data
             if (activityResult.resultCode == Activity.RESULT_OK) {
+                val fileName = data?.getStringExtra("fileName").toString()
                 mFilePath = data?.getStringExtra("result").toString()
                 file = File(mFilePath)
-                fileType = ".jpg"
-                Timber.d("fileBase64 $mFilePath")
+                if (mFilePath.contains(".")) {
+                    val regex = "\\.".toRegex()
+                    val type: String = mFilePath.reversed()?.split(regex)?.get(0)?.reversed().toString()
+                    fileType = ".$type"
+                }
 
-                showFilePreview(file, fileType)
+                if (fileType == ".mp4") {
+                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$fileType")
+                    showProgressView()
+                    compressVideo(file.path, compressedVideoPath)
+                }
+                else {
+                    showFilePreview(file, fileType)
+                }
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
@@ -87,23 +102,50 @@ class NewUserMomentFragment : BaseFragment<FragmentNewUserMomentBinding>() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             val data = activityResult.data
             if (activityResult.resultCode == Activity.RESULT_OK) {
-
                 mFilePath = data?.data.toString()
+
                 val result = data?.data?.path
-                val openInputStream =
-                    requireActivity().contentResolver?.openInputStream(data?.data!!)
+                val openInputStream = requireActivity().contentResolver?.openInputStream(data?.data!!)
+
                 val type = if (result?.contains("video") == true) ".mp4" else ".jpg"
                 fileType = type
-                val outputFile =
-                    requireContext().filesDir.resolve("${System.currentTimeMillis()}$type")
+
+                val fileName = System.currentTimeMillis().toString()
+                val outputFile = requireContext().filesDir.resolve("${fileName}$type")
                 openInputStream?.copyTo(outputFile.outputStream())
                 file = File(outputFile.toURI())
 
-                showFilePreview(file, fileType)
+                if (fileType == ".mp4") {
+                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$fileType")
+                    showProgressView()
+                    compressVideo(file.path, compressedVideoPath)
+                }
+                else {
+                    showFilePreview(file, fileType)
+                }
                 binding.imgUploadFile.loadCircleImage(mFilePath)
             }
         }
 
+    private fun compressVideo(inputFilePath: String, outputFilePath: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val ffmpegCommand = arrayOf("-y",
+                "-i", inputFilePath, "-r", "30","-vcodec", "mpeg4",
+                "-b:v", "1m", "-b:a", "48000", "-ac", "2", "-ar", "22050",
+                outputFilePath
+            )
+
+            FFmpegKit.executeWithArgumentsAsync(ffmpegCommand) { session ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    hideProgressView()
+                    if (ReturnCode.isSuccess(session?.returnCode)) {
+                        file = File(outputFilePath)
+                        showFilePreview(file, fileType)
+                    }
+                }
+            }
+        }
+    }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

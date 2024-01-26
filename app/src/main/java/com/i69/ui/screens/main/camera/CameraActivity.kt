@@ -38,6 +38,7 @@ import java.io.File
 @AndroidEntryPoint
 class CameraActivity : AppCompatActivity() {
 
+    private var videoFileName = ""
     private lateinit var camera: Camera
     private lateinit var cameraProvider: ProcessCameraProvider
     private var preview: Preview? = null
@@ -155,7 +156,8 @@ class CameraActivity : AppCompatActivity() {
                 preview
             )
 
-            val videoFile = File(outputDirectory, "${System.currentTimeMillis()}.mp4")
+            videoFileName = System.currentTimeMillis().toString()
+            val videoFile = File(outputDirectory, "$videoFileName.mp4")
             val outputOptions = FileOutputOptions.Builder(videoFile).build()
 
             recording = videoCapture.output
@@ -187,6 +189,7 @@ class CameraActivity : AppCompatActivity() {
                     Log.d("CAX", "$path ")
                     val intent = Intent()
                     intent.putExtra("result", path)
+                    intent.putExtra("fileName", videoFileName)
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                 } else {
@@ -229,7 +232,8 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        val photoFile = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
+        val fileName = System.currentTimeMillis().toString()
+        val photoFile = File(outputDirectory, "$fileName.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         imageCapture.takePicture(
@@ -237,6 +241,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val intent = Intent()
                     intent.putExtra("result", photoFile.path)
+                    intent.putExtra("fileName", fileName)
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                 }

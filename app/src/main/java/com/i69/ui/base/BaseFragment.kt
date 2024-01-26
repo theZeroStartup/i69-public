@@ -5,7 +5,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Context.RECEIVER_EXPORTED
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.*
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -23,6 +25,7 @@ import com.i69.firebasenotification.NotificationBroadcast
 import com.i69.singleton.App
 import com.i69.utils.createLoadingDialog
 import kotlinx.coroutines.flow.first
+import java.io.File
 
 
 abstract class BaseFragment<dataBinding : ViewDataBinding> : Fragment() {
@@ -117,6 +120,35 @@ abstract class BaseFragment<dataBinding : ViewDataBinding> : Fragment() {
 
 
     }
+
+    fun getPublicDirectory(): File? {
+        var directory: File? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
+                    + "/${resources.getString(R.string.app_name)}");
+        } else {
+            File(Environment.getExternalStorageDirectory().toString()
+                    + "/${resources.getString(R.string.app_name)}");
+        }
+
+        if (!directory?.exists()!!) {
+            // Make it, if it doesn't exit
+            val success: Boolean = directory.mkdirs()
+            if (!success) {
+                directory = null
+            }
+        }
+
+        return directory
+    }
+
+    fun getOutputDirectory(): File {
+        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir else requireActivity().filesDir
+    }
+
 
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?): dataBinding
 

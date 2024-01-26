@@ -345,6 +345,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-wallet:19.2.0-beta01")
     implementation("com.google.android.gms:play-services-pay:16.1.0")
 
+    implementation("com.arthenica:ffmpeg-kit-min:4.5.1-1")
+
 }
 
 apollo {

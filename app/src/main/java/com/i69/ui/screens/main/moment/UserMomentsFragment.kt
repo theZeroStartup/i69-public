@@ -48,6 +48,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.content
 import com.apollographql.apollo3.exception.ApolloException
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.ReturnCode
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -221,15 +223,23 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             val data = activityResult.data
             if (activityResult.resultCode == Activity.RESULT_OK) {
+                var fileType = ""
+                val fileName = data?.getStringExtra("fileName").toString()
                 mFilePath = data?.getStringExtra("result")
                 file = File(mFilePath)
                 if (mFilePath?.contains(".") == true) {
                     val regex = "\\.".toRegex()
                     val type: String = mFilePath?.reversed()?.split(regex)?.get(0)?.reversed().toString()
-                    Log.d("UMF", "$type: ")
-                    Timber.d("fileBase64 $mFilePath")
-                    Log.d("UserMomentFragment", "Photo Choosed")
-                    showFilePreview(file, ".$type")
+                    fileType = ".$type"
+                }
+
+                if (fileType == ".mp4") {
+                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$fileType")
+                    showProgressView()
+                    compressVideo(file.path, compressedVideoPath, fileType)
+                }
+                else {
+                    showFilePreview(file, fileType)
                 }
             }
         }
@@ -239,18 +249,47 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             val data = activityResult.data
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 mFilePath = data.toString()
+
                 val result = data?.data?.path
-                val openInputStream =
-                    requireActivity().contentResolver?.openInputStream(data?.data!!)
+                val openInputStream = requireActivity().contentResolver?.openInputStream(data?.data!!)
+
                 val type = if (result?.contains("video") == true) ".mp4" else ".jpg"
-                val outputFile =
-                    requireContext().filesDir.resolve("${System.currentTimeMillis()}$type")
+
+                val fileName = System.currentTimeMillis().toString()
+                val outputFile = requireContext().filesDir.resolve("$fileName$type")
                 openInputStream?.copyTo(outputFile.outputStream())
                 file = File(outputFile.toURI())
-                Timber.d("fileBase64 $mFilePath")
-                showFilePreview(file, type)
+
+                if (type == ".mp4") {
+                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$type")
+                    showProgressView()
+                    compressVideo(file.path, compressedVideoPath, type)
+                }
+                else {
+                    showFilePreview(file, type)
+                }
             }
         }
+
+    private fun compressVideo(inputFilePath: String, outputFilePath: String, fileType: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val ffmpegCommand = arrayOf("-y",
+                "-i", inputFilePath, "-r", "30","-vcodec", "mpeg4",
+                "-b:v", "1m", "-b:a", "48000", "-ac", "2", "-ar", "22050",
+                outputFilePath
+            )
+
+            FFmpegKit.executeWithArgumentsAsync(ffmpegCommand) { session ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    hideProgressView()
+                    if (ReturnCode.isSuccess(session?.returnCode)) {
+                        file = File(outputFilePath)
+                        showFilePreview(file, fileType)
+                    }
+                }
+            }
+        }
+    }
 
     private fun showShareOptions(onShared: () -> Unit) {
         val shareOptionsDialog = BottomSheetDialog(requireContext())
@@ -2872,6 +2911,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
+                File(filePath.toString()).delete()
                 if (response.hasErrors()) {
                     if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                         binding.root.snackbarOnTop(
@@ -2935,6 +2975,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
+                File(filePath.toString()).delete()
                 if (response.hasErrors()) {
                     if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                         binding.root.snackbarOnTop(
