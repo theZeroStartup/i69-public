@@ -1,6 +1,7 @@
 package com.i69.ui.screens.main.messenger.list
 
 
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,9 +14,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.apollographql.apollo3.exception.ApolloException
 import com.i69.*
@@ -28,6 +31,7 @@ import com.i69.type.MessageMessageType
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.screens.SplashActivity
 import com.i69.ui.screens.main.MainActivity
+import com.i69.ui.screens.main.messenger.chat.MessengerNewChatFragment
 import com.i69.ui.screens.main.messenger.list.MessengerListAdapter.MessagesListListener
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
@@ -912,6 +916,65 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
             }
         }
     }
+
+    override fun onItemDeleteClicked(roomId: String, position: Int) {
+        Log.d("MLF", "onItemDeleteClicked: $roomId")
+        showDeleteConfirmationDialog(roomId)
+    }
+
+    private fun showDeleteConfirmationDialog(roomId: String) {
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_delete, null)
+        val headerTitle = dialogLayout.findViewById<TextView>(R.id.header_title)
+        val noButton = dialogLayout.findViewById<TextView>(R.id.no_button)
+        val yesButton = dialogLayout.findViewById<TextView>(R.id.yes_button)
+
+        val title = "Are you sure you want to delete?"
+
+        headerTitle.text = title
+        noButton.text = AppStringConstant(requireContext()).no
+        yesButton.text = AppStringConstant(requireContext()).yes
+
+        val builder = AlertDialog.Builder(MainActivity.getMainActivity(),R.style.DeleteDialogTheme)
+        builder.setView(dialogLayout)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+
+        noButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        yesButton.setOnClickListener {
+            dialog.dismiss()
+            deleteChatRoom(roomId)
+        }
+
+        dialog.show()
+    }
+
+    private fun deleteChatRoom(roomId: String) {
+        if (roomId.isNotEmpty()) {
+            showProgressView()
+            viewModel.deleteChatRoom(roomId.toInt(), userToken.toString()) {
+                Log.d("MLF", "onItemDeleteClicked: ${it?.message}")
+                hideProgressView()
+                when(it) {
+                    is Resource.Success -> {
+                        Log.d("MLF", "onItemDeleteClicked: ${it?.data?.data?.message}")
+                        updateList(true)
+
+                    }
+                    is Resource.Error -> {
+
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }
+        }
+
+    }
+
 
     fun getMainActivity() = activity as MainActivity
 

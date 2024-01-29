@@ -60,6 +60,13 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun deleteChatRoom(roomId: Int, token: String, callback: (Resource<ResponseBody<DeleteChatRoom>>) -> Unit) {
+        viewModelScope.launch {
+            val response = userDetailsRepository.deleteChatRoom(roomId, token)
+            callback.invoke(response)
+        }
+    }
+
     /// Selected Preview Model
     fun getSelectedMessagePreview(): GetAllRoomsQuery.Edge? = selectedMsgPreview
 

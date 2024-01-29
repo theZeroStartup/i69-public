@@ -1982,7 +1982,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
     }*/
 
     private fun exitConfirmation() {
-
         val dialogLayout = layoutInflater.inflate(R.layout.dialog_delete, null)
         val headerTitle = dialogLayout.findViewById<TextView>(R.id.header_title)
         val noButton = dialogLayout.findViewById<TextView>(R.id.no_button)

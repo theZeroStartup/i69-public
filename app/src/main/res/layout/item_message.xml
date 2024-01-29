@@ -97,7 +97,7 @@
             android:textColor="@color/message_list_description_color_1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/unseen_messages"
+            app:layout_constraintEnd_toStartOf="@+id/ivDelete"
             app:layout_constraintStart_toEndOf="@id/img"
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:layout_goneMarginEnd="16dp"
@@ -157,8 +157,19 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="99" />
 
-<!--        app:layout_constraintEnd_toEndOf="@+id/timeGuideline"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/continueDialog"-->
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_delete_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/timeGuideline"
+            app:layout_constraintTop_toBottomOf="@id/continueDialog"
+            app:tint="@color/blockedRed"
+            tools:tint="@color/blockedRed" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

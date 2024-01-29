@@ -22,6 +22,7 @@ import com.i69.data.remote.responses.GetCoinPrice
 import com.i69.data.remote.responses.ResponseBody
 import com.i69.db.DBResource
 import com.i69.R
+import com.i69.data.models.DeleteChatRoom
 import com.i69.profile.db.dao.UserDao
 import com.i69.singleton.App
 import com.i69.utils.*
@@ -44,6 +45,27 @@ class UserDetailsRepository @Inject constructor(
 
     private var _coinPrice: ArrayList<CoinPrice> = ArrayList()
     private val coinPrice: MutableLiveData<ArrayList<CoinPrice>> = MutableLiveData()
+
+    suspend fun deleteChatRoom(roomId: Int, token: String): Resource<ResponseBody<DeleteChatRoom>> {
+        Log.d("VisitorMutation", "addUserProfileVisit: $roomId")
+
+        val queryName = "deleteRoom"
+        val query = StringBuilder()
+            .append("mutation {")
+            .append("$queryName (")
+            .append("chatId: $roomId")
+            .append(") {")
+            .append("message")
+            .append("}")
+            .append("}")
+            .toString()
+
+        Log.d("deleteChatRoom", query)
+        val response: Resource<ResponseBody<DeleteChatRoom>> = api.getResponse(query, queryName, token)
+        Log.d("deleteChatRoom", "deleteChatRoom: ${response.message} ${response.data?.data}")
+
+        return response
+    }
 
     suspend fun addUserProfileVisit(userId: String, visitorId: String, token: String): Resource<ResponseBody<ProfileVisit>> {
         Log.d("VisitorMutation", "addUserProfileVisit: $userId $visitorId")

@@ -173,6 +173,10 @@ class MessengerListAdapter(
             subtitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 null, null, null, null
             )
+            ivDelete.setOnClickListener {
+                listener.onItemDeleteClicked(roomData.node?.id.toString(), holder.bindingAdapterPosition)
+            }
+
             if (roomData.node?.userId?.id.equals(userId)) {
                 roomData.node?.target?.avatar.let { imgSrc ->
                     if (imgSrc != null) {
@@ -192,6 +196,7 @@ class MessengerListAdapter(
                     unseenMessages.text = roomData.node?.unread
                     unseenMessages.visibility = View.VISIBLE
                     continueDialog.visibility = View.GONE
+                    ivDelete.setViewGone()
 
 
                     holder.viewBinding.time.setTextColor(
@@ -592,8 +597,10 @@ class MessengerListAdapter(
     inner class ViewHolder(val viewBinding: ItemMessageBinding) :
         RecyclerView.ViewHolder(viewBinding.root)
 
-    fun interface MessagesListListener {
+    interface MessagesListListener {
         fun onItemClick(userId: GetAllRoomsQuery.Edge, position: Int)
+
+        fun onItemDeleteClicked(roomId: String, position: Int)
     }
 
 }

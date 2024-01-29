@@ -48,8 +48,6 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.content
 import com.apollographql.apollo3.exception.ApolloException
-import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.ReturnCode
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -234,9 +232,10 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 }
 
                 if (fileType == ".mp4") {
-                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$fileType")
-                    showProgressView()
-                    compressVideo(file.path, compressedVideoPath, fileType)
+//                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$fileType")
+//                    showProgressView()
+//                    compressVideo(file.path, compressedVideoPath, fileType)
+                    showFilePreview(file, fileType)
                 }
                 else {
                     showFilePreview(file, fileType)
@@ -261,9 +260,10 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 file = File(outputFile.toURI())
 
                 if (type == ".mp4") {
-                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$type")
-                    showProgressView()
-                    compressVideo(file.path, compressedVideoPath, type)
+//                    val compressedVideoPath = getPublicDirectory()?.path.plus("/$fileName$type")
+//                    showProgressView()
+//                    compressVideo(file.path, compressedVideoPath, type)
+                    showFilePreview(file, type)
                 }
                 else {
                     showFilePreview(file, type)
@@ -271,25 +271,25 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             }
         }
 
-    private fun compressVideo(inputFilePath: String, outputFilePath: String, fileType: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val ffmpegCommand = arrayOf("-y",
-                "-i", inputFilePath, "-r", "30","-vcodec", "mpeg4",
-                "-b:v", "1m", "-b:a", "48000", "-ac", "2", "-ar", "22050",
-                outputFilePath
-            )
-
-            FFmpegKit.executeWithArgumentsAsync(ffmpegCommand) { session ->
-                CoroutineScope(Dispatchers.Main).launch {
-                    hideProgressView()
-                    if (ReturnCode.isSuccess(session?.returnCode)) {
-                        file = File(outputFilePath)
-                        showFilePreview(file, fileType)
-                    }
-                }
-            }
-        }
-    }
+//    private fun compressVideo(inputFilePath: String, outputFilePath: String, fileType: String) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val ffmpegCommand = arrayOf("-y",
+//                "-i", inputFilePath, "-r", "30","-vcodec", "mpeg4",
+//                "-b:v", "1m", "-b:a", "48000", "-ac", "2", "-ar", "22050",
+//                outputFilePath
+//            )
+//
+//            FFmpegKit.executeWithArgumentsAsync(ffmpegCommand) { session ->
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    hideProgressView()
+//                    if (ReturnCode.isSuccess(session?.returnCode)) {
+//                        file = File(outputFilePath)
+//                        showFilePreview(file, fileType)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun showShareOptions(onShared: () -> Unit) {
         val shareOptionsDialog = BottomSheetDialog(requireContext())
@@ -2911,7 +2911,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                File(filePath.toString()).delete()
+//                File(filePath.toString()).delete()
                 if (response.hasErrors()) {
                     if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                         binding.root.snackbarOnTop(
@@ -2975,7 +2975,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.e("222", "--->" + Gson().toJson(response))
                 hideProgressView()
 
-                File(filePath.toString()).delete()
+//                File(filePath.toString()).delete()
                 if (response.hasErrors()) {
                     if (response.errors?.get(0)?.message!!.contains("purchase a package", true)) {
                         binding.root.snackbarOnTop(
