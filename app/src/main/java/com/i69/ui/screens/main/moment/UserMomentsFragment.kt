@@ -199,7 +199,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     }
 
     override fun onPause() {
-        if (exoPlayer.isPlaying) exoPlayer.pause()
+        if (exoPlayer.isPlaying && ::exoPlayer.isInitialized) exoPlayer.pause()
         if (this::sharedMomentAdapter.isInitialized) {
             sharedMomentAdapter.pauseAll()
         }

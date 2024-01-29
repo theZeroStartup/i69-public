@@ -372,15 +372,13 @@ class NearbySharedMomentAdapter(
                     listener.pauseVideo()
                     viewBinding.ivPlay.setViewVisible()
                 }
-                else {
-                    if (!isImageFile(item_data)) {
-                        listener.pauseVideo()
-                        viewBinding.ivPlay.setViewVisible()
-                    }
-                    selectedItemPosition = -1
-                    notifyDataSetChanged()
-                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                if (!isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
                 }
+                selectedItemPosition = -1
+                notifyDataSetChanged()
+                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
 
             viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
@@ -388,30 +386,26 @@ class NearbySharedMomentAdapter(
                     listener.pauseVideo()
                     viewBinding.ivPlay.setViewVisible()
                 }
-                else {
-                    if (!isImageFile(item_data)) {
-                        listener.pauseVideo()
-                        viewBinding.ivPlay.setViewVisible()
-                    }
-                    selectedItemPosition = -1
-                    notifyDataSetChanged()
-                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                if (!isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
                 }
+                selectedItemPosition = -1
+                notifyDataSetChanged()
+                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
-            viewBinding.itemCell.setOnClickListener(View.OnClickListener {
+            viewBinding.ivFullscreen.setOnClickListener(View.OnClickListener {
                 if (listener.isPlaying() && !isImageFile(item_data)) {
                     listener.pauseVideo()
                     viewBinding.ivPlay.setViewVisible()
                 }
-                else {
-                    if (!isImageFile(item_data)) {
-                        listener.pauseVideo()
-                        viewBinding.ivPlay.setViewVisible()
-                    }
-                    selectedItemPosition = -1
-                    notifyDataSetChanged()
-                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                if (!isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
                 }
+                selectedItemPosition = -1
+                notifyDataSetChanged()
+                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
 
             viewBinding.imgNearbyUserGift.setOnClickListener(View.OnClickListener {
@@ -419,15 +413,13 @@ class NearbySharedMomentAdapter(
                     listener.pauseVideo()
                     viewBinding.ivPlay.setViewVisible()
                 }
-                else {
-                    if (!isImageFile(item_data)) {
-                        listener.pauseVideo()
-                        viewBinding.ivPlay.setViewVisible()
-                    }
-                    selectedItemPosition = -1
-                    notifyDataSetChanged()
-                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                if (!isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
                 }
+                selectedItemPosition = -1
+                notifyDataSetChanged()
+                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
 
 

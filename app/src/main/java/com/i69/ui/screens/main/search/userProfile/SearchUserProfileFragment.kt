@@ -52,6 +52,7 @@ import com.i69.ui.adapters.UserItemsAdapter
 import com.i69.ui.base.BaseFragment
 import com.i69.ui.base.profile.PUBLIC
 import com.i69.ui.screens.SplashActivity
+import com.i69.ui.screens.main.MainActivity
 import com.i69.ui.screens.main.MainActivity.Companion.getMainActivity
 import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.viewModels.CommentsModel
@@ -136,7 +137,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
     private fun redirectToFolllowingPage(){
 
         val bundle = Bundle()
-        bundle.putBoolean(SearchUserProfileFragment.ARGS_FROM_CHAT, false)
+        bundle.putBoolean(ARGS_FROM_CHAT, false)
         bundle.putString("userId", otherUserId)
         bundle.putString("userFulNAme", otherFirstName)
 
@@ -312,12 +313,11 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                         binding.container.currentItem = 0
 
                         binding.userImgHeader.addOnPageChangeListener(this@SearchUserProfileFragment)
-
+                        var isPrivateImagesFound = false
                         try {
                             binding.userImgHeader.setViewListener(ViewListener {
 
                                 val photo = data.user!!.avatarPhotos?.get(it)
-
 
                                 var view: View = if (photo?.type == PUBLIC) {
 //                                    activity!!.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -326,6 +326,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                         null
                                     )
                                 } else {
+                                    isPrivateImagesFound = true
                                     requireActivity().getWindow().setFlags(
                                         WindowManager.LayoutParams.FLAG_SECURE,
                                         WindowManager.LayoutParams.FLAG_SECURE
@@ -413,9 +414,9 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
                                             val photo_ = data.user!!.avatarPhotos!![i]
 
-                                            if (photo_.type == PUBLIC) {
-                                                dataarray.add(photo_)
-                                            }
+                                            dataarray.add(photo_)
+//                                            if (photo_.type == PUBLIC) {
+//                                            }
 
 
                                         }
@@ -429,7 +430,8 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                             getimageSliderIntent(
                                                 requireActivity(),
                                                 Gson().toJson(dataarray),
-                                                pos
+                                                pos, isPrivateImagesFound, privatePhotoRequestStatus,
+                                                userToken, otherUserId
                                             )
                                         )
                                     }

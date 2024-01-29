@@ -516,7 +516,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
                         //App.userPreferences.saveUserIdToken("","","")
                         val intent = Intent(activity, SplashActivity::class.java)
                         startActivity(intent)
-                        activity!!.finishAffinity()
+                        requireActivity().finishAffinity()
                     }
                 }
             }
@@ -696,7 +696,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
                         //App.userPreferences.saveUserIdToken("","","")
                         val intent = Intent(activity, SplashActivity::class.java)
                         startActivity(intent)
-                        activity!!.finishAffinity()
+                        requireActivity().finishAffinity()
                         Log.e("dddfff", "555555")
                     }
                 }
@@ -746,7 +746,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
                         //App.userPreferences.saveUserIdToken("","","")
                         val intent = Intent(activity, SplashActivity::class.java)
                         startActivity(intent)
-                        activity!!.finishAffinity()
+                        requireActivity().finishAffinity()
                     }
                 }
             }

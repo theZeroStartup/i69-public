@@ -205,7 +205,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             if (error == null) {
                 Log.e("calllUpdateQuery", "calllUpdateQuery")
                 mViewModel.setUpdateUserListQuery("")
-                Log.e("MyRandomUserDatra", "" + mViewModel.getRandomUsers().size)
+                Log.e("MyRandomUserDatra", "" + mViewModel.getRandomUsers().toString())
 //                    setupViewPagerData()
 //                    hideProgressView()
 //                    navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)

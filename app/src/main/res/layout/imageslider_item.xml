@@ -38,9 +38,60 @@
             app:layout_constraintVertical_bias="0.7" />
 
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/cd_requestview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_black_btn"
+            android:drawablePadding="10dp"
+            android:elevation="10dp"
+            app:layout_constraintVertical_bias="0.4"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:padding="16dp"
+            android:paddingStart="32dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="8dp"
+            android:text="@string/request_private_access"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimaryPix"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+        <!--    android:text="Request Private Access"-->
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/cd_cancelview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_black_btn"
+            android:drawablePadding="10dp"
+            android:elevation="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:padding="16dp"
+            android:paddingStart="32dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="8dp"
+            android:text="@string/cancel_request"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimaryPix"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+        <!--    android:text="Cancel Request"-->
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </layout>

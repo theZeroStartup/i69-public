@@ -4,7 +4,6 @@ package com.i69.profile
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -445,7 +444,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                                                     getimageSliderIntent(
                                                         requireActivity(),
                                                         Gson().toJson(dataarray),
-                                                        pos
+                                                        pos, false, "", "", ""
                                                     )
                                                 )
                                             }

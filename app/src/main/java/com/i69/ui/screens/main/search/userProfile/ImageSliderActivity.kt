@@ -15,10 +15,23 @@ import com.i69.ui.base.BaseActivity
 import java.lang.reflect.Type
 import java.util.*
 
-fun getimageSliderIntent(context: Context, datas: String,pos: Int) = Intent(context, ImageSliderActivity::class.java).apply {
-    putExtra(Constants.EXTRA_IMG_SLIDER, datas)
-    putExtra(Constants.SLIDER_POSITION, pos)
+fun getimageSliderIntent(
+    context: Context,
+    datas: String,
+    pos: Int,
+    isPrivateImageFound: Boolean,
+    privatePhotoRequestStatus: String,
+    userToken: String?,
+    otherUserId: String?
+) =
+    Intent(context, ImageSliderActivity::class.java).apply {
 
+        putExtra(Constants.EXTRA_IMG_SLIDER, datas)
+        putExtra(Constants.SLIDER_POSITION, pos)
+        putExtra(Constants.PRIVATE_IMAGES_FOUND, isPrivateImageFound)
+        putExtra(Constants.PRIVATE_IMAGES_REQUEST_STATUS, privatePhotoRequestStatus)
+        putExtra(Constants.MY_ID, userToken)
+        putExtra(Constants.OTHER_ID, otherUserId)
 }
 
 
@@ -28,23 +41,26 @@ class ImageSliderActivity : BaseActivity<ImagesliderFragmentBinding>() {
 
     var pos = 0
 
-    private var Data_: ArrayList<Photo> = ArrayList()
+    private var images: ArrayList<Photo> = ArrayList()
 
+    var myId = ""
+    var otherUserId = ""
 
     var avatarPhotos: MutableList<Photo>? = mutableListOf()
 
     override fun getActivityBinding(inflater: LayoutInflater) = ImagesliderFragmentBinding.inflate(inflater)
 
     override fun setupTheme(savedInstanceState: Bundle?) {
-
-
-        val type: Type = object : TypeToken<List<Photo?>?>() {}.getType()
-        Data_ = Gson().fromJson(intent.getStringExtra(Constants.EXTRA_IMG_SLIDER), type)
+        val type: Type = object : TypeToken<MutableList<Photo?>?>() {}.type
+        images = Gson().fromJson(intent.getStringExtra(Constants.EXTRA_IMG_SLIDER), type)
 
         pos = intent.getIntExtra(Constants.SLIDER_POSITION,0)
+        val isPrivateImagesFound = intent.getBooleanExtra(Constants.PRIVATE_IMAGES_FOUND,false)
+        val privatePhotoRequestStatus = intent.getStringExtra(Constants.PRIVATE_IMAGES_REQUEST_STATUS)
+        myId = intent.getStringExtra(Constants.MY_ID).toString()
+        otherUserId = intent.getStringExtra(Constants.OTHER_ID).toString()
 
-
-        adapter = ImageSliderAdapter(supportFragmentManager, Data_)
+        adapter = ImageSliderAdapter(supportFragmentManager, images, isPrivateImagesFound, privatePhotoRequestStatus.toString())
         binding.container.adapter = adapter
 
         binding.recyclerTabLayout.setupWithViewPager(binding.container, true)

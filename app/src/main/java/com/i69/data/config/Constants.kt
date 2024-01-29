@@ -34,6 +34,10 @@ object Constants {
     const val EXTRA_INTEREST_VALUE = "EXTRA_INTEREST_VALUE"
     const val EXTRA_IMG_SLIDER = "EXTRA_IMG_SLIDER"
     const val SLIDER_POSITION = "SLIDER_POSITION"
+    const val PRIVATE_IMAGES_FOUND = "PRIVATE_IMAGES_FOUND"
+    const val PRIVATE_IMAGES_REQUEST_STATUS = "PRIVATE_IMAGES_REQUEST_STATUS"
+    const val MY_ID = "MY_ID"
+    const val OTHER_ID = "OTHER_ID"
 
 
     /// Twitter

@@ -165,6 +165,7 @@
             android:layout_marginStart="@dimen/_5sdp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_delete_icon"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/timeGuideline"
             app:layout_constraintTop_toBottomOf="@id/continueDialog"

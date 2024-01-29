@@ -232,6 +232,7 @@ class MessengerListAdapter(
                     option = 0
                     unseenMessages.visibility = View.GONE
                     continueDialog.visibility = View.VISIBLE
+                    ivDelete.setViewVisible()
 
                     holder.viewBinding.rootChiled.background = context.getDrawable(android.R.color.transparent);
                     holder.viewBinding.title.setTextColor(
@@ -260,25 +261,7 @@ class MessengerListAdapter(
                     )
 
                 }
-                //  root.setBackgroundColor(ContextCompat.getColor(context, itemColors[option]))
-//                title.setTextColor(
-//                    ContextCompat.getColor(
-//                        context,
-//                        textPairColors[option].first
-//                    )
-//                )
-//                subtitle.setTextColor(
-//                    ContextCompat.getColor(
-//                        context,
-//                        textPairColors[option].second
-//                    )
-//                )
-//                continueDialog.setColorFilter(
-//                    ContextCompat.getColor(
-//                        context,
-//                        textPairColors[option].second
-//                    )
-//                )
+
                 if (msg?.content?.contains("media/chat_files") == true) {
                     val ext = msg.content.findFileExtension()
                     val stringResId =
@@ -391,6 +374,7 @@ class MessengerListAdapter(
                     unseenMessages.text = roomData.node?.unread
                     unseenMessages.visibility = View.VISIBLE
                     continueDialog.visibility = View.GONE
+                    ivDelete.setViewGone()
 
                     holder.viewBinding.time.setTextColor(
                         ContextCompat.getColor(
@@ -423,6 +407,7 @@ class MessengerListAdapter(
                     option = 0
                     unseenMessages.visibility = View.GONE
                     continueDialog.visibility = View.VISIBLE
+                    ivDelete.setViewVisible()
 
 
                     holder.viewBinding.rootChiled.background = context.getDrawable(android.R.color.transparent);

@@ -11,10 +11,16 @@ class ImageSliderAdapter(fragmentManager: FragmentManager, private val movies: M
 
 //    private val MAX_VALUE = 200
 
-
+    private var isPrivateImagesFound = false
+    private var privatePhotoRequestStatus = ""
+    constructor(fragmentManager: FragmentManager, movies: MutableList<Photo>?, isPrivateImagesFound: Boolean, privatePhotoRequestStatus: String)
+            : this(fragmentManager, movies) {
+        this.isPrivateImagesFound = isPrivateImagesFound
+        this.privatePhotoRequestStatus = privatePhotoRequestStatus
+            }
 
     override fun getItem(position: Int): Fragment {
-        return ImageFragment.newInstance(movies!![position])
+        return ImageFragment.newInstance(movies!![position], (isPrivateImagesFound && (movies.lastIndex == position)), privatePhotoRequestStatus)
     }
 
 
