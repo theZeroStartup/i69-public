@@ -50,6 +50,7 @@ import com.i69.ui.adapters.ImageSliderAdapter
 import com.i69.ui.adapters.StoryLikesAdapter
 import com.i69.ui.adapters.UserItemsAdapter
 import com.i69.ui.base.BaseFragment
+import com.i69.ui.base.profile.PRIVATE
 import com.i69.ui.base.profile.PUBLIC
 import com.i69.ui.screens.SplashActivity
 import com.i69.ui.screens.main.MainActivity
@@ -340,6 +341,9 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                 var pos = it
                                 var imageView = view.findViewById<ImageView>(com.i69.R.id.userIv)
 
+                                var privateUrl = ""
+                                var privatePhoto: Photo? = null
+
 
                                 if (it <= data.user!!.avatarPhotos!!.size) {
                                     data.user?.avatarPhotos?.get(it)?.let {
@@ -349,12 +353,13 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                             var cancelView =
                                                 view.findViewById<MaterialTextView>(com.i69.R.id.cd_cancelview)
 
-                                            val url = data.user!!.avatarPhotos!!.get(
+                                            privateUrl = data.user!!.avatarPhotos!!.get(
                                                 data.user!!.avatarIndex!!
-                                            ).url
+                                            ).url.toString()
+                                            privatePhoto = Photo(photo?.id.toString(), privateUrl, PRIVATE)
 
                                             glide.load(
-                                                url?.replace(
+                                                privateUrl?.replace(
                                                     "${BuildConfig.BASE_URL_REP}media/",
                                                     "${BuildConfig.BASE_URL}media/"
                                                 )
@@ -414,11 +419,12 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
                                             val photo_ = data.user!!.avatarPhotos!![i]
 
-                                            dataarray.add(photo_)
-//                                            if (photo_.type == PUBLIC) {
-//                                            }
-
-
+                                            if (photo_.type == PUBLIC) {
+                                                dataarray.add(photo_)
+                                            }
+                                            else {
+                                                privatePhoto?.let { it1 -> dataarray.add(it1) }
+                                            }
                                         }
 
                                         Log.d(
