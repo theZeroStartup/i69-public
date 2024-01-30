@@ -278,6 +278,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                         binding.followerLayout.btnFollow.visibility= View.VISIBLE
                         binding.followerLayout.btnVisitorSearchUser.visibility = View.GONE
                     }
+                    Log.d("SUPF", "setupTheme: ${data.user?.subscription}")
                     if (!data.user!!.subscription.isNullOrEmpty()) {
                         if (data.user!!.subscription.equals("PLATINUM",true)) {
                             binding.otherProfileLayout.txtMember.text = getString(R.string.text_platnium)
@@ -315,6 +316,9 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
                         binding.userImgHeader.addOnPageChangeListener(this@SearchUserProfileFragment)
                         var isPrivateImagesFound = false
+                        var privateUrl = ""
+                        var privatePhoto: Photo? = null
+                        
                         try {
                             binding.userImgHeader.setViewListener(ViewListener {
 
@@ -327,7 +331,6 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                         null
                                     )
                                 } else {
-                                    isPrivateImagesFound = true
                                     requireActivity().getWindow().setFlags(
                                         WindowManager.LayoutParams.FLAG_SECURE,
                                         WindowManager.LayoutParams.FLAG_SECURE
@@ -341,13 +344,11 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                                 var pos = it
                                 var imageView = view.findViewById<ImageView>(com.i69.R.id.userIv)
 
-                                var privateUrl = ""
-                                var privatePhoto: Photo? = null
 
-
-                                if (it <= data.user!!.avatarPhotos!!.size) {
+                                if (it <= data.user?.avatarPhotos?.size!!) {
                                     data.user?.avatarPhotos?.get(it)?.let {
                                         if (photo?.type != PUBLIC) {
+                                            isPrivateImagesFound = true
                                             var requestView =
                                                 view.findViewById<MaterialTextView>(com.i69.R.id.cd_requestview)
                                             var cancelView =

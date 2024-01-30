@@ -78,8 +78,19 @@ class FeedsFragment : BaseFragment<FragmentFeedBinding>() ,
         return exoPlayer
     }
 
+    override fun resumeVideo(mediaItem: MediaItem): ExoPlayer {
+        exoPlayer.setMediaItem(mediaItem)
+        exoPlayer.seekTo(exoPlayer.currentPosition)
+        exoPlayer.play()
+        return exoPlayer
+    }
+
     override fun isPlaying(): Boolean {
         return exoPlayer.isPlaying
+    }
+
+    override fun isPaused(): Boolean {
+        return exoPlayer.currentPosition > 0L
     }
 
     override fun pauseVideo() {

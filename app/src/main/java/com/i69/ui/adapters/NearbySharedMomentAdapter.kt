@@ -367,33 +367,6 @@ class NearbySharedMomentAdapter(
                 listener.onLikeofMomentClick(bindingAdapterPosition, item_data)
             })
 
-            viewBinding.imgNearbyUserComment.setOnClickListener(View.OnClickListener {
-                if (listener.isPlaying() && !isImageFile(item_data)) {
-                    listener.pauseVideo()
-                    viewBinding.ivPlay.setViewVisible()
-                }
-                if (!isImageFile(item_data)) {
-                    listener.pauseVideo()
-                    viewBinding.ivPlay.setViewVisible()
-                }
-                selectedItemPosition = -1
-                notifyDataSetChanged()
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-            })
-
-            viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
-                if (listener.isPlaying() && !isImageFile(item_data)) {
-                    listener.pauseVideo()
-                    viewBinding.ivPlay.setViewVisible()
-                }
-                if (!isImageFile(item_data)) {
-                    listener.pauseVideo()
-                    viewBinding.ivPlay.setViewVisible()
-                }
-                selectedItemPosition = -1
-                notifyDataSetChanged()
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-            })
             viewBinding.ivFullscreen.setOnClickListener(View.OnClickListener {
                 if (listener.isPlaying() && !isImageFile(item_data)) {
                     listener.pauseVideo()
@@ -408,20 +381,68 @@ class NearbySharedMomentAdapter(
                 listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
 
+            viewBinding.imgNearbyUserComment.setOnClickListener(View.OnClickListener {
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
+            })
+
+            viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
+            })
+            viewBinding.itemCell.setOnClickListener(View.OnClickListener {
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
+            })
+
             viewBinding.imgNearbyUserGift.setOnClickListener(View.OnClickListener {
                 if (listener.isPlaying() && !isImageFile(item_data)) {
                     listener.pauseVideo()
                     viewBinding.ivPlay.setViewVisible()
                 }
-                if (!isImageFile(item_data)) {
-                    listener.pauseVideo()
-                    viewBinding.ivPlay.setViewVisible()
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
                 }
-                selectedItemPosition = -1
-                notifyDataSetChanged()
-                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
             })
-
 
             viewBinding.imgNearbySharedMomentOption.setOnClickListener(View.OnClickListener {
 
@@ -495,6 +516,12 @@ class NearbySharedMomentAdapter(
                     itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
         }
 
+        @OptIn(UnstableApi::class) private fun resumeVideo(mediaItem: MediaItem) {
+            val exoPlayer = listener.resumeVideo(mediaItem)
+            viewBinding.playerView.player = exoPlayer
+            viewBinding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        }
+
         @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
             val exoPlayer = listener.playVideo(mediaItem, playWhenReady)
             viewBinding.playerView.player = exoPlayer
@@ -505,7 +532,11 @@ class NearbySharedMomentAdapter(
     interface NearbySharedMomentListener {
         fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer
 
+        fun resumeVideo(mediaItem: MediaItem): ExoPlayer
+
         fun isPlaying(): Boolean
+
+        fun isPaused(): Boolean
 
         fun pauseVideo()
 

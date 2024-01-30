@@ -44,8 +44,7 @@
                             android:src="@drawable/back_new1"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/colorPrimary" />
+                            app:layout_constraintTop_toTopOf="parent"/>
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/user_profile_img_container"
