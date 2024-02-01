@@ -139,14 +139,17 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
 
 
         binding.tvSkip.setOnClickListener {
-
-            showProgressView()
+//            showProgressView()
             val searchKey: String = ""
             var bundle = Bundle()
             bundle.putInt("interestedIn", interestedIn.id)
             bundle.putString("searchKey", searchKey)
             bundle.putBoolean("hasSkip", true)
 
+            navController.navigate(
+                R.id.action_searchFiltersFragment_to_searchResultFragment,
+                args = bundle
+            )
             val searchRequest = SearchRequest(
                 interestedIn = interestedIn.id,
                 id = userId!!,
@@ -154,31 +157,31 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
 
             )
             Log.d("ExtraSearchCalls", "setupTheme: ")
-            mViewModel.getSearchUsers(
-                _searchRequest = searchRequest,
-                token = userToken!!,
-                context = requireContext(),
-                hasSkip = true,
-            ) { error ->
-                if (error == null) {
-                    hideProgressView()
-//                    var bundle = Bundle()
-//                    bundle.putInt("interestedIn", interestedIn.id)
-//                    bundle.putString("searchKey", searchKey)
-
-                    navController.navigate(
-                        R.id.action_searchFiltersFragment_to_searchResultFragment,
-                        args = bundle
-                    )
-                } else {
-                    hideProgressView()
-                    binding.root.snackbar(error)
-                }
-            }
+//            mViewModel.getSearchUsers(
+//                _searchRequest = searchRequest,
+//                token = userToken!!,
+//                context = requireContext(),
+//                hasSkip = true,
+//            ) { error ->
+//                if (error == null) {
+//                    hideProgressView()
+////                    var bundle = Bundle()
+////                    bundle.putInt("interestedIn", interestedIn.id)
+////                    bundle.putString("searchKey", searchKey)
+//
+//                    navController.navigate(
+//                        R.id.action_searchFiltersFragment_to_searchResultFragment,
+//                        args = bundle
+//                    )
+//                } else {
+//                    hideProgressView()
+//                    binding.root.snackbar(error)
+//                }
+//            }
         }
 
         mViewModel.searchBtnClickListener = View.OnClickListener {
-            showProgressView()
+//            showProgressView()
 //            if (mViewModel.maxDistanceValue.get().roundToInt() == 0) {
             if (isLocationEnabled()) {
                 val searchKey: String = ""
@@ -187,31 +190,40 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                     id = userId!!,
                     searchKey = searchKey,
                 )
+
+                var bundle = Bundle()
+                bundle.putInt("interestedIn", interestedIn.id)
+                bundle.putString("searchKey", searchKey)
+
+                navController.navigate(
+                    R.id.action_searchFiltersFragment_to_searchResultFragment,
+                    args = bundle
+                )
                 Log.d("ExtraSearchCalls", "setupTheme: 2")
-                mViewModel.getSearchUsers(
-                    _searchRequest = searchRequest,
-                    token = userToken!!,
-                    context = requireContext(),
-                ) { error ->
-                    if (error == null) {
-
-//                    setupViewPagerData()
-                        hideProgressView()
-
-                        var bundle = Bundle()
-                        bundle.putInt("interestedIn", interestedIn.id)
-                        bundle.putString("searchKey", searchKey)
-
-                        navController.navigate(
-                            R.id.action_searchFiltersFragment_to_searchResultFragment,
-                            args = bundle
-                        )
-//                    navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
-                    } else {
-//                    hideProgressView()
-//                    binding.root.snackbar(error)
-                    }
-                }
+//                mViewModel.getSearchUsers(
+//                    _searchRequest = searchRequest,
+//                    token = userToken!!,
+//                    context = requireContext(),
+//                ) { error ->
+//                    if (error == null) {
+//
+////                    setupViewPagerData()
+//                        hideProgressView()
+//
+//                        var bundle = Bundle()
+//                        bundle.putInt("interestedIn", interestedIn.id)
+//                        bundle.putString("searchKey", searchKey)
+//
+//                        navController.navigate(
+//                            R.id.action_searchFiltersFragment_to_searchResultFragment,
+//                            args = bundle
+//                        )
+////                    navController.navigate(R.id.action_searchFiltersFragment_to_searchResultFragment)
+//                    } else {
+////                    hideProgressView()
+////                    binding.root.snackbar(error)
+//                    }
+//                }
             }else {
                 if (!hasLocationPermission(requireContext(), locPermissions)) {
                     (requireActivity() as MainActivity).permissionReqLauncher.launch(locPermissions)

@@ -3,13 +3,14 @@ package com.i69.ui.base
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Context.RECEIVER_EXPORTED
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
+import android.widget.LinearLayout
 import androidx.annotation.ColorRes
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -24,6 +25,8 @@ import com.i69.data.preferences.UserPreferences
 import com.i69.firebasenotification.NotificationBroadcast
 import com.i69.singleton.App
 import com.i69.utils.createLoadingDialog
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 import kotlinx.coroutines.flow.first
 import java.io.File
 
@@ -170,6 +173,14 @@ abstract class BaseFragment<dataBinding : ViewDataBinding> : Fragment() {
         val window = requireActivity().window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = ContextCompat.getColor(requireActivity(), color)
+    }
+
+    protected fun showProgressWithoutBlocking(view: View) {
+        view.findViewById<LinearLayoutCompat>(R.id.llProgressRoot)?.setViewVisible()
+    }
+
+    protected fun hideProgress(view: View) {
+        view.findViewById<LinearLayoutCompat>(R.id.llProgressRoot)?.setViewGone()
     }
 
     protected fun showProgressView() {

@@ -3,8 +3,11 @@ package com.i69.ui.screens.main.search.result
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -85,10 +88,21 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        Log.d("SRFrag", "onCreate: ")
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        callSearchRandomPeopleQuery()
+    }
+
     override fun onStart() {
         super.onStart()
 
-        callSearchRandomPeopleQuery()
 //        callSearchPopularUserQuery()
 //        callSearchMostActiveUserQuery()
     }
@@ -151,7 +165,8 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
 
     fun callSearchRandomPeopleQuery() {
-        showProgressView()
+//        showProgressWithoutBlocking(binding.root)
+        binding.shimmer.startShimmer()
         val interestedIn = requireArguments().getInt("interestedIn")
         val searchKey = requireArguments().getString("searchKey")
         Log.e("interestedInRandom ", "$interestedIn")
@@ -200,7 +215,12 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
             context = requireContext(),
             hasSkip = hasSkip,
         ) { error ->
-            hideProgressView()
+//            hideProgress(binding.root)
+            TransitionManager.beginDelayedTransition(binding.clRoot, AutoTransition())
+            binding.shimmer.apply {
+                stopShimmer()
+                setViewGone()
+            }
             setupViewPagerData()
             if (error == null) {
                 Log.e("calllUpdateQuery", "calllUpdateQuery")

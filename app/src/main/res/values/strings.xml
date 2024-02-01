@@ -131,7 +131,7 @@
     <string name="user_message" translatable="false">%s : %s</string>
 
 
-    <string name="loading">Loading…</string>
+    <string name="loading">Loading</string>
     <string name="male">male</string>
     <string name="female">female</string>
     <string name="not_enough_coins">Not enough coins</string>

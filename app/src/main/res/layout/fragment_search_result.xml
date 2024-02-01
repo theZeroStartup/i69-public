@@ -11,6 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background">
@@ -208,6 +209,61 @@
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/user_tab_idle_text"
             app:tabTextColor="@color/user_tab_selected_text" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llProgressRoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/slidingTabs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center">
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/circular_progress"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flow_wrapMode="chain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/slidingTabs">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+
+                <include layout="@layout/list_item_searched_user_shimmer" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/searchPageViewPager"

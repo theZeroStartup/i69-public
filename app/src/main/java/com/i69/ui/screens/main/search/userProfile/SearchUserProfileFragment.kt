@@ -268,7 +268,6 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
                     otherFirstName = data.user?.fullName
                     binding.sendgiftto.text =
                         AppStringConstant1.send_git_to + " " + otherFirstName!!
-
                     if(data.user!!.isConnected){
                         binding.followerLayout.lyfollowBtns.weightSum = 2f
                         binding.followerLayout.btnFollow.visibility= View.GONE
