@@ -69,7 +69,7 @@ class UsersSearchListAdapter(
                         Log.e("userprofile","${item.fullName} --> $imageUrl")
                         if (imageUrl != null) {
                             holder.viewBinding.photoCover.loadCircleImage(
-                                imageUrl
+                                imageUrl, true
                             )
                         }
                     }

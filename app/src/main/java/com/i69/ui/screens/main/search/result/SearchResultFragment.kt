@@ -166,7 +166,10 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>() {
 
     fun callSearchRandomPeopleQuery() {
 //        showProgressWithoutBlocking(binding.root)
-        binding.shimmer.startShimmer()
+        binding.shimmer.apply {
+            startShimmer()
+            setViewVisible()
+        }
         val interestedIn = requireArguments().getInt("interestedIn")
         val searchKey = requireArguments().getString("searchKey")
         Log.e("interestedInRandom ", "$interestedIn")

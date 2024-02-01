@@ -41,7 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="38dp"
                 android:background="@drawable/transparent_yellow_background"
-                android:backgroundTint="#C2C2C2"
+                android:backgroundTint="@color/grey_shimmer"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,8 +82,7 @@
                         android:lines="1"
                         android:maxLines="2"
                         android:textColor="@android:color/black"
-                        android:textSize="17sp"
-                        tools:text="Clara, 25" />
+                        android:textSize="17sp"/>
 
                 </LinearLayout>
 
@@ -175,8 +174,7 @@
                         android:lines="1"
                         android:maxLines="2"
                         android:textColor="@android:color/black"
-                        android:textSize="17sp"
-                        tools:text="Clara, 25" />
+                        android:textSize="17sp"/>
 
                 </LinearLayout>
 

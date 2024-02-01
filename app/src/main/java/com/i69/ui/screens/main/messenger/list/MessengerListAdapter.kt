@@ -180,7 +180,7 @@ class MessengerListAdapter(
             if (roomData.node?.userId?.id.equals(userId)) {
                 roomData.node?.target?.avatar.let { imgSrc ->
                     if (imgSrc != null) {
-                        imgSrc.url?.let { img.loadCircleImage(it) }
+                        imgSrc.url?.let { img.loadCircleImage(it, true) }
                     } else {
                         img.loadCircleImage("")
                     }
@@ -351,7 +351,7 @@ class MessengerListAdapter(
                 roomData.node?.userId?.avatar.let { imgSrc ->
                     when {
                         imgSrc != null -> {
-                            img.loadCircleImage(imgSrc.url!!)
+                            img.loadCircleImage(imgSrc.url.toString(), true)
                         }
                         roomData.node?.id == "001" || roomData.node?.id == "000" -> {
                             img.loadCircleImage(R.drawable.ic_chat_item_logo_new)

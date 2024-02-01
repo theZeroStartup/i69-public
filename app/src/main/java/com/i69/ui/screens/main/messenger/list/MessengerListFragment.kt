@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -302,27 +304,10 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
 
     override fun onResume() {
         super.onResume()
-       /* if (allRoom.size == 0) {
-            allRoom.clear()
-            updateList(true)
-        }
-        if (allRoom.size != 0) {
-            allRoom.clear()
-            updateList(true)
-        }*/
-
         allRoom.clear()
         updateList(true)
 
-        /*LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(
-            broadcast!!, IntentFilter(Constants.INTENTACTION)
-        );*/
-//        val intentFilter = IntentFilter()
-//        intentFilter.addAction("com.my.app.onMessageReceived")
-//        intentFilter.addAction("gift_Received")
-//        activity?.registerReceiver(broadCastReceiver, intentFilter)
         getMainActivity().setDrawerItemCheckedUnchecked(null)
-
     }
 
     public fun updateView(state: String) {
@@ -393,10 +378,10 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
                 Timber.d("apolloResponse ${e.message}")
                 binding.root.snackbar("${e.message}")
 //                binding.root.snackbar("Exception to get room ${e.message}")
-                hideProgressView()
+                stopShimmerEffect()
                 return@launchWhenResumed
             }
-            hideProgressView()
+            stopShimmerEffect()
             val Rooms = res.data?.room
             val chatBundle = Bundle()
             if (Rooms?.userId!!.id.equals(userId)) {
@@ -608,7 +593,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
 
     fun updateList(isProgressShow: Boolean) {
          if (isProgressShow) {
-             showProgressView()
+             startShimmerEffect()
          }
         allRoom.clear()
 
@@ -623,7 +608,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
             } catch (e: ApolloException) {
                 Timber.d("apolloResponsegetBroadcastMessage ${e.message}")
                 binding.root.snackbar("${e.message}")
-                hideProgressView()
+                stopShimmerEffect()
                 return@launchWhenResumed
             }
             if (resBroadcast.hasErrors()) {
@@ -679,7 +664,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
             } catch (e: ApolloException) {
                 Timber.d("apolloResponse all moments ${e.message}")
                 binding.root.snackbar("${e.message}")
-                hideProgressView()
+                stopShimmerEffect()
                 return@launchWhenResumed
             }
             if (res.hasErrors() && !res.errors.isNullOrEmpty()) {
@@ -801,7 +786,7 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
                 //here
                 //messengerListAdapter.submitList1(allRoom)
             }
-            hideProgressView()
+            stopShimmerEffect()
             messengerListAdapter.submitList1(allRoom)
 
             if (allRoom.size != 0) {
@@ -839,6 +824,23 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
             }
         }, 1000)
 
+    }
+
+    private fun stopShimmerEffect() {
+        TransitionManager.beginDelayedTransition(binding.clRoot, AutoTransition())
+        binding.shimmer.apply {
+            stopShimmer()
+            setViewGone()
+            binding.messengerList.setViewVisible()
+        }
+    }
+
+    private fun startShimmerEffect() {
+        binding.shimmer.apply {
+            setViewVisible()
+            startShimmer()
+            binding.messengerList.setViewGone()
+        }
     }
 
     override fun onItemClick(AllroomEdge: GetAllRoomsQuery.Edge, position: Int) {
@@ -953,10 +955,10 @@ class MessengerListFragment : BaseFragment<FragmentMessengerListBinding>(), Mess
 
     private fun deleteChatRoom(roomId: String) {
         if (roomId.isNotEmpty()) {
-            showProgressView()
+            startShimmerEffect()
             viewModel.deleteChatRoom(roomId.toInt(), userToken.toString()) {
                 Log.d("MLF", "onItemDeleteClicked: ${it?.message}")
-                hideProgressView()
+                stopShimmerEffect()
                 when(it) {
                     is Resource.Success -> {
                         Log.d("MLF", "onItemDeleteClicked: ${it?.data?.data?.message}")

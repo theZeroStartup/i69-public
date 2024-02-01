@@ -174,5 +174,6 @@
     <color name="colorEndGradientPriceCompare">#B48E39</color>
     <color name="black_trans_bottom_sheet_back">#99000000</color>
     <color name="storyTopBackground">#333A3A3A</color>
+    <color name="grey_shimmer">#C2C2C2</color>
 
 </resources>

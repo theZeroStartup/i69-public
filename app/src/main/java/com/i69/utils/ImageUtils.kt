@@ -32,9 +32,12 @@ suspend fun Context.getBitmap(imageSrc: String) =
             .get()
     }
 
-fun ImageView.loadCircleImage(imageUrl: String, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
+fun ImageView.loadCircleImage(imageUrl: String, isPlaceHolderUsed: Boolean = false, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
     val requestOptions = RequestOptions().circleCrop()/*.placeholder(R.drawable.ic_default_user)*/.error(R.drawable.ic_default_user)
-    loadImage(imageUrl, requestOptions, callback, failure)
+    if (isPlaceHolderUsed)
+        loadImageWithPlaceholder(imageUrl, requestOptions, callback, failure)
+    else
+        loadImage(imageUrl, requestOptions, callback, failure)
 }
 
 fun ImageView.loadCircleBlurImage(imageUrl: String, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
@@ -94,6 +97,43 @@ fun ImageView.loadBlurImage(imageSrc: Any, requestOptions: RequestOptions, callb
 }
 
 
+fun ImageView.loadImageWithPlaceholder(imageSrc: Any, requestOptions: RequestOptions, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)?) {
+    try {
+        Glide
+            .with(this.context)
+            .load(imageSrc)
+            .thumbnail(0.5f)
+            .placeholder(R.drawable.ic_default_user)
+            .apply(requestOptions)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    failure?.invoke(e)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    callback?.invoke(resource)
+                    return false
+                }
+            })
+            .into(this)
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 
 fun ImageView.loadImage(imageSrc: Any, requestOptions: RequestOptions, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)?) {
     try {
