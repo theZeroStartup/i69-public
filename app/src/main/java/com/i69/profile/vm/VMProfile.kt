@@ -262,6 +262,8 @@ class VMProfile @Inject constructor(
 
     }
 
+    private var feed: FeedsFragment? = null
+    private var moment: MomentsFragment? = null
 
     fun setupViewPager(
         childFragmentManager: FragmentManager,
@@ -274,14 +276,14 @@ class VMProfile @Inject constructor(
         val adapter = UserItemsAdapter(childFragmentManager)
         val about = UserProfileAboutFragment()
         //val interests = UserProfileInterestsFragment()
-        val feed = FeedsFragment()
-        val moment = MomentsFragment()
-        moment.setOnAllMomentsDeleted {
+        feed = FeedsFragment()
+        moment = MomentsFragment()
+        moment?.setOnAllMomentsDeleted {
             if (it) updateViewPagerTabs()
         }
         val useriddata = Bundle()
         if (user != null) useriddata.putString(EXTRA_USER_MODEL, Gson().toJson(user))
-        moment.arguments = useriddata
+        moment?.arguments = useriddata
         val userDataArgs = Bundle()
         if (user != null) userDataArgs.putString(EXTRA_USER_MODEL, Gson().toJson(user))
         userDataArgs.putString("default_picker", Gson().toJson(defaultPicker))
@@ -314,17 +316,24 @@ class VMProfile @Inject constructor(
 //        )
 
         Log.e("callTranslation11111","callTranslation==>"+viewStringConstModel!!.feed)
-        adapter.addFragItem(
-            feed,
-            viewStringConstModel!!.feed!!
-        )
-
-        if (isUserHasMoments) {
+        if (feed != null) {
             adapter.addFragItem(
-                moment,
+                feed!!,
+                viewStringConstModel!!.feed!!
+            )
+        }
+
+        if (isUserHasMoments && moment != null) {
+            adapter.addFragItem(
+                moment!!,
                 viewStringConstModel.moment)
         }
         return adapter
+    }
+
+    fun pauseVideo() {
+        feed?.pauseVideoOnSwipe()
+        moment?.pauseVideoOnSwipe()
     }
 
     val removeMomentFromUserFeed = MutableLiveData(false)

@@ -216,6 +216,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
         }
     }
 
+    var prevPos = 0
+
     private fun finalizeViewPagerSetup(userHasMoments: Boolean, data: VMProfile.DataCombined) {
         binding.profileTabs.setupWithViewPager(binding.userDataViewPager)
         binding.userDataViewPager.isSaveEnabled = false;
@@ -227,6 +229,25 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), OnPageCh
                 requireContext(),
                 userHasMoments
             )
+
+        binding.userDataViewPager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {}
+
+            override fun onPageSelected(position: Int) {
+                if (prevPos != position)
+                    viewModel.pauseVideo()
+                prevPos = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+        })
         binding.userDataViewPager.offscreenPageLimit = 3
     }
 

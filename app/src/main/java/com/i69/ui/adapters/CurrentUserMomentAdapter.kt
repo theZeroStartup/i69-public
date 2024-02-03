@@ -3,6 +3,7 @@ package com.i69.ui.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -14,11 +15,18 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.OptIn
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.ViewDataBinding
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.i69.BuildConfig
+import com.i69.GetAllUserMomentsQuery
 import com.i69.GetUserMomentsQuery
 import com.i69.R
 import com.i69.applocalization.AppStringConstant1
@@ -26,6 +34,8 @@ import com.i69.databinding.ItemSharedUserMomentBinding
 import com.i69.utils.ApiUtil
 import com.i69.utils.loadCircleImage
 import com.i69.utils.loadImage
+import com.i69.utils.setViewGone
+import com.i69.utils.setViewVisible
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,6 +47,7 @@ class CurrentUserMomentAdapter(
     var userId: String?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var selectedItemPosition: Int = -1
 
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("UTC")
@@ -70,6 +81,11 @@ class CurrentUserMomentAdapter(
     }
     override fun getItemCount(): Int {
         return if (currentUserMoments == null) 0 else currentUserMoments?.size!!
+    }
+
+    fun pauseAll() {
+        selectedItemPosition = -1
+        notifyDataSetChanged()
     }
 
     inner class NearbySharedMomentHolder(val viewBinding: ItemSharedUserMomentBinding) : RecyclerView.ViewHolder(viewBinding.root) {
@@ -114,6 +130,41 @@ class CurrentUserMomentAdapter(
             else ApiUtil.S3_URL.plus(item_data?.node.file.toString())
             Log.d("CUMA", "bind: $url")
 
+            if (isImageFile(item_data)){
+                viewBinding.playerView.visibility = View.INVISIBLE
+                viewBinding.ivPlay.setViewGone()
+                viewBinding.imgSharedMoment.setViewVisible()
+                viewBinding.imgSharedMoment.loadImage(url)
+            }
+            else {
+                if (position == selectedItemPosition && selectedItemPosition != -1) {
+                    Log.d("NSMA", "play: $position")
+
+                    viewBinding.ivPlay.setViewGone()
+                    viewBinding.imgSharedMoment.visibility = View.INVISIBLE
+                    viewBinding.playerView.setViewVisible()
+
+                    val uri: Uri = Uri.parse(url)
+                    val mediaItem = MediaItem.Builder()
+                        .setUri(uri)
+                        .setMimeType(MimeTypes.VIDEO_MP4)
+                        .build()
+                    playView(mediaItem, true)
+                }
+                else {
+                    viewBinding.playerView.visibility = View.INVISIBLE
+                    viewBinding.imgSharedMoment.setViewVisible()
+                    viewBinding.imgSharedMoment.loadImage(url)
+                    viewBinding.ivPlay.setViewVisible()
+                    Log.d("NSMA", "dont play: $position ${viewBinding.playerView?.player == null}")
+                }
+
+                viewBinding.ivPlay.setOnClickListener {
+                    selectedItemPosition = position
+                    notifyDataSetChanged()
+                }
+            }
+
             val avatarUrl = item_data?.node.user?.avatar
             if (avatarUrl != null) {
                 viewBinding.imgNearbyUser.loadCircleImage(avatarUrl.url.toString())
@@ -121,7 +172,6 @@ class CurrentUserMomentAdapter(
             else {
                 viewBinding.imgNearbyUser.loadImage(R.drawable.ic_default_user)
             }
-            viewBinding.imgSharedMoment.loadImage(url)
             viewBinding.txtMomentDescription.text = item_data?.node!!.momentDescriptionPaginated.toString()
             var text = item_data?.node!!.createdDate.toString()
             text = text.replace("T", " ").substring(0, text.indexOf("."))
@@ -170,31 +220,84 @@ class CurrentUserMomentAdapter(
 //            }
             }
 
-            viewBinding.root.setOnClickListener {
-                //holder.viewBinding.photoCover.transitionName = "profilePhoto"
-                //listener.onSharedMomentClick(bindingAdapterPosition, item)
-            }
+            viewBinding.ivFullscreen.setOnClickListener(View.OnClickListener {
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                if (!isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                selectedItemPosition = -1
+                notifyDataSetChanged()
+                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+            })
+
             viewBinding.imgNearbyUserLikes.setOnClickListener(View.OnClickListener {
                 listener.onLikeofMomentClick(bindingAdapterPosition, item_data)
             })
 
             viewBinding.imgNearbyUserComment.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition,item_data)
-
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
 
             viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition,item_data)
-
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
             viewBinding.itemCell.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition,item_data)
-
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
             viewBinding.imgNearbyUserGift.setOnClickListener(View.OnClickListener {
-                listener.onCommentofMomentClick(bindingAdapterPosition,item_data)
-//                listener.onMomentGiftClick(bindingAdapterPosition,item_data)
-
+                if (listener.isPlaying() && !isImageFile(item_data)) {
+                    listener.pauseVideo()
+                    viewBinding.ivPlay.setViewVisible()
+                }
+                else {
+                    if (!isImageFile(item_data)) {
+                        listener.pauseVideo()
+                        viewBinding.ivPlay.setViewVisible()
+                    }
+                    selectedItemPosition = -1
+                    notifyDataSetChanged()
+                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
+                }
             })
 
             viewBinding.imgNearbySharedMomentOption.setOnClickListener(View.OnClickListener {
@@ -247,9 +350,27 @@ class CurrentUserMomentAdapter(
                 }
             })
         }
+
+        private fun isImageFile(itemData: GetUserMomentsQuery.Edge): Boolean {
+            return itemData?.node?.file.toString().endsWith(".jpg") || itemData?.node?.file.toString().endsWith(".jpeg") ||
+                    itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
+        }
+
+        @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
+            val exoPlayer = listener.playVideo(mediaItem, playWhenReady)
+            viewBinding.playerView.player = exoPlayer
+            viewBinding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        }
     }
 
     interface CurrentUserMomentListener {
+
+        fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer
+
+        fun isPlaying(): Boolean
+
+        fun pauseVideo()
+
         fun onSharedMomentClick(
             position: Int,
             item: GetUserMomentsQuery.Edge

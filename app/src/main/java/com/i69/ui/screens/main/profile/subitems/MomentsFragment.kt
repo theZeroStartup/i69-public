@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +53,53 @@ class MomentsFragment : BaseFragment<FragmentFeedBinding>(), CurrentUserMomentAd
     var layoutManager: LinearLayoutManager? = null
 
     private lateinit var onAllMomentsDeleted: (Boolean) -> Unit
+
+    private lateinit var exoPlayer: ExoPlayer
+
+    override fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer {
+        exoPlayer.apply {
+            setMediaItem(mediaItem, false)
+            this.playWhenReady = playWhenReady
+            repeatMode = Player.REPEAT_MODE_ALL
+            prepare()
+        }
+        return exoPlayer
+    }
+
+    override fun isPlaying(): Boolean {
+        return exoPlayer.isPlaying
+    }
+
+    override fun pauseVideo() {
+        if (isPlaying())
+            exoPlayer.pause()
+    }
+
+    fun pauseVideoOnSwipe() {
+        if (exoPlayer.isPlaying) exoPlayer.pause()
+        if (this::currentUserMomentAdapter.isInitialized) {
+            currentUserMomentAdapter.pauseAll()
+        }
+    }
+
+    override fun onPause() {
+        if (exoPlayer.isPlaying) exoPlayer.pause()
+        if (this::currentUserMomentAdapter.isInitialized) {
+            currentUserMomentAdapter.pauseAll()
+        }
+        super.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        exoPlayer = ExoPlayer.Builder(requireContext()).build()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        exoPlayer.stop()
+        exoPlayer.release()
+    }
 
     fun setOnAllMomentsDeleted(onAllMomentsDeleted: (Boolean) -> Unit) {
         this.onAllMomentsDeleted = onAllMomentsDeleted

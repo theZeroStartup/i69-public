@@ -326,8 +326,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             )
 
             when (val response = viewModel.login(loginRequest)) {
-
                 is Resource.Success -> {
+                    Log.d("LFrag", "onLoginSuccess: ${response.data?.data}")
                     val nameValue =
                         if (provider == com.i69.data.enums.LoginProvider.TWITTER) response.data?.data?.username else name
                     val compressedFilePath =

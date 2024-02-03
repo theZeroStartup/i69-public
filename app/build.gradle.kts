@@ -196,6 +196,7 @@ dependencies {
     // Login
     implementation(Login.google)
     implementation(Login.facebook)
+    implementation(Login.facebookGraph)
 
     // Retrofit
     implementation(Others.retrofit)

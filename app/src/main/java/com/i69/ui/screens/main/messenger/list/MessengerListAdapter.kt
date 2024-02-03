@@ -306,6 +306,7 @@ class MessengerListAdapter(
                     }
                 } else {
                     if (roomData.node?.id == "001" || roomData.node?.id == "000") {
+                        ivDelete.setViewGone()
                         subtitle.text = roomData.node.name
                         subtitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             null, null, null, null
@@ -510,6 +511,7 @@ class MessengerListAdapter(
                     }
                 } else {
                     if (roomData.node?.id == "001" || roomData.node?.id == "000") {
+                        ivDelete.setViewGone()
                         subtitle.text = roomData.node?.name
                         subtitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             null, null, null, null

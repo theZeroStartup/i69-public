@@ -218,11 +218,6 @@ class NearbySharedMomentAdapter(
             else ApiUtil.S3_URL.plus(item_data?.node?.file.toString())
             Log.d("NSMA", "bind: $url, ${item_data.node?.file.toString()}")
             Timber.d("binnd user avatar= ${item_data.node?.user?.avatar}")
-            /*if (item?.user?.avatarPhotos?.size!! > 0) {
-                Timber.d("binnd user avatar= ${item?.user?.avatarPhotos?.get(0)?.url}")
-                val avatarUrl = item?.user?.avatarPhotos?.get(0)?.url!!
-                viewBinding.imgNearbyUser.loadCircleImage(avatarUrl)
-            }*/
 
             if (isImageFile(item_data)){
                 viewBinding.playerView.visibility = View.INVISIBLE
@@ -516,12 +511,6 @@ class NearbySharedMomentAdapter(
                     itemData?.node?.file.toString().endsWith(".png") || itemData?.node?.file.toString().endsWith(".webp")
         }
 
-        @OptIn(UnstableApi::class) private fun resumeVideo(mediaItem: MediaItem) {
-            val exoPlayer = listener.resumeVideo(mediaItem)
-            viewBinding.playerView.player = exoPlayer
-            viewBinding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-        }
-
         @OptIn(UnstableApi::class) private fun playView(mediaItem: MediaItem, playWhenReady: Boolean) {
             val exoPlayer = listener.playVideo(mediaItem, playWhenReady)
             viewBinding.playerView.player = exoPlayer
@@ -532,11 +521,7 @@ class NearbySharedMomentAdapter(
     interface NearbySharedMomentListener {
         fun playVideo(mediaItem: MediaItem, playWhenReady: Boolean): ExoPlayer
 
-        fun resumeVideo(mediaItem: MediaItem): ExoPlayer
-
         fun isPlaying(): Boolean
-
-        fun isPaused(): Boolean
 
         fun pauseVideo()
 
