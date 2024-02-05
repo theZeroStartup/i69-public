@@ -104,6 +104,7 @@ import com.i69.utils.ApiUtil
 import com.i69.utils.LogUtil
 import com.i69.utils.apolloClient
 import com.i69.utils.apolloClientSubscription
+import com.i69.utils.autoSnackbarOnTop
 import com.i69.utils.getResponse
 import com.i69.utils.getVideoFilePath
 import com.i69.utils.loadImage
@@ -2811,8 +2812,8 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                     return@launchWhenResumed
                 }
 
+                binding.root.autoSnackbarOnTop("Moment reported")
                 if (res.hasErrors()) {
-
                 } else {
 
                 }

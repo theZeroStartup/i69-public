@@ -282,6 +282,8 @@ public class MessengerNewChatFragment : BaseFragment<FragmentNewMessengerChatBin
     }
 
     override fun setupTheme() {
+        val chatId = arguments?.getInt("chatId")
+        if (chatId == 0) binding.llCoinLeft.setViewGone()
         viewStringConstModel.data.observe(this@MessengerNewChatFragment) { data ->
 
             binding.stringConstant = data

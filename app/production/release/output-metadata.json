@@ -5,7 +5,7 @@
     "kind": "Directory"
   },
   "applicationId": "com.i69.isyxtinine",
-  "variantName": "stagingRelease",
+  "variantName": "productionRelease",
   "elements": [
     {
       "type": "SINGLE",
@@ -13,7 +13,7 @@
       "attributes": [],
       "versionCode": 165,
       "versionName": "64.8.8",
-      "outputFile": "app-staging-release.apk"
+      "outputFile": "app-production-release.apk"
     }
   ],
   "elementType": "File"
