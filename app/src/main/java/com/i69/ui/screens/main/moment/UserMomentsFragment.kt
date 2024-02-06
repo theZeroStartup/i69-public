@@ -137,6 +137,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         private const val TAG = "UserMomentsFragment"
     }
 
+    private var tempMomentsEdge = mutableListOf<GetAllUserMomentsQuery.Edge>()
     private var tempMoments = mutableListOf<ApolloResponse<OnNewMomentSubscription.Data>>()
     private var tempStories = mutableListOf<ApolloResponse<OnNewStorySubscription.Data>>()
     private var stories: ArrayList<GetAllUserMultiStoriesQuery.AllUserMultiStory?> = ArrayList()
@@ -1112,16 +1113,17 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                             Timber.d("reealltime response error = ${newMoment.errors?.get(0)?.message}")
                         } else {
                             Log.d(
-                                "UserMomentsSub",
-                                " moment realtime NewStoryData content ${newMoment.data?.onNewMoment?.moment}"
+                                "MomentSubsValidation",
+                                "1. ${tempMoments.toString()}"
                             )
                             Log.d(
-                                "UserMomentsSub",
-                                "moment realtime NewStoryData ${newMoment.data}"
+                                "MomentSubsValidation",
+                                "2. ${newMoment.data}"
                             )
 
                             if (!tempMoments.contains(newMoment)){
                                 tempMoments.add(newMoment)
+                                Log.d("MomentSubsValidation", "3. Passed ")
 
                                 val newMomentToAdd = newMoment.data?.onNewMoment?.moment
                                 if (newMomentToAdd != null && !allUserMomentsNew.any { it.node!!.id == newMomentToAdd.id }) {
@@ -1186,26 +1188,22 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                         "UserMomentsSub",
                                         "Initial Size  " + allUserMomentsNew.size.toString()
                                     )
-                                    allUserMomentsNew.add(0, newMomentEdge)
 
-                                    Log.d(
-                                        "UserMomentsSub",
-                                        "After Size  " + allUserMomentsNew.size.toString()
-                                    )
-                                    Log.d(
-                                        "UserMomentsSub",
-                                        "Added Moment ${newMomentEdge}"
-                                    )
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        Log.e("obj_node", "submitList1 801")
-                                        sharedMomentAdapter.submitList1(allUserMomentsNew)
+                                    if (!tempMomentsEdge.contains(newMomentEdge)) {
+                                        tempMomentsEdge.add(newMomentEdge)
+                                        Log.d("MomentSubsValidation", "4. Passed again")
+                                        allUserMomentsNew.add(0, newMomentEdge)
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            Log.e("obj_node", "submitList1 801")
+                                            sharedMomentAdapter.submitList1(allUserMomentsNew)
 //                                           sharedMomentAdapter.notifyItemInserted(0)
 
-                                        Log.e(
-                                            "TAG",
-                                            "subscribeForNewMoment: " + scrollY1 + " " + height
-                                        )
-                                        binding.bubble.isVisible = scrollY1 > height
+                                            Log.e(
+                                                "TAG",
+                                                "subscribeForNewMoment: " + scrollY1 + " " + height
+                                            )
+                                            binding.bubble.isVisible = scrollY1 > height
+                                        }
                                     }
                                 }
                             }
