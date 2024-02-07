@@ -18,6 +18,8 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -545,6 +547,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     var scrollY1 = 0
     var height = 0
     override fun setupTheme() {
+        startShimmerEffect()
         Log.e("setupTheme", "setupTheme")
 //        if(stories.isNotEmpty()){
 ////        if (mViewModel.userMomentsList.size != 0) {
@@ -633,6 +636,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 binding.rvSharedMoments.isNestedScrollingEnabled = false
                 //getAllUserMoments(width,size)
                 if (mViewModel.userMomentsList.size == 0) {
+                    startMomentsShimmerEffect()
                     getMainActivity().pref.edit().putString("checkUserMomentUpdate", "false")
                         .apply()
                     Log.d("UserMomentsSub", "usermomentnextpage")
@@ -710,6 +714,36 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 }
             })
 //        }
+        }
+    }
+
+    private fun startMomentsShimmerEffect() {
+        binding.shimmerMoments.apply {
+            setViewVisible()
+            startShimmer()
+        }
+    }
+
+    private fun stopMomentsShimmerEffect() {
+        TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
+        binding.shimmerMoments.apply {
+            setViewGone()
+            stopShimmer()
+        }
+    }
+
+    private fun startShimmerEffect() {
+        binding.shimmerStories.apply {
+            setViewVisible()
+            startShimmer()
+        }
+    }
+
+    private fun stopShimmerEffect() {
+        TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
+        binding.shimmerStories.apply {
+            setViewGone()
+            stopShimmer()
         }
     }
 
@@ -1896,6 +1930,9 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 //hideProgressView()
                 return@launchWhenResumed
             }
+
+            stopShimmerEffect()
+
             Timber.d("apolloResponse allUserStories stories ${res.hasErrors()}")
             var body = Gson().toJson(res.data)
             Log.e("rr4rr", "-->" + Gson().toJson(res) + "   " + body)
@@ -1906,27 +1943,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                     "$errorMessage",
                     Toast.LENGTH_SHORT
                 ).show()
-//                Toast.makeText(
-//                    requireContext(),
-//                    "MultiStory Exception $errorMessage",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-                //    Log.e("rr4rrrr","-->"+res.errors!!.get(0).nonStandardFields!!.get("code"))
-                /*     if(res.errors!!.get(0).nonStandardFields!!.get("code").toString().equals("InvalidOrExpiredToken"))
-                     {
-                         // error("User doesn't exist")
-
-                         lifecycleScope.launch(Dispatchers.Main) {
-                             userPreferences.clear()
-                             if(activity!=null)
-                             {
-                                 //App.userPreferences.saveUserIdToken("","","")
-                                 val intent = Intent(activity, SplashActivity::class.java)
-                                 startActivity(intent)
-                                 requireActivity().finishAffinity()
-                             }    }                   }*/
             }
-            // hideProgressView()
 
             val allUserMultiStories = res.data?.allUserMultiStories!!.also {
                 usersMultiStoryAdapter =
@@ -1961,12 +1978,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                         outRect.left = 20
                     }
                 })
-            }
-            if (allUserMultiStories.isNotEmpty()) {
-                /*                Timber.d("apolloResponse: stories ${allUserMultiStories?.size}")
-                                Timber.d("apolloResponse: stories ${allUserMultiStories?.get(0)?.node!!.file}")
-                                Timber.d("apolloResponse: stories ${allUserMultiStories?.get(0)?.node!!.id}")
-                                Timber.d("apolloResponse: stories ${allUserMultiStories?.get(0)?.node!!.createdDate}")*/
             }
         }
     }
@@ -2556,6 +2567,9 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         userToken?.let {
             Log.d("UserMomentsFragment", "UserMomentNextPage Calling")
             mViewModel.getAllMoments(requireContext(), it, width, size, i, endCursors) { error ->
+                requireActivity().runOnUiThread {
+                    stopMomentsShimmerEffect()
+                }
                 alreadyFetching = false
                 if (error == null) {
                     activity?.runOnUiThread {

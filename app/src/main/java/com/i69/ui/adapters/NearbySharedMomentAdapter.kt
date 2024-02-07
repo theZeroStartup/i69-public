@@ -223,7 +223,7 @@ class NearbySharedMomentAdapter(
                 viewBinding.playerView.visibility = View.INVISIBLE
                 viewBinding.ivPlay.setViewGone()
                 viewBinding.imgSharedMoment.setViewVisible()
-                viewBinding.imgSharedMoment.loadImage(url)
+                viewBinding.imgSharedMoment.loadImage(url, placeHolderType = 1)
             }
             else {
                 if (position == selectedItemPosition && selectedItemPosition != -1) {

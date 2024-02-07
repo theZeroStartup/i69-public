@@ -32,10 +32,10 @@ suspend fun Context.getBitmap(imageSrc: String) =
             .get()
     }
 
-fun ImageView.loadCircleImage(imageUrl: String, isPlaceHolderUsed: Boolean = false, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
+fun ImageView.loadCircleImage(imageUrl: String, placeHolderType: Int = -1, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
     val requestOptions = RequestOptions().circleCrop()/*.placeholder(R.drawable.ic_default_user)*/.error(R.drawable.ic_default_user)
-    if (isPlaceHolderUsed)
-        loadImageWithPlaceholder(imageUrl, requestOptions, callback, failure)
+    if (placeHolderType == 0 || placeHolderType == 1)
+        loadCircleImageWithPlaceholder(imageUrl, requestOptions, callback, failure, placeHolderType)
     else
         loadImage(imageUrl, requestOptions, callback, failure)
 }
@@ -54,6 +54,14 @@ fun ImageView.loadCircleImage(imageUrl: Int, callback: ((Drawable?) -> Unit)? = 
 fun ImageView.loadImage(imageSrc: Any, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
     val requestOptions = RequestOptions().fitCenter()/*.placeholder(R.drawable.ic_default_user)*/.error(R.drawable.ic_default_user)
     loadImage(imageSrc, requestOptions, callback, failure)
+}
+
+fun ImageView. loadImage(imageSrc: Any, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null, placeHolderType: Int = -1) {
+    val requestOptions = RequestOptions().fitCenter()/*.placeholder(R.drawable.ic_default_user)*/.error(R.drawable.ic_default_user)
+    if (placeHolderType == 0 || placeHolderType == 1)
+        loadImageWithPlaceholder(imageSrc, placeHolderType, requestOptions, callback, failure)
+    else
+        loadImage(imageSrc, requestOptions, callback, failure)
 }
 
 fun ImageView.loadImageWithPlaceHolder(imageSrc: Any, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)? = null) {
@@ -97,13 +105,62 @@ fun ImageView.loadBlurImage(imageSrc: Any, requestOptions: RequestOptions, callb
 }
 
 
-fun ImageView.loadImageWithPlaceholder(imageSrc: Any, requestOptions: RequestOptions, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)?) {
+fun ImageView.loadCircleImageWithPlaceholder(
+    imageSrc: Any,
+    requestOptions: RequestOptions,
+    callback: ((Drawable?) -> Unit)? = null,
+    failure: ((GlideException?) -> Unit)?,
+    placeHolderType: Int
+) {
+    val placeholder = if (placeHolderType == 0) R.drawable.ic_default_user
+    else R.drawable.img_placeholder
     try {
         Glide
             .with(this.context)
             .load(imageSrc)
             .thumbnail(0.5f)
-            .placeholder(R.drawable.ic_default_user)
+            .placeholder(placeholder)
+            .apply(requestOptions)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    failure?.invoke(e)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    callback?.invoke(resource)
+                    return false
+                }
+            })
+            .into(this)
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+
+fun ImageView.loadImageWithPlaceholder(imageSrc: Any, placeHolderType: Int, requestOptions: RequestOptions, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)?) {
+    val placeholder = if (placeHolderType == 0) R.drawable.ic_default_user
+    else R.drawable.img_placeholder
+    try {
+        Glide
+            .with(this.context)
+            .load(imageSrc)
+            .thumbnail(0.5f)
+            .placeholder(placeholder)
             .apply(requestOptions)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(object : RequestListener<Drawable> {

@@ -197,7 +197,7 @@ class UserMultiStoriesAdapter(
             }
 
             Log.e("UMSA thumbnail",storyImage)
-            viewBinding.imgUserStory.loadCircleImage(storyImage)
+            viewBinding.imgUserStory.loadCircleImage(storyImage, 0)
 
             val url: String = if (user?.avatarPhotos != null && (user.avatarPhotos.isNotEmpty()) && (user.avatarIndex < user.avatarPhotos.size)) {
                 if (!BuildConfig.USE_S3) {
