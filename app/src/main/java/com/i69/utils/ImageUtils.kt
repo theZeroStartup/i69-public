@@ -153,8 +153,8 @@ fun ImageView.loadCircleImageWithPlaceholder(
 
 
 fun ImageView.loadImageWithPlaceholder(imageSrc: Any, placeHolderType: Int, requestOptions: RequestOptions, callback: ((Drawable?) -> Unit)? = null, failure: ((GlideException?) -> Unit)?) {
-    val placeholder = if (placeHolderType == 0) R.drawable.ic_default_user
-    else R.drawable.img_placeholder
+    val placeholder = if (placeHolderType == 1) R.drawable.ic_default_user
+    else R.drawable.img_placeholder_small
     try {
         Glide
             .with(this.context)

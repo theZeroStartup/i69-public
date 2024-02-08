@@ -59,7 +59,6 @@ import com.i69.ui.screens.main.notification.NotificationDialogFragment
 import com.i69.ui.viewModels.CommentsModel
 import com.i69.ui.viewModels.UserViewModel
 import com.i69.utils.*
-import com.paypal.pyplcheckout.sca.runOnUiThread
 import com.synnapps.carouselview.ViewListener
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -228,7 +227,7 @@ class SearchUserProfileFragment : BaseFragment<FragmentUserProfileBinding>(),
 
         viewModel.getProfile(otherUserId) {
             Handler(Looper.getMainLooper()).postDelayed({
-                runOnUiThread {
+                requireActivity().runOnUiThread {
                     if (view != null)
                         binding.userDataViewPager.setViewVisible()
                 }

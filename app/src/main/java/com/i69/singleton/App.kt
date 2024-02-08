@@ -237,9 +237,9 @@ class App : Application() {
             environment = Environment.LIVE,
 //            environment = Environment.SANDBOX,
 
-//            returnUrl = "${BuildConfig.APPLICATION_ID}://paypalpay",
             currencyCode = CurrencyCode.USD,
             userAction = UserAction.PAY_NOW,
+            returnUrl = "${com.i69.BuildConfig.APPLICATION_ID}://paypalpay",
             settingsConfig = SettingsConfig(
                 loggingEnabled = true
             )

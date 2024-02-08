@@ -21,7 +21,7 @@ object Others {
 
     //    private const val exoversion = "2.14.0"
     private const val exoversion = "2.19.1"
-    private const val paypalVersion = "0.8.7"
+    private const val paypalVersion = "1.2.1"
     private const val googleMapVersion = "18.2.0"
 
     private const val camera2Version = "1.3.1"

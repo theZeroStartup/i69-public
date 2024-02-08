@@ -547,7 +547,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     var scrollY1 = 0
     var height = 0
     override fun setupTheme() {
-        startShimmerEffect()
+//        startShimmerEffect()
         Log.e("setupTheme", "setupTheme")
 //        if(stories.isNotEmpty()){
 ////        if (mViewModel.userMomentsList.size != 0) {
@@ -636,7 +636,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 binding.rvSharedMoments.isNestedScrollingEnabled = false
                 //getAllUserMoments(width,size)
                 if (mViewModel.userMomentsList.size == 0) {
-                    startMomentsShimmerEffect()
+//                    startMomentsShimmerEffect()
                     getMainActivity().pref.edit().putString("checkUserMomentUpdate", "false")
                         .apply()
                     Log.d("UserMomentsSub", "usermomentnextpage")
