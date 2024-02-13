@@ -7,8 +7,10 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.i69.GetAllUserMomentsQuery
+import com.i69.data.models.Moment
 import com.i69.data.remote.api.GraphqlApi
 import com.i69.data.remote.responses.MomentLikes
+import com.i69.ui.screens.main.moment.db.MomentDao
 import com.i69.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +18,26 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class UserMomentsRepository  @Inject constructor(
+class UserMomentsRepository @Inject constructor(
     private val api: GraphqlApi,
+    private val momentsDao: MomentDao
 ) {
     private var _coinPrice: ArrayList<MomentLikes> = ArrayList()
     private val coinPrice: MutableLiveData<ArrayList<MomentLikes>> = MutableLiveData()
 
+    fun insertMomentsList(moments: List<Moment>) {
+        return momentsDao.insertMomentsList(moments)
+    }
 
-     fun getMomentLikes(viewModelScope: CoroutineScope,
+    fun getMomentsList(): List<Moment> {
+        return momentsDao.getMomentsList()
+    }
+
+    fun deleteAllOfflineMoments() {
+        momentsDao.deleteAllMoments()
+    }
+
+    fun getMomentLikes(viewModelScope: CoroutineScope,
                                momentPk: String,
                                token: String, callback: (ArrayList<MomentLikes>) -> Unit) {
 

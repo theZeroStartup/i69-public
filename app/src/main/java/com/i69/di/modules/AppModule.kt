@@ -116,6 +116,10 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideMomentDao(db: AppDatabase) = db.momentDao()
+
+    @Singleton
+    @Provides
     fun provideUserDao(db: AppDatabase) = db.userDao()
 
     @Singleton

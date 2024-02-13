@@ -77,6 +77,7 @@ import com.i69.ScheduleStoryMutation
 import com.i69.StoryMutation
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.ModelGifts
+import com.i69.data.models.Moment
 import com.i69.data.models.User
 import com.i69.data.remote.responses.MomentLikes
 import com.i69.databinding.BottomsheetShareOptionsBinding
@@ -88,6 +89,7 @@ import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentVirtualGifts
 import com.i69.ui.adapters.NearbySharedMomentAdapter
+import com.i69.ui.adapters.OfflineNearbySharedMomentAdapter
 import com.i69.ui.adapters.StoryLikesAdapter
 import com.i69.ui.adapters.UserItemsAdapter
 import com.i69.ui.adapters.UserMultiStoriesAdapter
@@ -153,6 +155,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     //  private lateinit var usersAdapter: UserStoriesAdapter
     private lateinit var usersMultiStoryAdapter: UserMultiStoriesAdapter
     private lateinit var sharedMomentAdapter: NearbySharedMomentAdapter
+    private lateinit var offlineSharedMomentAdapter: OfflineNearbySharedMomentAdapter
     private var mFilePath: String? = null
     lateinit var file: File
     var layoutManager: LinearLayoutManager? = null
@@ -547,7 +550,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     var scrollY1 = 0
     var height = 0
     override fun setupTheme() {
-//        startShimmerEffect()
+        startShimmerEffect()
         Log.e("setupTheme", "setupTheme")
 //        if(stories.isNotEmpty()){
 ////        if (mViewModel.userMomentsList.size != 0) {
@@ -620,28 +623,40 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 subscribeForDeleteMoment()
                 subscribeForUpdateMoment()
 
+                Log.d("OfflineMoments", "userMomentsListSize: ${mViewModel.userMomentsList.size}")
                 if (mViewModel.userMomentsList.size == 0) {
                     endCursor = ""
-                    sharedMomentAdapter = NearbySharedMomentAdapter(
-                        requireActivity(),
-                        this@UserMomentsFragment,
-                        allUserMoments1,
-                        userId
-                    )
-                }
-                if (::sharedMomentAdapter.isInitialized) {
-                    binding.rvSharedMoments.adapter = sharedMomentAdapter
-                }
-                //binding.rvSharedMoments.setHasFixedSize(true)
-                binding.rvSharedMoments.isNestedScrollingEnabled = false
-                //getAllUserMoments(width,size)
-                if (mViewModel.userMomentsList.size == 0) {
-//                    startMomentsShimmerEffect()
+                    mViewModel.getAllOfflineMoments {
+                        Log.d("OfflineMoments", "setupTheme: ${it.size}")
+                        if (it.isNotEmpty()) {
+                            offlineSharedMomentAdapter = OfflineNearbySharedMomentAdapter(
+                                requireActivity(),
+                                it as java.util.ArrayList<Moment>,
+                                userId
+                            )
+
+                            activity?.runOnUiThread {
+                                if (::offlineSharedMomentAdapter.isInitialized) {
+                                    binding.rvSharedMoments.adapter = offlineSharedMomentAdapter
+                                    offlineSharedMomentAdapter.submitList1(it)
+                                }
+                            }
+                        }
+                        else {
+                            startMomentsShimmerEffect()
+                        }
+                    }
+
+                    binding.rvSharedMoments.isNestedScrollingEnabled = false
+                    Log.d("OfflineMoments", "userMomentsListSize: ${mViewModel.userMomentsList.size}")
                     getMainActivity().pref.edit().putString("checkUserMomentUpdate", "false")
                         .apply()
-                    Log.d("UserMomentsSub", "usermomentnextpage")
                     getUserMomentNextPage(width, size, 10, endCursor)
                 }
+                else {
+                    showNewMomentsResults()
+                }
+
                 if (getMainActivity().pref.getString("checkUserMomentUpdate", "false")
                         .equals("true")
                 ) {
@@ -718,9 +733,11 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     }
 
     private fun startMomentsShimmerEffect() {
-        binding.shimmerMoments.apply {
-            setViewVisible()
-            startShimmer()
+        activity?.runOnUiThread {
+            binding.shimmerMoments.apply {
+                setViewVisible()
+                startShimmer()
+            }
         }
     }
 
@@ -2572,16 +2589,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 }
                 alreadyFetching = false
                 if (error == null) {
-                    activity?.runOnUiThread {
-                        //allUserMoments2.addAll(mViewModel.userMomentsList)
-                        //sharedMomentAdapter.setData(mViewModel.userMomentsList)
-                        Log.d("UserMomentSubsc", "${mViewModel.userMomentsList}")
-                        allUserMomentsNew = mViewModel.userMomentsList
-                        Log.e("obj_node", "submitList1 2126")
-                        sharedMomentAdapter.submitList1(mViewModel.userMomentsList)
-                    }
-                    hasNextPage = mViewModel.hasNextPageN
-                    endCursor = mViewModel.endCursorN
+                    showNewMomentsResults()
                 } else {
 
                 }
@@ -2591,6 +2599,27 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
              allUserMoments2.addAll(arrayList)
              sharedMomentAdapter.setData(allUserMoments2)
          }*/
+    }
+
+    private fun showNewMomentsResults() {
+        sharedMomentAdapter = NearbySharedMomentAdapter(
+            requireActivity(),
+            this@UserMomentsFragment,
+            allUserMoments1,
+            userId
+        )
+        if (::sharedMomentAdapter.isInitialized) {
+            activity?.runOnUiThread {
+                binding.rvSharedMoments.adapter = sharedMomentAdapter
+                Log.d("UserMomentSubsc", "${mViewModel.userMomentsList}")
+                allUserMomentsNew = mViewModel.userMomentsList
+                Log.e("obj_node", "submitList1 2126")
+                sharedMomentAdapter.submitList1(mViewModel.userMomentsList)
+            }
+        }
+
+        hasNextPage = mViewModel.hasNextPageN
+        endCursor = mViewModel.endCursorN
     }
 
     fun allusermoments1(width: Int, size: Int, i: Int, endCursors: String) {

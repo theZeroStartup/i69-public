@@ -815,18 +815,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), BottomNavigationView.O
 //        purchaseFragment.setPaymentLauncherForStripe(paymentLauncher)
     }
 
-    private fun loadUserMomentsData() {
-        userToken?.let {
-            mViewModelUser.getAllMoments(this@MainActivity, it, 100, 100, 10, "") { error ->
-                if (error == null) {
-
-                } else {
-
-                }
-
-            }
-        }
-    }
+//    private fun loadUserMomentsData() {
+//        userToken?.let {
+//            mViewModelUser.getAllMoments(this@MainActivity, it, 100, 100, 10, "") { error ->
+//                if (error == null) {
+//
+//                } else {
+//
+//                }
+//
+//            }
+//        }
+//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(drawerSelectedItemIdKey, drawerSelectedItemId)

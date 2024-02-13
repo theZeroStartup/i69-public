@@ -3,7 +3,9 @@ package com.i69.profile.db.converters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.i69.GetAllUserMomentsQuery
 import com.i69.data.models.BlockedUser
+import com.i69.data.models.Moment
 import com.i69.data.models.Photo
 import com.i69.data.models.UserAttrTranslation
 import com.i69.data.models.UserSubscription
@@ -23,6 +25,42 @@ class UserConverters {
         return gson.fromJson(info, type)
     }
 
+    @TypeConverter
+    fun toMomentsString(list: List<Moment>?): String{
+        val type = object: TypeToken<List<Moment>>(){}.type
+        return gson.toJson(list, type)
+    }
+
+    @TypeConverter
+    fun stringToMomentsList(info: String): List<Moment>{
+        val type = object: TypeToken<List<Moment>>(){}.type
+        return gson.fromJson(info, type)
+    }
+
+
+    @TypeConverter
+    fun toMomentEdgeString(list: GetAllUserMomentsQuery.Edge): String{
+        val type = object: TypeToken<GetAllUserMomentsQuery.Edge>(){}.type
+        return gson.toJson(list, type)
+    }
+
+    @TypeConverter
+    fun stringToMomentEdge(info: String): GetAllUserMomentsQuery.Edge {
+        val type = object: TypeToken<GetAllUserMomentsQuery.Edge>(){}.type
+        return gson.fromJson(info, type)
+    }
+
+    @TypeConverter
+    fun toMomentNodeString(list: GetAllUserMomentsQuery.Node): String{
+        val type = object: TypeToken<GetAllUserMomentsQuery.Node>(){}.type
+        return gson.toJson(list, type)
+    }
+
+    @TypeConverter
+    fun stringToMomentNode(info: String): GetAllUserMomentsQuery.Node {
+        val type = object: TypeToken<GetAllUserMomentsQuery.Node>(){}.type
+        return gson.fromJson(info, type)
+    }
 
     @TypeConverter
     fun toUserAttrTranslationString(list: MutableList<UserAttrTranslation>?): String{
