@@ -78,6 +78,7 @@ import com.i69.StoryMutation
 import com.i69.applocalization.AppStringConstant
 import com.i69.data.models.ModelGifts
 import com.i69.data.models.Moment
+import com.i69.data.models.OfflineStory
 import com.i69.data.models.User
 import com.i69.data.remote.responses.MomentLikes
 import com.i69.databinding.BottomsheetShareOptionsBinding
@@ -89,6 +90,7 @@ import com.i69.gifts.FragmentRealGifts
 import com.i69.gifts.FragmentReceivedGifts
 import com.i69.gifts.FragmentVirtualGifts
 import com.i69.ui.adapters.NearbySharedMomentAdapter
+import com.i69.ui.adapters.OfflineMultiStoriesAdapter
 import com.i69.ui.adapters.OfflineNearbySharedMomentAdapter
 import com.i69.ui.adapters.StoryLikesAdapter
 import com.i69.ui.adapters.UserItemsAdapter
@@ -153,6 +155,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     private var userToken: String? = null
 
     //  private lateinit var usersAdapter: UserStoriesAdapter
+    private lateinit var offlineMultiStoryAdapter: OfflineMultiStoriesAdapter
     private lateinit var usersMultiStoryAdapter: UserMultiStoriesAdapter
     private lateinit var sharedMomentAdapter: NearbySharedMomentAdapter
     private lateinit var offlineSharedMomentAdapter: OfflineNearbySharedMomentAdapter
@@ -550,7 +553,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     var scrollY1 = 0
     var height = 0
     override fun setupTheme() {
-        startShimmerEffect()
         Log.e("setupTheme", "setupTheme")
 //        if(stories.isNotEmpty()){
 ////        if (mViewModel.userMomentsList.size != 0) {
@@ -615,7 +617,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 binding.rvSharedMoments.layoutManager = layoutManager
                 //   getAllUserStories()
                 Log.e("TAG", "try")
-                getAllUserMultiStories()
+                showCachedStories()
                 subscribeForNewStory()
                 subscribeForDeleteStory()
                 Log.e("obj_node", "try")
@@ -626,6 +628,8 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 Log.d("OfflineMoments", "userMomentsListSize: ${mViewModel.userMomentsList.size}")
                 if (mViewModel.userMomentsList.size == 0) {
                     endCursor = ""
+                    binding.llSharing.visibility = View.VISIBLE
+                    binding.momentSharing.text = "Refreshing..."
                     mViewModel.getAllOfflineMoments {
                         Log.d("OfflineMoments", "setupTheme: ${it.size}")
                         if (it.isNotEmpty()) {
@@ -633,7 +637,9 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                                 requireActivity(),
                                 it as java.util.ArrayList<Moment>,
                                 userId
-                            )
+                            ) {
+                                binding.root.autoSnackbarOnTop("Waiting for network")
+                            }
 
                             activity?.runOnUiThread {
                                 if (::offlineSharedMomentAdapter.isInitialized) {
@@ -732,6 +738,28 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
         }
     }
 
+    private fun showCachedStories() {
+        offlineMultiStoryAdapter =
+            OfflineMultiStoriesAdapter(requireContext(), mUser) {
+                binding.root.autoSnackbarOnTop("Waiting for network")
+            }
+
+        mViewModel.getAllOfflineStories {
+            Log.d("UMFrag", "showCachedStories: ${it.size}")
+            if (it.isNotEmpty()) offlineMultiStoryAdapter.storyList = it
+//            else startShimmerEffect()
+        }
+
+//        offlineMultiStoryAdapter.mUser = it
+        activity?.runOnUiThread {
+            offlineMultiStoryAdapter.notifyItemChanged(0)
+            binding.rvUserStories.adapter = offlineMultiStoryAdapter
+            setupStoryAdapter()
+        }
+        
+        getAllUserMultiStories()
+    }
+
     private fun startMomentsShimmerEffect() {
         activity?.runOnUiThread {
             binding.shimmerMoments.apply {
@@ -742,25 +770,31 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
     }
 
     private fun stopMomentsShimmerEffect() {
-        TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
-        binding.shimmerMoments.apply {
-            setViewGone()
-            stopShimmer()
+        activity?.runOnUiThread {
+            TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
+            binding.shimmerMoments.apply {
+                setViewGone()
+                stopShimmer()
+            }
         }
     }
 
     private fun startShimmerEffect() {
-        binding.shimmerStories.apply {
-            setViewVisible()
-            startShimmer()
+        activity?.runOnUiThread {
+            binding.shimmerStories.apply {
+                setViewVisible()
+                startShimmer()
+            }
         }
     }
 
     private fun stopShimmerEffect() {
-        TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
-        binding.shimmerStories.apply {
-            setViewGone()
-            stopShimmer()
+        activity?.runOnUiThread {
+            TransitionManager.beginDelayedTransition(binding.receivedGiftContainer, AutoTransition())
+            binding.shimmerStories.apply {
+                setViewGone()
+                stopShimmer()
+            }
         }
     }
 
@@ -1962,7 +1996,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                 ).show()
             }
 
-            val allUserMultiStories = res.data?.allUserMultiStories!!.also {
+            res.data?.allUserMultiStories!!.also {
                 usersMultiStoryAdapter =
                     UserMultiStoriesAdapter(requireContext(), mUser, this@UserMomentsFragment)
                 stories.clear()
@@ -1982,20 +2016,38 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
                      usersAdapter = UserStoriesAdapter(requireActivity(), this@UserMomentsFragment, it)
                  }*/
             binding.rvUserStories.adapter = usersMultiStoryAdapter
-            if (binding.rvUserStories.itemDecorationCount == 0) {
-                binding.rvUserStories.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                    override fun getItemOffsets(
-                        outRect: Rect,
-                        view: View,
-                        parent: RecyclerView,
-                        state: RecyclerView.State
-                    ) {
-                        outRect.top = 20
-                        outRect.bottom = 10
-                        outRect.left = 20
-                    }
-                })
+            cacheStories()
+            setupStoryAdapter()
+        }
+    }
+
+    private fun cacheStories() {
+        CoroutineScope(Dispatchers.IO).launch {
+            mViewModel.deleteOfflineStories()
+            val cache = mutableListOf<OfflineStory>()
+            stories.forEach { item ->
+                val story = OfflineStory(stories = item)
+                cache.add(story)
             }
+            Log.d("UMFrag", "getAllUserMultiStories: ${cache.size}")
+            mViewModel.insertOfflineStories(cache)
+        }
+    }
+
+    private fun setupStoryAdapter() {
+        if (binding.rvUserStories.itemDecorationCount == 0) {
+            binding.rvUserStories.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.top = 20
+                    outRect.bottom = 10
+                    outRect.left = 20
+                }
+            })
         }
     }
 
@@ -2075,7 +2127,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             Log.e("UsermomentsSuces", Gson().toJson(response))
             Log.e("UserStory", "story upload 2")
 
-            //   getAllUserStories()
             getAllUserMultiStories()
         }
     }
@@ -2152,7 +2203,6 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             Log.e("UsermomentsSuces", Gson().toJson(response))
             Log.e("UserStory", "story upload 2")
 
-            //   getAllUserStories()
             getAllUserMultiStories()
         }
     }
@@ -2585,6 +2635,7 @@ class UserMomentsFragment : BaseFragment<FragmentUserMomentsBinding>(),
             Log.d("UserMomentsFragment", "UserMomentNextPage Calling")
             mViewModel.getAllMoments(requireContext(), it, width, size, i, endCursors) { error ->
                 requireActivity().runOnUiThread {
+                    binding.llSharing.visibility = View.GONE
                     stopMomentsShimmerEffect()
                 }
                 alreadyFetching = false

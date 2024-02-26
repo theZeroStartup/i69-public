@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.i69.GetAllUserMomentsQuery
+import com.i69.GetAllUserMultiStoriesQuery
 import com.i69.data.models.BlockedUser
 import com.i69.data.models.Moment
 import com.i69.data.models.Photo
@@ -22,6 +23,18 @@ class UserConverters {
     @TypeConverter
     fun stringToPhotosList(info: String): MutableList<Photo>{
         val type = object: TypeToken<MutableList<Photo>>(){}.type
+        return gson.fromJson(info, type)
+    }
+
+    @TypeConverter
+    fun toStoriesString(list: GetAllUserMultiStoriesQuery.AllUserMultiStory): String{
+        val type = object: TypeToken<GetAllUserMultiStoriesQuery.AllUserMultiStory>(){}.type
+        return gson.toJson(list, type)
+    }
+
+    @TypeConverter
+    fun stringToStoriesList(info: String): GetAllUserMultiStoriesQuery.AllUserMultiStory{
+        val type = object: TypeToken<GetAllUserMultiStoriesQuery.AllUserMultiStory>(){}.type
         return gson.fromJson(info, type)
     }
 

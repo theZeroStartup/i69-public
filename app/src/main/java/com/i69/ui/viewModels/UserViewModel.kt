@@ -111,11 +111,6 @@ class UserViewModel @Inject constructor(
     fun getCurrentUserUpdate(userId: String, token: String, reload: Boolean) =
         userDetailsRepository.getCurrentUser(viewModelScope, userId, token = token, reload, _currentUserLiveData)
 
-
-
-//    suspend fun getLanguage(userId: String, token: String)=
-//        _language.value= userDetailsRepository.getLanguage(userId,token).data
-
     suspend fun getLanguage(userId: String, token: String)=
          userDetailsRepository.getLanguage(userId,token).data
     suspend fun updateLanguage( languageCode:String,userid:String,token:String): Resource<ResponseBody<Id>> =

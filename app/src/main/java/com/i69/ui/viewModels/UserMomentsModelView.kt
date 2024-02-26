@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.i69.GetAllUserMomentsQuery
 import com.i69.data.models.Moment
+import com.i69.data.models.OfflineStory
 import com.i69.data.remote.repository.UserMomentsRepository
 import com.i69.data.remote.responses.MomentLikes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,25 @@ class UserMomentsModelView @Inject constructor(private val userMomentsRepo: User
 
     val coinPrice = ArrayList<MomentLikes>()
 //    private val coinPrice: MutableLiveData<ArrayList<MomentLikes>> = MutableLiveData()
+
+    fun getAllOfflineStories(callback: (List<OfflineStory>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val stories = userMomentsRepo.getStoryList()
+            callback.invoke(stories)
+        }
+    }
+
+    fun insertOfflineStories(stories: List<OfflineStory>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userMomentsRepo.insertStoryList(stories)
+        }
+    }
+
+    fun deleteOfflineStories() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userMomentsRepo.deleteAllStories()
+        }
+    }
 
     fun getAllOfflineMoments(callback: (List<Moment>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {

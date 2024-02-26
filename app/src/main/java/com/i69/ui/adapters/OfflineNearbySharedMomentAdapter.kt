@@ -48,7 +48,8 @@ class OfflineNearbySharedMomentAdapter(
 //    private val listener: NearbySharedMomentListener,
     private var allusermoments2: ArrayList<Moment>,
     var userId: String?,
-    var isShownearByUser: Boolean = true
+    var isShownearByUser: Boolean = true,
+    var onClick: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var selectedItemPosition: Int = -1
@@ -208,6 +209,7 @@ class OfflineNearbySharedMomentAdapter(
 
             viewBinding.lblItemNearbyName.text = builder
 
+            viewBinding.itemCell.setOnClickListener { onClick.invoke() }
 
             val url = if (!BuildConfig.USE_S3) {
                 if (item_data.node?.node?.file.toString().startsWith(BuildConfig.BASE_URL))
@@ -247,11 +249,6 @@ class OfflineNearbySharedMomentAdapter(
                     viewBinding.imgSharedMoment.loadImage(url)
                     viewBinding.ivPlay.setViewVisible()
                     Log.d("NSMA", "dont play: $position ${viewBinding.playerView?.player == null}")
-                }
-
-                viewBinding.ivPlay.setOnClickListener {
-                    selectedItemPosition = position
-                    notifyDataSetChanged()
                 }
             }
 
@@ -354,157 +351,6 @@ class OfflineNearbySharedMomentAdapter(
             } else {
                 viewBinding.lblViewAllComments.visibility = View.GONE
             }
-
-
-            viewBinding.lblViewAllLikes.setOnClickListener {
-//                listener.onLikeofMomentshowClick(bindingAdapterPosition, item_data)
-            }
-            viewBinding.imgNearbyUserLikes.setOnClickListener(View.OnClickListener {
-//                listener.onLikeofMomentClick(bindingAdapterPosition, item_data)
-            })
-
-            viewBinding.ivFullscreen.setOnClickListener(View.OnClickListener {
-//                if (listener.isPlaying() && !isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                if (!isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                selectedItemPosition = -1
-//                notifyDataSetChanged()
-//                listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-            })
-
-            viewBinding.imgNearbyUserComment.setOnClickListener(View.OnClickListener {
-//                if (listener.isPlaying() && !isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                else {
-//                    if (!isImageFile(item_data)) {
-//                        listener.pauseVideo()
-//                        viewBinding.ivPlay.setViewVisible()
-//                    }
-//                    selectedItemPosition = -1
-//                    notifyDataSetChanged()
-//                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-//                }
-            })
-
-            viewBinding.lblViewAllComments.setOnClickListener(View.OnClickListener {
-//                if (listener.isPlaying() && !isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                else {
-//                    if (!isImageFile(item_data)) {
-//                        listener.pauseVideo()
-//                        viewBinding.ivPlay.setViewVisible()
-//                    }
-//                    selectedItemPosition = -1
-//                    notifyDataSetChanged()
-//                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-//                }
-            })
-            viewBinding.itemCell.setOnClickListener(View.OnClickListener {
-//                if (listener.isPlaying() && !isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                else {
-//                    if (!isImageFile(item_data)) {
-//                        listener.pauseVideo()
-//                        viewBinding.ivPlay.setViewVisible()
-//                    }
-//                    selectedItemPosition = -1
-//                    notifyDataSetChanged()
-//                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-//                }
-            })
-
-            viewBinding.imgNearbyUserGift.setOnClickListener(View.OnClickListener {
-//                if (listener.isPlaying() && !isImageFile(item_data)) {
-//                    listener.pauseVideo()
-//                    viewBinding.ivPlay.setViewVisible()
-//                }
-//                else {
-//                    if (!isImageFile(item_data)) {
-////                        listener.pauseVideo()
-//                        viewBinding.ivPlay.setViewVisible()
-//                    }
-//                    selectedItemPosition = -1
-//                    notifyDataSetChanged()
-////                    listener.onCommentofMomentClick(bindingAdapterPosition, item_data)
-//                }
-            })
-
-            viewBinding.imgNearbySharedMomentOption.setOnClickListener(View.OnClickListener {
-
-
-                if (userId!!.equals(item_data!!.node!!.node?.user!!.id)) {
-                    //creating a popup menu
-
-                    val popup = PopupMenu(this@OfflineNearbySharedMomentAdapter.ctx, viewBinding.imgNearbySharedMomentOption)
-                    popup.getMenuInflater().inflate(R.menu.more_options, popup.getMenu());
-
-                    //adding click listener
-                    popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
-
-                        when (item!!.itemId) {
-                            R.id.nav_item_delete -> {
-//                                listener.onDotMenuofMomentClick(
-//                                    bindingAdapterPosition,
-//                                    item_data,
-//                                    "delete"
-//                                )
-
-                            }
-                            /* R.id.nav_item_report -> {
-                             listener.onDotMenuofMomentClick(bindingAdapterPosition,item_data,"report")
-
-                             }*/
-                            R.id.nav_item_edit -> {
-//                                listener.onDotMenuofMomentClick(
-//                                    bindingAdapterPosition,
-//                                    item_data,
-//                                    "edit"
-//                                )
-
-                            }
-
-                        }
-
-                        true
-                    })
-                    popup.show()
-                } else {
-                    val popup = PopupMenu(this@OfflineNearbySharedMomentAdapter.ctx, viewBinding.imgNearbySharedMomentOption)
-                    popup.getMenuInflater().inflate(R.menu.more_options1, popup.getMenu());
-
-                    //adding click listener
-                    popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
-
-                        when (item!!.itemId) {
-
-                            R.id.nav_item_report -> {
-//                                listener.onDotMenuofMomentClick(
-//                                    bindingAdapterPosition,
-//                                    item_data,
-//                                    "report"
-//                                )
-
-                            }
-
-                        }
-
-                        true
-                    })
-                    popup.show()
-                }
-            })
-
         }
 
         private fun isImageFile(itemData: Moment): Boolean {

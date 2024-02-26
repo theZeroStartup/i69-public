@@ -250,7 +250,6 @@ class FragmentUserVisitorVisiting : BaseFragment<FragmentUserFollowFolllowersBin
                     getCurrentUserToken()!!
                 )
                     .query(GetUserQuery(userid!!))
-//                    .query(GetUserQuery(getCurrentUserId()!!))
                     .execute()
             } catch (e: ApolloException) {
                 Timber.d("apolloResponse ${e.message}")
@@ -297,6 +296,7 @@ class FragmentUserVisitorVisiting : BaseFragment<FragmentUserFollowFolllowersBin
 
                 }
 
+                Log.d("VFrag", "getUserFollowingData: $xy, $x")
                 viewModel.setupdateVisitingListResultWith(x)
                 viewModel.setupdateVisitorListResultWith(xy)
 

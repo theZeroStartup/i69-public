@@ -128,14 +128,14 @@
                                 android:fontFamily="sans-serif"
                                 android:gravity="start"
                                 android:maxLines="1"
-                                android:text="abcd"
+                                android:text="abcdefghijklmnopqrstuvwxyz"
                                 android:textAllCaps="true"
                                 android:textColor="@color/message_list_text_title_color_2"
                                 android:textDirection="locale"
                                 android:textStyle="bold"
                                 android:visibility="visible"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/chatSearch"
                                 app:layout_constraintStart_toEndOf="@+id/user_profile_img"
                                 app:layout_constraintTop_toTopOf="parent" />
 

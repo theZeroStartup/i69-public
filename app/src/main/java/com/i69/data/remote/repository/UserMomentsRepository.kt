@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.i69.GetAllUserMomentsQuery
 import com.i69.data.models.Moment
+import com.i69.data.models.OfflineStory
 import com.i69.data.remote.api.GraphqlApi
 import com.i69.data.remote.responses.MomentLikes
 import com.i69.ui.screens.main.moment.db.MomentDao
@@ -35,6 +36,18 @@ class UserMomentsRepository @Inject constructor(
 
     fun deleteAllOfflineMoments() {
         momentsDao.deleteAllMoments()
+    }
+
+    fun insertStoryList(moments: List<OfflineStory>) {
+        return momentsDao.insertStoryList(moments)
+    }
+
+    fun getStoryList(): List<OfflineStory> {
+        return momentsDao.getStoryList()
+    }
+
+    fun deleteAllStories() {
+        momentsDao.deleteAllStories()
     }
 
     fun getMomentLikes(viewModelScope: CoroutineScope,

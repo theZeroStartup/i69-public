@@ -66,7 +66,7 @@ class VisitorsFragment : BaseFragment<FragmentFollowersBinding>(),
     ) = FragmentFollowersBinding.inflate(inflater, container, false)
 
     override fun setupTheme() {
-
+        Log.d("VFrag", "setupTheme: ")
         viewStringConstModel.data.observe(this@VisitorsFragment) { data ->
             stringConstant = data
         }
@@ -81,28 +81,8 @@ class VisitorsFragment : BaseFragment<FragmentFollowersBinding>(),
         binding.recyclerViewFolowers.adapter = adapterVisitor
 
         viewModel.getupdateVisitorListResultWith().observe(viewLifecycleOwner) {
-            //list.clear()
-            //list.addAll(it)
+            Log.d("VFrag", "setupTheme: $it")
             listVisitors.clear()
-//            val tempList = it.filter {it1-> !it1?.datetime.isNullOrEmpty() }.toMutableList()
-//            tempList.sortWith { o1, o2 ->
-//                (formatterFullDateTimeUTC.parse(o2!!.datetime) as Date).compareTo(formatterFullDateTimeUTC.parse(o1!!.datetime) as Date)
-//            }
-//            val distinctDates = tempList.flatMap { it1 -> listOf(formatterDateOnly.format(formatterFullDateTimeUTC.parse(it1?.datetime) as Date)) }.distinct()
-//
-//            distinctDates.forEach {date->
-//                val visitorTime = formatterDateOnly.parse(date) as Date
-//                listVisitors.add(BaseUserVisitorModel(0, GetUserQuery.UserVisitor("","","","","","","",0,0,false,null),DateUtils.getRelativeTimeSpanString(visitorTime.time, Date().time, DateUtils.MINUTE_IN_MILLIS)))
-//                for (i in 0 until tempList.size) {
-//                    val userVisitor = tempList[i]
-//                    userVisitor?.let { temp->
-//                        if (temp.datetime?.contains(date) == true) {
-//                            val visitorTimeNew = formatterFullDateTimeUTC.parse(temp.datetime) as Date
-//                            listVisitors.add(BaseUserVisitorModel(1,userVisitor,formatterTimeOnly.format(visitorTimeNew)))
-//                        }
-//                    }
-//                }
-//            }
 
             val tempList = it.filter {it1-> !it1?.datetime.isNullOrEmpty() }.toMutableList()
             tempList.sortWith { o1, o2 ->
@@ -130,9 +110,6 @@ class VisitorsFragment : BaseFragment<FragmentFollowersBinding>(),
 
             adapterVisitor?.notifyDataSetChanged()
         }
-//        getUserFollowersData()
-
-
     }
 
 
@@ -411,6 +388,8 @@ class VisitorsFragment : BaseFragment<FragmentFollowersBinding>(),
                     }
 
                 }
+
+                Log.d("VFrag", "getUserFollowingData: $xy")
 
                 viewModel.setupdateVisitingListResultWith(x)
                 viewModel.setupdateVisitorListResultWith(xy)
